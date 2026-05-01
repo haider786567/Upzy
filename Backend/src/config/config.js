@@ -8,6 +8,7 @@ if (!process.env.MONGO_URI) {
 const config = {
     MONGO_URI: process.env.MONGO_URI ,
     PORT: process.env.PORT || 3001,
+    NODE_ENV: process.env.NODE_ENV ,
 
 }
 export default config;
