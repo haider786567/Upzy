@@ -1,9 +1,8 @@
-import monitorModel from "../models/monitor.model";
-import incidentModel from "../models/incident.model";
-import logModel from "../models/log.model";
-import errorHandler from "../middlewares/errormiddleware";
+import monitorModel from "../models/monitor.model.js";
 
-const getAllMonitors = async (req, res,next) => {
+
+
+export const getAllMonitors = async (req, res,next) => {
   try {
     const monitors = await monitorModel.find({ userId: req.user._id });
     res.json(monitors);
@@ -12,7 +11,7 @@ const getAllMonitors = async (req, res,next) => {
   }
 };
 
-const createMonitor = async (req, res,next) => {
+export const createMonitor = async (req, res,next) => {
   try {
     const { name, url, method, headers, body, expectedStatus, timeout, interval } = req.body;
     const newMonitor = new monitorModel({
@@ -33,7 +32,7 @@ const createMonitor = async (req, res,next) => {
   }
 };
 
-const getMonitorById = async (req, res,next) => {
+export const getMonitorById = async (req, res,next) => {
   try {
     const monitor = await monitorModel.findOne({ _id: req.params.id, userId: req.user._id });
     if (!monitor) {
@@ -45,7 +44,7 @@ const getMonitorById = async (req, res,next) => {
   }
 };
 
-const updateMonitor = async (req, res,next) => {
+export const updateMonitor = async (req, res,next) => {
   try {
     const { name, url, method, headers, body, expectedStatus, timeout, interval } = req.body;
     const monitor = await monitorModel.findOneAndUpdate(
@@ -62,7 +61,7 @@ const updateMonitor = async (req, res,next) => {
   }
 };
 
-const deleteMonitor = async (req, res,next) => {
+export const deleteMonitor = async (req, res,next) => {
   try {
     const monitor = await monitorModel.findOneAndDelete({ _id: req.params.id, userId: req.user._id });
     if (!monitor) {
@@ -76,11 +75,4 @@ const deleteMonitor = async (req, res,next) => {
     next(err);
   }
 };
-
-export default {
-  getAllMonitors,
-  createMonitor,
-  getMonitorById,
-  updateMonitor,
-  deleteMonitor
-};  
+ 

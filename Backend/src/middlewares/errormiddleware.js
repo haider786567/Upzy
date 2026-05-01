@@ -1,4 +1,4 @@
-import config from "../config/config";
+import config from "../config/config.js";
 const errorHandler = (err, req, res, next) => {
     const statusCode = res.statusCode && res.statusCode !== 200 ? res.statusCode : (err.status || 500);
     

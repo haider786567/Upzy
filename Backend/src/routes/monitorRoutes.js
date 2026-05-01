@@ -1,6 +1,6 @@
 import express from 'express';
 import { validateMonitor } from '../validators/monitorValidator.js';
-import { getAllMonitors, createMonitor, getMonitorById, updateMonitor, deleteMonitor } from '../controllers/monitorController.js';
+import { createMonitor,getAllMonitors,getMonitorById,updateMonitor,deleteMonitor } from '../controllers/monitorcontroller.js';
 const router = express.Router();
 
 router.get('/', getAllMonitors);

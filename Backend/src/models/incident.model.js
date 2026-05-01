@@ -43,5 +43,6 @@ const incidentSchema = new mongoose.Schema({
 
 // 🔥 fast query for active incident
 incidentSchema.index({ monitorId: 1, resolved: 1 });
+const IncidentModel = mongoose.model("Incident", incidentSchema);
 
-export default mongoose.model("Incident", incidentSchema);
+export default IncidentModel;
