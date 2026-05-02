@@ -557,7 +557,7 @@ const LandingPage = () => {
           <button className="text-sm font-medium px-5 py-2 rounded-full border border-[#0a0a0a]/20 hover:border-[#0a0a0a]/60 transition-all hover:scale-105">
             Log in
           </button>
-          <button className="text-sm font-medium px-5 py-2 rounded-full bg-[#0a0a0a] text-[#FBE4D8] hover:scale-110 active:scale-95 transition-all duration-200 shadow-lg hover:shadow-xl">
+          <button className="text-sm font-medium px-5 py-2 rounded-full bg-[#0a0a0a] text-cream hover:scale-110 active:scale-95 transition-all duration-200 shadow-lg hover:shadow-xl">
             Sign up free
           </button>
         </div>
@@ -592,7 +592,7 @@ const LandingPage = () => {
           className="mt-6 text-[clamp(1rem,2vw,1.35rem)] text-[#0a0a0a]/50 max-w-lg leading-relaxed"
         >
           Know the moment your website, API, or server breaks —{" "}
-          <span className="font-semibold bg-gradient-to-r from-[#0a0a0a] to-[#5a5a5a] bg-clip-text text-transparent">
+          <span className="font-semibold bg-linear-to-r from-[#0a0a0a] to-[#5a5a5a] bg-clip-text text-transparent">
             before your users do.
           </span>
         </p>
@@ -601,7 +601,7 @@ const LandingPage = () => {
           ref={heroBtnsRef}
           className="mt-10 flex items-center gap-4 flex-wrap justify-center"
         >
-          <button className="bg-[#0a0a0a] text-[#FBE4D8] px-8 py-3.5 rounded-full text-sm font-medium hover:scale-110 active:scale-95 transition-all duration-200 flex items-center gap-2 shadow-xl group">
+          <button className="bg-[#0a0a0a] text-cream px-8 py-3.5 rounded-full text-sm font-medium hover:scale-110 active:scale-95 transition-all duration-200 flex items-center gap-2 shadow-xl group">
             <BsLightningChargeFill className="text-yellow-400 group-hover:rotate-12 transition-transform group-hover:scale-110" />
             Start Monitoring Free
           </button>
@@ -659,7 +659,7 @@ const LandingPage = () => {
 
           <div
             ref={dashboardMockRef}
-            className="rounded-3xl bg-gradient-to-br from-[#0a0a0a]/5 to-[#0a0a0a]/2 backdrop-blur-sm border border-[#0a0a0a]/15 p-6 shadow-2xl transition-all duration-500 card-3d"
+            className="rounded-3xl bg-linear-to-br from-[#0a0a0a]/5 to-[#0a0a0a]/2 backdrop-blur-sm border border-[#0a0a0a]/15 p-6 shadow-2xl transition-all duration-500 card-3d"
           >
             <div className="flex items-center justify-between mb-6 pb-4 border-b border-[#0a0a0a]/10">
               <div className="flex items-center gap-3">
@@ -723,7 +723,7 @@ const LandingPage = () => {
               ].map((stat, idx) => (
                 <div
                   key={stat.label}
-                  className="bg-[#FBE4D8]/50 rounded-xl p-4 border border-[#0a0a0a]/8 hover:border-[#0a0a0a]/20 transition-all hover:scale-105 cursor-pointer"
+                  className="bg-cream/50 rounded-xl p-4 border border-[#0a0a0a]/8 hover:border-[#0a0a0a]/20 transition-all hover:scale-105 cursor-pointer"
                 >
                   <p className="text-xs text-[#0a0a0a]/50">{stat.label}</p>
                   <p ref={stat.ref} className="text-2xl font-bold mt-1">
@@ -742,7 +742,7 @@ const LandingPage = () => {
                 </span>
                 <span className="text-xs text-[#0a0a0a]/40">ms ↓</span>
               </div>
-              <div className="h-52 w-full bg-gradient-to-br from-[#0a0a0a]/5 to-[#0a0a0a]/2 rounded-xl p-4 relative overflow-hidden border border-[#0a0a0a]/8">
+              <div className="h-52 w-full bg-linear-to-br from-[#0a0a0a]/5 to-[#0a0a0a]/2 rounded-xl p-4 relative overflow-hidden border border-[#0a0a0a]/8">
                 <svg
                   className="w-full h-full"
                   viewBox="0 0 800 180"
@@ -778,7 +778,7 @@ const LandingPage = () => {
                   />
                 </svg>
                 <div className="absolute top-0 left-0 w-full h-full pointer-events-none">
-                  <div className="absolute top-0 w-px h-full bg-gradient-to-b from-transparent via-green-500/60 to-transparent animate-scan"></div>
+                  <div className="absolute top-0 w-px h-full bg-linear-to-b from-transparent via-green-500/60 to-transparent animate-scan"></div>
                 </div>
               </div>
             </div>
@@ -849,7 +849,7 @@ const LandingPage = () => {
             </div>
 
             <div className="mt-6 p-3 bg-green-500/10 rounded-xl border border-green-500/20 relative overflow-hidden group cursor-pointer">
-              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-green-500/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700"></div>
+              <div className="absolute inset-0 bg-linear-to-r from-transparent via-green-500/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700"></div>
               <div className="flex items-center gap-2 justify-between flex-wrap relative z-10">
                 <div className="flex items-center gap-2">
                   <BsLightningChargeFill className="text-green-500 text-xs animate-pulse" />
@@ -865,7 +865,7 @@ const LandingPage = () => {
             </div>
 
             <div className="mt-4 h-0.5 w-full bg-[#0a0a0a]/10 rounded-full overflow-hidden">
-              <div className="h-full w-1/3 bg-gradient-to-r from-green-500 to-emerald-500 rounded-full animate-loading-bar"></div>
+              <div className="h-full w-1/3 bg-linear-to-r from-green-500 to-emerald-500 rounded-full animate-loading-bar"></div>
             </div>
           </div>
         </div>
@@ -1117,9 +1117,9 @@ const LandingPage = () => {
             <div
               key={step.num}
               ref={step.ref}
-              className="text-center p-6 rounded-2xl border border-[#0a0a0a]/10 bg-[#FBE4D8] transform-gpu hover:scale-105 transition-all duration-200 card-3d"
+              className="text-center p-6 rounded-2xl border border-[#0a0a0a]/10 bg-cream transform-gpu hover:scale-105 transition-all duration-200 card-3d"
             >
-              <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-[#0a0a0a]/10 to-[#0a0a0a]/5 flex items-center justify-center mx-auto mb-5 animate-float">
+              <div className="w-20 h-20 rounded-2xl bg-linear-to-br from-[#0a0a0a]/10 to-[#0a0a0a]/5 flex items-center justify-center mx-auto mb-5 animate-float">
                 {step.icon}
               </div>
               <div className="text-5xl font-black text-[#0a0a0a]/10 mb-2">
@@ -1212,7 +1212,7 @@ const LandingPage = () => {
             </div>
           </div>
           <div className="flex-1 flex justify-center">
-            <div className="w-80 h-80 rounded-full bg-gradient-to-br from-[#0a0a0a]/5 to-[#0a0a0a]/2 flex items-center justify-center relative">
+            <div className="w-80 h-80 rounded-full bg-linear-to-br from-[#0a0a0a]/5 to-[#0a0a0a]/2 flex items-center justify-center relative">
               <div className="absolute w-40 h-40 rounded-full bg-[#0a0a0a]/10 animate-ping"></div>
               <div className="absolute w-32 h-32 rounded-full bg-[#0a0a0a]/15 animate-pulse"></div>
               <FaGlobe className="text-7xl text-[#0a0a0a]/40 animate-spin-slow" />
