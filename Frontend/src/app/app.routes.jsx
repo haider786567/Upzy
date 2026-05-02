@@ -4,10 +4,10 @@ import Register from '../features/auth/pages/Register';
 import DashboardPage from '../features/dashboard/pages/DashboardPage';
 import MonitorsPage from '../features/monitors/pages/MonitorsPage';
 import CreateMonitorPage from '../features/monitors/pages/CreateMonitorPage';
+import LandingPage from '../features/landing/pages/LandingPage';
 
 const routes = createBrowserRouter([
-
-    { path: '/', element: <Navigate to="/register" replace /> },
+    { path: '/', element: <LandingPage /> },
     { path: '/login', element: <Login /> },
     { path: '/register', element: <Register /> },
     { path: '/dashboard', element: <DashboardPage /> },

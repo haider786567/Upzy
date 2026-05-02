@@ -24,11 +24,11 @@ const Navbar = () => {
         </button>
         
         <div className="flex items-center gap-3 pl-6 border-l border-rose/50 cursor-pointer group">
-          <div className="w-10 h-10 rounded-full bg-linear-to-tr from-secondary to-primary flex items-center justify-center border-2 border-white shadow-md">
+          <div className="w-10 h-10 rounded-full bg-linear-to-tr from-secondary to-primary flex items-center justify-center border-2 border-cream shadow-md">
             <span className="text-xs font-bold text-cream">JD</span>
           </div>
           <div className="hidden md:block">
-            <p className="text-sm font-bold text-primary">John Doe</p>
+            <p className="text-sm font-bold text-dark">John Doe</p>
             <p className="text-[10px] font-bold text-accent uppercase tracking-wider">Premium Plan</p>
           </div>
           <ChevronDown size={16} className="text-accent group-hover:translate-y-0.5 transition-transform" />
