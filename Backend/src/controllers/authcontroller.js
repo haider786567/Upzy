@@ -42,17 +42,48 @@ const loginUser = async (req, res) => {
 
         // Check if password is correct
         const isMatch = await user.comparePassword(password);
+
         if (!isMatch) {
             return res.status(400).json({ message: "Invalid credentials", success: false, error: "Incorrect password" });
         }
+
         const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: "1h" });
         // Set token in HTTP-only cookie
         res.cookie("token", token, { httpOnly: true, secure: process.env.NODE_ENV === "production", sameSite: "strict" });
 
         // Return success response with user details (excluding password)
         return res.status(200).json({ message: "Login successful", success: true, user: { id: user._id, username: user.username, email: user.email } });
+
     } catch (error) {
         console.error('Error logging in user:', error.message);
         return res.status(500).json({ message: "Internal server error", success: false, error: error.message });
     }
 }
+
+const logoutUser = (req, res) => {
+    res.clearCookie("token", { httpOnly: true, secure: process.env.NODE_ENV === "production", sameSite: "strict" });
+    return res.status(200).json({ message: "Logout successful", success: true });
+}
+
+const forgetPassword = async (req, res) => {
+    const { email } = req.body;
+
+    try {
+        // Check if user exists
+        const user = await User.findOne({ email });
+        if (!user) {
+            return res.status(400).json({ message: "No user found with this email", success: false, error: "No user found with this email" });
+        }
+
+        // Generate reset token and send email (implementation not shown)
+        // ...
+
+        return res.status(200).json({ message: "Password reset link sent to email", success: true });
+
+    } catch (error) {
+        console.error('Error in forget password:', error.message);
+        return res.status(500).json({ message: "Internal server error", success: false, error: error.message });
+    }
+}
+
+export { registerUser, loginUser, logoutUser, forgetPassword };
