@@ -1,4 +1,4 @@
-const { body, validationResult } = require('express-validator');
+import { body, validationResult } from 'express-validator';
 
 // Define validation rules
 const registerValidator = [
@@ -39,4 +39,4 @@ const validate = (req, res, next) => {
     next();
 };
 
-module.exports = { registerValidator, loginValidator, forgetPasswordValidator, validate };
+export { registerValidator, loginValidator, forgetPasswordValidator, validate };
