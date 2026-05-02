@@ -1,8 +1,7 @@
 import config from "../config/config.js";
 import User from "../models/user.model.js";
 import jwt from "jsonwebtoken";
-import crypto from "crypto";
-import nodemailer from "nodemailer";
+import bcrypt from "bcrypt";
 import transporter from "../config/emailConfig.js";
 
 
@@ -50,7 +49,7 @@ const loginUser = async (req, res, next) => {
     } catch (error) {
         console.error('Error logging in user:', error.message);
         next(error); // Pass error to global error handler
-     }
+    }
 }
 
 const logoutUser = (req, res, next) => {
@@ -62,82 +61,166 @@ const logoutUser = (req, res, next) => {
     }
 }
 
-// FORGET PASSWORD — Send user a password reset link
+// STEP 1: FORGET PASSWORD — Send OTP to email
 const forgetPassword = async (req, res, next) => {
-    console.log("EMAIL:", config.EMAIL);
-    console.log("EMAIL_PASS:", config.EMAIL_PASS);
     const { email } = req.body;
-
     try {
         const user = await User.findOne({ email });
         if (!user) {
             return res.status(400).json({ message: "No user found with this email", success: false });
         }
 
-        // Generate random reset token
-        const resetToken = crypto.randomBytes(32).toString("hex");
+        // Cryptographically secure 6-digit OTP
+        const { randomInt } = await import("crypto");
+        const otp = randomInt(100000, 999999).toString();
 
-        // Save token and expiry time to user
-        user.resetPasswordToken = resetToken;
-        user.resetPasswordExpire = Date.now() + 3600000; // 1 hour
+        // Hash OTP before storing (raw OTP never in DB)
+        const hashedOtp = await bcrypt.hash(otp, 10);
+
+        user.resetOtp = hashedOtp;
+        user.resetOtpExpire = Date.now() + 15 * 60 * 1000; // 15 minutes
+        user.resetOtpAttempts = 0;
         await user.save();
 
-        // Generate reset link
-        const resetLink = `${config.FRONTEND_URL}/reset-password/${resetToken}`;
-
-        // Send email
+        // Send plain OTP to email
         await transporter.sendMail({
             from: config.EMAIL,
             to: user.email,
-            subject: "Password Reset Request - Upzy",
+            subject: "Password Reset OTP - Upzy",
             html: `
                 <h2>Hello ${user.username},</h2>
-                <p>You have requested a password reset.</p>
-                <p>Click the link below to reset your password:</p>
-                <a href="${resetLink}" style="background:#4F46E5;color:white;padding:10px 20px;border-radius:5px;text-decoration:none;">
-                    Reset Password
-                </a>
-                <p>This link will expire in <b>1 hour</b>.</p>
-                <p>If you didn't request this, please ignore this email.</p>
+                <p>Your password reset OTP is:</p>
+                <h1 style="letter-spacing:8px;color:#4F46E5">${otp}</h1>
+                <p>This OTP expires in <b>15 minutes</b>.</p>
+                <p>If you didn't request this, ignore this email.</p>
             `
         });
 
-        return res.status(200).json({ message: "Password reset link sent to email", success: true });
-
-    } catch (error) {
-        console.error('Error in forget password:', error.message);
-        next(error); // Pass error to global error handler  
-    }
-}
-
-// RESET PASSWORD — Save new password
-const resetPassword = async (req, res, next) => {
-    const { token } = req.params;
-    const { password } = req.body;
-
-    try {
-        // Find user by token and check if it's expired
-        const user = await User.findOne({
-            resetPasswordToken: token,
-            resetPasswordExpire: { $gt: Date.now() }
+        // Set email cookie so user doesn't need to re-enter email in step 2
+        res.cookie("resetEmail", email, {
+            httpOnly: true,
+            secure: config.NODE_ENV === "production",
+            sameSite: "strict",
+            maxAge: 15 * 60 * 1000
         });
 
-        if (!user) {
-            return res.status(400).json({ message: "Invalid or expired reset token", success: false });
+        return res.status(200).json({ message: "OTP sent to your email", success: true });
+    } catch (error) {
+        next(error);
+    }
+};
+
+// STEP 2: VERIFY OTP — User only enters OTP (email comes from cookie)
+const verifyOtp = async (req, res, next) => {
+    const { otp } = req.body;
+    try {
+        const email = req.cookies.resetEmail;
+        if (!email) {
+            return res.status(400).json({ message: "Please request OTP first.", success: false });
         }
 
-        // Set new password (pre-save hook will automatically hash it)
-        user.password = password;
-        user.resetPasswordToken = undefined;
-        user.resetPasswordExpire = undefined;
+        const user = await User.findOne({ email });
+        if (!user || !user.resetOtp || !user.resetOtpExpire) {
+            return res.status(400).json({ message: "Invalid request", success: false });
+        }
+
+        // Check OTP expiry & clear stale data
+        if (user.resetOtpExpire < Date.now()) {
+            user.resetOtp = undefined;
+            user.resetOtpExpire = undefined;
+            user.resetOtpAttempts = 0;
+            await user.save();
+            return res.status(401).json({ message: "OTP has expired. Please request a new one.", success: false });
+        }
+
+        // Brute-force protection — max 5 attempts
+        if (user.resetOtpAttempts >= 5) {
+            user.resetOtp = undefined;
+            user.resetOtpExpire = undefined;
+            user.resetOtpAttempts = 0;
+            await user.save();
+            return res.status(429).json({ message: "Too many failed attempts. Please request a new OTP.", success: false });
+        }
+
+        // Compare OTP with stored hash
+        const isOtpValid = await bcrypt.compare(otp, user.resetOtp);
+        if (!isOtpValid) {
+            user.resetOtpAttempts += 1;
+            await user.save();
+            return res.status(401).json({
+                message: `Invalid OTP. ${5 - user.resetOtpAttempts} attempts remaining.`,
+                success: false
+            });
+        }
+
+        // OTP valid — clear OTP fields & email cookie, set reset cookie
+        user.resetOtp = undefined;
+        user.resetOtpExpire = undefined;
+        user.resetOtpAttempts = 0;
         await user.save();
 
-        return res.status(200).json({ message: "Password reset successfully", success: true });
+        res.clearCookie("resetEmail", { httpOnly: true, secure: config.NODE_ENV === "production", sameSite: "strict" });
 
+        const resetToken = jwt.sign({ id: user._id, purpose: "reset" }, config.JWT_SECRET, { expiresIn: "10m" });
+        res.cookie("resetToken", resetToken, {
+            httpOnly: true,
+            secure: config.NODE_ENV === "production",
+            sameSite: "strict",
+            maxAge: 10 * 60 * 1000
+        });
+
+        return res.status(200).json({ message: "OTP verified successfully", success: true });
     } catch (error) {
-        console.error('Error in reset password:', error.message);
-        next(error); // Pass error to global error handler
+        next(error);
     }
-}
+};
 
-export { registerUser, loginUser, logoutUser, forgetPassword, resetPassword };
+// STEP 3: RESET PASSWORD — Only new password needed (cookie handles identity)
+const resetPassword = async (req, res, next) => {
+    const { password } = req.body;
+    try {
+        const resetToken = req.cookies.resetToken;
+        if (!resetToken) {
+            return res.status(401).json({ message: "Unauthorized. Please verify OTP first.", success: false });
+        }
+
+        let decoded;
+        try {
+            decoded = jwt.verify(resetToken, config.JWT_SECRET);
+        } catch (err) {
+            return res.status(401).json({ message: "Reset session expired. Please start over.", success: false });
+        }
+
+        if (decoded.purpose !== "reset") {
+            return res.status(401).json({ message: "Invalid reset session.", success: false });
+        }
+
+        const user = await User.findById(decoded.id);
+        if (!user) {
+            return res.status(400).json({ message: "User not found", success: false });
+        }
+
+        user.password = password;
+        await user.save();
+
+        res.clearCookie("resetToken", { httpOnly: true, secure: config.NODE_ENV === "production", sameSite: "strict" });
+
+        // Send confirmation email
+        await transporter.sendMail({
+            from: config.EMAIL,
+            to: user.email,
+            subject: "Password Changed Successfully - Upzy",
+            html: `
+                <h2>Hello ${user.username},</h2>
+                <p>Your password has been changed successfully.</p>
+                <p>If you did not make this change, please contact support immediately.</p>
+            `
+        });
+
+        return res.status(200).json({ message: "Password reset successfully", success: true });
+    } catch (error) {
+        next(error);
+    }
+};
+
+export { registerUser, loginUser, logoutUser, forgetPassword, verifyOtp, resetPassword };
