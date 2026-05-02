@@ -13,7 +13,7 @@ const RealTimeStatus = () => {
   ];
 
   const getStatusStyle = (status) => {
-    return 'bg-[#FBE4D8] text-[#2B124C] border-white/20';
+    return 'bg-cream text-primary border-white/20';
   };
 
   const getStatusDot = (status) => {
@@ -21,20 +21,20 @@ const RealTimeStatus = () => {
       case 'Operational': return 'bg-green-500';
       case 'Down': return 'bg-red-500';
       case 'Degraded': return 'bg-yellow-500';
-      default: return 'bg-[#2B124C]/50';
+      default: return 'bg-primary/50';
     }
   };
 
   return (
-    <div className="bg-linear-to-br from-[#1A0B2E] to-[#080312] rounded-[2.5rem] shadow-2xl overflow-hidden animate-item border border-white/5 relative">
+    <div className="bg-linear-to-br from-dark to-deep rounded-[2.5rem] shadow-2xl overflow-hidden animate-item border border-white/5 relative">
       <div className="absolute inset-0 opacity-5 pointer-events-none" style={{ backgroundImage: `radial-gradient(#DFB6B2 1px, transparent 1px)`, backgroundSize: '32px 32px' }}></div>
       
       <div className="p-8 border-b border-white/5 flex justify-between items-center relative z-10">
         <div>
-          <h2 className="text-xl font-bold text-[#FBE4D8]">Real-time status</h2>
-          <p className="text-[#DFB6B2] text-sm font-medium mt-1 opacity-80">Live across {monitors.length} monitors</p>
+          <h2 className="text-xl font-bold text-cream">Real-time status</h2>
+          <p className="text-rose text-sm font-medium mt-1 opacity-80">Live across {monitors.length} monitors</p>
         </div>
-        <button className="flex items-center gap-1 text-sm font-bold text-[#FBE4D8] hover:text-white transition-colors">
+        <button className="flex items-center gap-1 text-sm font-bold text-cream hover:text-white transition-colors">
           View all <ChevronRight size={16} />
         </button>
       </div>
@@ -43,20 +43,20 @@ const RealTimeStatus = () => {
         <table className="w-full text-left border-collapse">
           <thead>
             <tr className="bg-white/5">
-              <th className="px-8 py-5 text-[10px] font-bold text-[#DFB6B2] uppercase tracking-[0.2em]">Website</th>
-              <th className="px-8 py-5 text-[10px] font-bold text-[#DFB6B2] uppercase tracking-[0.2em]">Status</th>
-              <th className="px-8 py-5 text-[10px] font-bold text-[#DFB6B2] uppercase tracking-[0.2em]">Response</th>
-              <th className="px-8 py-5 text-[10px] font-bold text-[#DFB6B2] uppercase tracking-[0.2em]">Uptime</th>
-              <th className="px-8 py-5 text-[10px] font-bold text-[#DFB6B2] uppercase tracking-[0.2em]">Last Check</th>
+              <th className="px-8 py-5 text-[10px] font-bold text-rose uppercase tracking-[0.2em]">Website</th>
+              <th className="px-8 py-5 text-[10px] font-bold text-rose uppercase tracking-[0.2em]">Status</th>
+              <th className="px-8 py-5 text-[10px] font-bold text-rose uppercase tracking-[0.2em]">Response</th>
+              <th className="px-8 py-5 text-[10px] font-bold text-rose uppercase tracking-[0.2em]">Uptime</th>
+              <th className="px-8 py-5 text-[10px] font-bold text-rose uppercase tracking-[0.2em]">Last Check</th>
               <th className="px-8 py-5"></th>
             </tr>
           </thead>
           <tbody className="divide-y divide-white/5">
             {monitors.map((monitor, i) => (
-              <tr key={i} className="hover:bg-white/ transition-colors group cursor-default">
+              <tr key={i} className="hover:bg-white/3 transition-colors group cursor-default">
                 <td className="px-8 py-6">
-                  <p className="text-sm font-bold text-[#FBE4D8]">{monitor.name}</p>
-                  <p className="text-[10px] font-medium text-[#DFB6B2] mt-0.5 opacity-60 group-hover:opacity-100 transition-opacity">{monitor.url}</p>
+                  <p className="text-sm font-bold text-cream">{monitor.name}</p>
+                  <p className="text-[10px] font-medium text-rose mt-0.5 opacity-60 group-hover:opacity-100 transition-opacity">{monitor.url}</p>
                 </td>
                 <td className="px-8 py-6">
                   <div className={`inline-flex items-center gap-2 px-3 py-1 rounded-full border ${getStatusStyle(monitor.status)} shadow-lg shadow-black/20`}>
@@ -64,11 +64,11 @@ const RealTimeStatus = () => {
                     <span className="text-[10px] font-bold uppercase tracking-wider">{monitor.status}</span>
                   </div>
                 </td>
-                <td className="px-8 py-6 text-sm font-bold text-[#FBE4D8] tabular-nums">{monitor.response}</td>
-                <td className="px-8 py-6 text-sm font-bold text-[#FBE4D8] tabular-nums">{monitor.uptime}</td>
-                <td className="px-8 py-6 text-[10px] font-bold text-[#DFB6B2] uppercase tracking-widest">{monitor.lastCheck}</td>
+                <td className="px-8 py-6 text-sm font-bold text-cream tabular-nums">{monitor.response}</td>
+                <td className="px-8 py-6 text-sm font-bold text-cream tabular-nums">{monitor.uptime}</td>
+                <td className="px-8 py-6 text-[10px] font-bold text-rose uppercase tracking-widest">{monitor.lastCheck}</td>
                 <td className="px-8 py-6 text-right">
-                  <button className="p-2 text-[#DFB6B2] hover:text-white hover:bg-white/10 rounded-xl transition-all">
+                  <button className="p-2 text-rose hover:text-white hover:bg-white/10 rounded-xl transition-all">
                     <MoreHorizontal size={18} />
                   </button>
                 </td>

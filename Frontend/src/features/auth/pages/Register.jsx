@@ -53,7 +53,7 @@ const Register = () => {
         className="w-full h-full grid grid-cols-1 md:grid-cols-2 overflow-hidden"
       >
         {/* Left Side: Visual Focus - Graphical Part */}
-        <div className="hidden md:flex flex-col items-center justify-center relative bg-linear-to-b from-[#522B5B] to-[#2B124C] m-2 rounded-3xl overflow-hidden shadow-2xl shadow-[#2B124C]/20">
+        <div className="hidden md:flex flex-col items-center justify-center relative bg-linear-to-b from-[#1A0B2E] to-[#080312] m-2 rounded-3xl overflow-hidden shadow-2xl shadow-black/40">
           <div className="absolute inset-0 opacity-10 pointer-events-none" style={{ backgroundImage: `radial-gradient(#DFB6B2 1px, transparent 1px)`, backgroundSize: '32px 32px' }}></div>
           
           <div className="relative z-10 w-full h-full flex flex-col items-center justify-between p-10 py-16">
