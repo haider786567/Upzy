@@ -6,6 +6,7 @@ import MonitorsPage from '../features/monitors/pages/MonitorsPage';
 import CreateMonitorPage from '../features/monitors/pages/CreateMonitorPage';
 import LandingPage from '../features/landing/pages/LandingPage';
 import IncidentPage from '../features/incident/pages/IncidentPage';
+import AnalyticsPage from '../features/analytics/pages/AnalyticsPage';
 
 const routes = createBrowserRouter([
     { path: '/', element: <LandingPage /> },
@@ -15,6 +16,7 @@ const routes = createBrowserRouter([
     { path: '/dashboard/monitors', element: <MonitorsPage /> },
     { path: '/dashboard/monitors/new', element: <CreateMonitorPage /> },
     { path: '/dashboard/incidents', element: <IncidentPage /> },
+    { path: '/dashboard/analytics', element: <AnalyticsPage /> },
 ]);
 
 export default routes;
