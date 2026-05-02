@@ -49,10 +49,10 @@ const Register = () => {
       {/* Main Container */}
       <div 
         ref={containerRef}
-        className="w-full max-w-5xl h-[750px] grid grid-cols-1 md:grid-cols-2 bg-white/[0.03] backdrop-blur-2xl border border-white/10 rounded-[2.5rem] overflow-hidden shadow-[0_32px_64px_-16px_rgba(0,0,0,0.6)]"
+        className="w-full max-w-5xl h-[750px] grid grid-cols-1 md:grid-cols-2 bg-white/3 backdrop-blur-2xl border border-white/10 rounded-[2.5rem] overflow-hidden shadow-[0_32px_64px_-16px_rgba(0,0,0,0.6)]"
       >
         {/* Left Side: Visual Focus */}
-        <div className="hidden md:flex flex-col items-center justify-center relative bg-gradient-to-br from-blue-900/30 to-purple-900/20 border-r border-white/5 p-12 overflow-hidden order-last md:order-first">
+        <div className="hidden md:flex flex-col items-center justify-center relative bg-linear-to-br from-blue-900/30 to-purple-900/20 border-r border-white/5 p-12 overflow-hidden order-last md:order-first">
           <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 pointer-events-none"></div>
           
           {/* Animated Liquid Blob */}
@@ -80,7 +80,7 @@ const Register = () => {
             </div>
             
             {/* Core Glow */}
-            <div className="absolute w-32 h-32 bg-white/20 rounded-full blur-[40px] animate-pulse"></div>
+            <div className="absolute w-32 h-32 bg-white/20 rounded-full blur-2xl animate-pulse"></div>
           </div>
 
           <div className="relative z-10 text-center mt-12 space-y-4">
@@ -112,7 +112,7 @@ const Register = () => {
                 <input 
                   type="text" 
                   placeholder="John Doe"
-                  className="w-full bg-white/[0.03] border border-white/10 text-white rounded-2xl py-4 pl-12 pr-4 outline-none focus:border-blue-500/50 focus:ring-4 focus:ring-blue-500/10 transition-all placeholder:text-slate-600"
+                  className="w-full bg-white/3 border border-white/10 text-white rounded-2xl py-4 pl-12 pr-4 outline-none focus:border-blue-500/50 focus:ring-4 focus:ring-blue-500/10 transition-all placeholder:text-slate-600"
                 />
               </div>
             </div>
@@ -126,7 +126,7 @@ const Register = () => {
                 <input 
                   type="email" 
                   placeholder="name@example.com"
-                  className="w-full bg-white/[0.03] border border-white/10 text-white rounded-2xl py-4 pl-12 pr-4 outline-none focus:border-blue-500/50 focus:ring-4 focus:ring-blue-500/10 transition-all placeholder:text-slate-600"
+                  className="w-full bg-white/3 border border-white/10 text-white rounded-2xl py-4 pl-12 pr-4 outline-none focus:border-blue-500/50 focus:ring-4 focus:ring-blue-500/10 transition-all placeholder:text-slate-600"
                 />
               </div>
             </div>
@@ -141,7 +141,7 @@ const Register = () => {
                   <input 
                     type="password" 
                     placeholder="••••••••"
-                    className="w-full bg-white/[0.03] border border-white/10 text-white rounded-2xl py-4 pl-12 pr-4 outline-none focus:border-blue-500/50 focus:ring-4 focus:ring-blue-500/10 transition-all placeholder:text-slate-600"
+                    className="w-full bg-white/3 border border-white/10 text-white rounded-2xl py-4 pl-12 pr-4 outline-none focus:border-blue-500/50 focus:ring-4 focus:ring-blue-500/10 transition-all placeholder:text-slate-600"
                   />
                 </div>
               </div>
@@ -154,7 +154,7 @@ const Register = () => {
                   <input 
                     type="password" 
                     placeholder="••••••••"
-                    className="w-full bg-white/[0.03] border border-white/10 text-white rounded-2xl py-4 pl-12 pr-4 outline-none focus:border-blue-500/50 focus:ring-4 focus:ring-blue-500/10 transition-all placeholder:text-slate-600"
+                    className="w-full bg-white/3 border border-white/10 text-white rounded-2xl py-4 pl-12 pr-4 outline-none focus:border-blue-500/50 focus:ring-4 focus:ring-blue-500/10 transition-all placeholder:text-slate-600"
                   />
                 </div>
               </div>
@@ -162,7 +162,7 @@ const Register = () => {
 
             <button 
               type="submit"
-              className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 text-white font-bold py-4 rounded-2xl shadow-xl shadow-blue-500/20 transition-all active:scale-[0.98] flex items-center justify-center gap-2 group mt-6"
+              className="w-full bg-linear-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 text-white font-bold py-4 rounded-2xl shadow-xl shadow-blue-500/20 transition-all active:scale-[0.98] flex items-center justify-center gap-2 group mt-6"
             >
               Create Account
               <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
