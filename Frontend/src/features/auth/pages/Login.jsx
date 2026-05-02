@@ -1,7 +1,8 @@
 import React, { useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import gsap from 'gsap';
-import { Mail, Lock, ArrowRight, Eye } from 'lucide-react';
+import { Mail, Lock, ArrowRight, Eye, ChevronRight } from 'lucide-react';
+import authChar from '../../../assets/auth-char-2.png';
 
 const Login = () => {
   const containerRef = useRef(null);
@@ -42,130 +43,130 @@ const Login = () => {
   }, []);
 
   return (
-    <div className="min-h-screen w-full bg-[#0B0F1A] flex items-center justify-center p-4 relative overflow-hidden font-['Inter',sans-serif]">
-      {/* Background Glows */}
-      <div className="absolute top-[-10%] left-[-10%] w-[500px] h-[500px] bg-purple-600/20 rounded-full blur-[120px] pointer-events-none" />
-      <div className="absolute bottom-[-10%] right-[-10%] w-[600px] h-[600px] bg-blue-600/20 rounded-full blur-[150px] pointer-events-none" />
+    <div className="h-screen w-full bg-[#FBE4D8] flex items-center justify-center relative overflow-hidden font-['Inter',sans-serif]">
+      {/* Abstract Background Elements */}
+      <div className="absolute top-[-10%] left-[-10%] w-[500px] h-[500px] bg-[#DFB6B2]/30 rounded-full blur-[100px] pointer-events-none" />
+      <div className="absolute bottom-[-10%] right-[-10%] w-[600px] h-[600px] bg-[#854F6C]/10 rounded-full blur-[120px] pointer-events-none" />
 
-      {/* Main Container */}
+      {/* Main Container: Full Width */}
       <div 
         ref={containerRef}
-        className="w-full max-w-5xl h-[700px] grid grid-cols-1 md:grid-cols-2 bg-white/3 backdrop-blur-2xl border border-white/10 rounded-[2.5rem] overflow-hidden shadow-[0_32px_64px_-16px_rgba(0,0,0,0.6)]"
+        className="w-full h-full grid grid-cols-1 md:grid-cols-2 overflow-hidden"
       >
-        {/* Left Side: Visual Focus */}
-        <div className="hidden md:flex flex-col items-center justify-center relative bg-linear-to-br from-purple-900/30 to-blue-900/20 border-r border-white/5 p-12 overflow-hidden">
-          <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 pointer-events-none"></div>
+        {/* Left Side: Visual Focus - Graphical Part */}
+        <div className="hidden md:flex flex-col items-center justify-center relative bg-linear-to-b from-[#522B5B] to-[#2B124C] m-2 rounded-3xl overflow-hidden shadow-2xl shadow-[#2B124C]/20">
+          <div className="absolute inset-0 opacity-10 pointer-events-none" style={{ backgroundImage: `radial-gradient(#DFB6B2 1px, transparent 1px)`, backgroundSize: '32px 32px' }}></div>
           
-          {/* Animated Liquid Blob */}
-          <div className="relative z-10 w-full max-w-md aspect-square flex items-center justify-center">
-            {/* SVG Filter for gooey effect */}
-            <svg className="absolute w-0 h-0">
-              <filter id="goo">
-                <feGaussianBlur in="SourceGraphic" stdDeviation="12" result="blur" />
-                <feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 20 -10" result="goo" />
-                <feComposite in="SourceGraphic" in2="goo" operator="atop" />
-              </filter>
-            </svg>
-
-            <div className="relative w-72 h-72 filter blur-[2px]" style={{ filter: 'url(#goo)' }}>
-              {/* Individual moving blobs */}
-              <div className="absolute top-1/4 left-1/4 w-32 h-32 bg-purple-500 rounded-full animate-blob opacity-80" style={{ animationDelay: '0s' }}></div>
-              <div className="absolute top-1/3 right-1/4 w-40 h-40 bg-blue-500 rounded-full animate-blob opacity-80" style={{ animationDelay: '-2s' }}></div>
-              <div className="absolute bottom-1/4 left-1/3 w-36 h-36 bg-pink-500 rounded-full animate-blob opacity-80" style={{ animationDelay: '-4s' }}></div>
-              <div className="absolute top-1/2 left-1/2 w-44 h-44 bg-indigo-600 rounded-full animate-blob opacity-80" style={{ animationDelay: '-6s' }}></div>
+          <div className="relative z-10 w-full h-full flex flex-col items-center justify-between p-10 py-16">
+            <div className="flex-1 flex items-center justify-center w-full max-w-[420px]">
+              <div ref={blobRef} className="relative w-full drop-shadow-[0_20px_50px_rgba(0,0,0,0.4)]">
+                <img 
+                  src={authChar} 
+                  alt="Auth Character" 
+                  className="w-full h-auto object-contain scale-110"
+                />
+              </div>
             </div>
 
-            {/* Glass Overlay for Depth */}
-            <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-              <div className="w-64 h-64 rounded-full border border-white/20 bg-white/5 backdrop-blur-md shadow-[inset_0_0_40px_rgba(255,255,255,0.1)]"></div>
+            <div className="text-center space-y-3 animate-item">
+              <h2 className="text-4xl lg:text-5xl font-bold text-[#FBE4D8] tracking-tight">Upzy Intelligence</h2>
+              <p className="text-[#DFB6B2] max-w-[380px] mx-auto text-sm lg:text-base leading-relaxed font-medium">
+                Unlock the power of seamless monitoring and data-driven insights.
+              </p>
             </div>
-            
-            {/* Core Glow */}
-            <div className="absolute w-32 h-32 bg-white/20 rounded-full blur-2xl animate-pulse"></div>
-          </div>
-
-          <div className="relative z-10 text-center mt-12 space-y-4">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-white/10 mb-2">
-              <div className="w-1.5 h-1.5 rounded-full bg-purple-500 animate-ping"></div>
-              <span className="text-[10px] font-bold text-slate-300 uppercase tracking-[0.2em]">System Online</span>
-            </div>
-            <h2 className="text-3xl font-bold text-white tracking-tight">System Intelligence</h2>
-            <p className="text-slate-400 max-w-[280px] mx-auto text-sm leading-relaxed">
-              Experience the next generation of real-time website and API monitoring.
-            </p>
           </div>
         </div>
 
-        {/* Right Side: Auth Form */}
-        <div className="flex flex-col justify-center p-8 md:p-16 space-y-8">
-          <div className="space-y-2 animate-item">
-            <h1 className="text-4xl font-bold text-white tracking-tight">Welcome Back</h1>
-            <p className="text-slate-400">Sign in to access your monitoring dashboard</p>
+        {/* Right Side: Auth Form - No Background */}
+        <div className="flex flex-col justify-center p-6 md:p-12 lg:p-20 space-y-8 overflow-y-auto hide-scrollbar">
+          <div className="space-y-2 animate-item max-w-md w-full mx-auto">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#522B5B]/5 border border-[#522B5B]/10 mb-1">
+              <span className="text-[10px] font-bold text-[#522B5B] uppercase tracking-[0.2em]">Welcome Back</span>
+            </div>
+            <h1 className="text-4xl lg:text-5xl font-bold text-[#190019] tracking-tight">Login</h1>
+            <p className="text-[#854F6C]/80 font-medium text-base">Please enter your details to continue</p>
           </div>
 
-          <form className="space-y-5" onSubmit={(e) => e.preventDefault()}>
-            <div className="space-y-2 animate-item">
-              <label className="text-xs font-medium text-slate-400 uppercase tracking-widest ml-1">Email Address</label>
-              <div className="relative group">
-                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-500 group-focus-within:text-purple-400 transition-colors">
-                  <Mail size={18} />
-                </div>
-                <input 
-                  type="email" 
-                  placeholder="name@example.com"
-                  className="w-full bg-white/3 border border-white/10 text-white rounded-2xl py-4 pl-12 pr-4 outline-none focus:border-purple-500/50 focus:ring-4 focus:ring-purple-500/10 transition-all placeholder:text-slate-600"
-                />
+          <form className="space-y-7 max-w-md w-full mx-auto mt-6" onSubmit={(e) => e.preventDefault()}>
+            <div className="animate-item relative">
+              <div className="absolute inset-y-0 left-0 pl-5 flex items-center pointer-events-none text-[#854F6C] z-20">
+                <Mail size={18} />
               </div>
+              <input 
+                id="email"
+                type="email" 
+                placeholder=" "
+                className="peer w-full bg-white/40 border border-[#DFB6B2] text-[#190019] rounded-full py-3.5 pl-14 pr-4 outline-none focus:border-[#522B5B] focus:ring-4 focus:ring-[#522B5B]/5 transition-all font-medium shadow-sm"
+              />
+              <label 
+                htmlFor="email"
+                className="absolute left-14 top-1/2 -translate-y-1/2 px-2 bg-transparent text-[#854F6C] font-medium pointer-events-none transition-all duration-200 z-10
+                           peer-focus:-top-2.5 peer-focus:left-6 peer-focus:text-[10px] peer-focus:font-bold peer-focus:text-[#522B5B] peer-focus:bg-[#FBE4D8] peer-focus:uppercase peer-focus:tracking-widest
+                           peer-[:not(:placeholder-shown)]:-top-2.5 peer-[:not(:placeholder-shown)]:left-6 peer-[:not(:placeholder-shown)]:text-[10px] peer-[:not(:placeholder-shown)]:font-bold peer-[:not(:placeholder-shown)]:text-[#522B5B] peer-[:not(:placeholder-shown)]:bg-[#FBE4D8] peer-[:not(:placeholder-shown)]:uppercase peer-[:not(:placeholder-shown)]:tracking-widest"
+              >
+                Email Address
+              </label>
             </div>
 
-            <div className="space-y-2 animate-item">
-              <div className="flex justify-between items-center ml-1">
-                <label className="text-xs font-medium text-slate-400 uppercase tracking-widest">Password</label>
-                <Link to="#" className="text-xs font-medium text-purple-400 hover:text-purple-300 transition-colors">Forgot password?</Link>
+            <div className="animate-item relative">
+              <div className="absolute inset-y-0 left-0 pl-5 flex items-center pointer-events-none text-[#854F6C] z-20">
+                <Lock size={18} />
               </div>
-              <div className="relative group">
-                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-500 group-focus-within:text-purple-400 transition-colors">
-                  <Lock size={18} />
-                </div>
-                <input 
-                  type="password" 
-                  placeholder="••••••••"
-                  className="w-full bg-white/3 border border-white/10 text-white rounded-2xl py-4 pl-12 pr-4 outline-none focus:border-purple-500/50 focus:ring-4 focus:ring-purple-500/10 transition-all placeholder:text-slate-600"
-                />
-                <button type="button" className="absolute inset-y-0 right-0 pr-4 flex items-center text-slate-500 hover:text-slate-300 transition-colors">
-                  <Eye size={18} />
-                </button>
-              </div>
+              <input 
+                id="password"
+                type="password" 
+                placeholder=" "
+                className="peer w-full bg-white/40 border border-[#DFB6B2] text-[#190019] rounded-full py-3.5 pl-14 pr-12 outline-none focus:border-[#522B5B] focus:ring-4 focus:ring-[#522B5B]/5 transition-all font-medium shadow-sm"
+              />
+              <label 
+                htmlFor="password"
+                className="absolute left-14 top-1/2 -translate-y-1/2 px-2 bg-transparent text-[#854F6C] font-medium pointer-events-none transition-all duration-200 z-10
+                           peer-focus:-top-2.5 peer-focus:left-6 peer-focus:text-[10px] peer-focus:font-bold peer-focus:text-[#522B5B] peer-focus:bg-[#FBE4D8] peer-focus:uppercase peer-focus:tracking-widest
+                           peer-[:not(:placeholder-shown)]:-top-2.5 peer-[:not(:placeholder-shown)]:left-6 peer-[:not(:placeholder-shown)]:text-[10px] peer-[:not(:placeholder-shown)]:font-bold peer-[:not(:placeholder-shown)]:text-[#522B5B] peer-[:not(:placeholder-shown)]:bg-[#FBE4D8] peer-[:not(:placeholder-shown)]:uppercase peer-[:not(:placeholder-shown)]:tracking-widest"
+              >
+                Password
+              </label>
+              <button type="button" className="absolute inset-y-0 right-0 pr-5 flex items-center text-[#854F6C] hover:text-[#2B124C] transition-colors z-20">
+                <Eye size={18} />
+              </button>
+            </div>
+
+            <div className="flex justify-end animate-item -mt-2">
+              <Link to="#" className="text-xs font-bold text-[#854F6C] hover:text-[#2B124C] transition-all hover:underline underline-offset-4 decoration-2">
+                Forgot Password?
+              </Link>
             </div>
 
             <button 
               type="submit"
-              className="w-full bg-linear-to-r from-purple-600 to-blue-600 hover:from-purple-500 hover:to-blue-500 text-white font-bold py-4 rounded-2xl shadow-xl shadow-purple-500/20 transition-all active:scale-[0.98] flex items-center justify-center gap-2 group mt-6"
+              className="w-full bg-[#2B124C] hover:bg-[#190019] text-[#FBE4D8] font-bold py-4 rounded-full shadow-lg shadow-[#2B124C]/20 transition-all active:scale-[0.98] flex items-center justify-center gap-2 group overflow-hidden relative"
             >
-              Login to Dashboard
-              <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
+              <span className="relative z-10 flex items-center gap-2">
+                Sign In to Dashboard
+                <ChevronRight size={18} className="group-hover:translate-x-1 transition-transform" />
+              </span>
             </button>
           </form>
 
-          <div className="space-y-6 animate-item pt-2">
+          <div className="space-y-6 animate-item max-w-md w-full mx-auto">
             <div className="relative">
-              <div className="absolute inset-0 flex items-center"><div className="w-full border-t border-white/5"></div></div>
-              <div className="relative flex justify-center text-xs uppercase tracking-widest"><span className="bg-[#0B0F1A] px-4 text-slate-500">Or continue with</span></div>
+              <div className="absolute inset-0 flex items-center"><div className="w-full border-t border-[#DFB6B2]"></div></div>
+              <div className="relative flex justify-center text-[10px] font-bold uppercase tracking-widest"><span className="bg-[#FBE4D8] px-4 text-[#854F6C]">Secure Gateway</span></div>
             </div>
 
-            <button className="w-full flex items-center justify-center gap-3 bg-[#131314] hover:bg-[#1b1b1c] border border-[#444746] text-white py-3.5 rounded-xl transition-all shadow-sm group">
-              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 48 48" className="group-hover:scale-105 transition-transform">
+            <button className="w-full flex items-center justify-center gap-3 bg-white hover:bg-[#FBE4D8]/50 border border-[#DFB6B2] text-[#190019] py-3.5 rounded-full transition-all shadow-sm group font-bold text-sm">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 48 48" className="group-hover:scale-110 transition-transform">
                 <path fill="#FFC107" d="M43.611 20.083H42V20H24v8h11.303c-1.649 4.657-6.08 8-11.303 8c-6.627 0-12-5.373-12-12s5.373-12 12-12c3.059 0 5.842 1.154 7.961 3.039l5.657-5.657C34.046 6.053 29.268 4 24 4C12.955 4 4 12.955 4 24s8.955 20 20 20s20-8.955 20-20c0-1.341-.138-2.65-.389-3.917z"/>
                 <path fill="#FF3D00" d="m6.306 14.691l6.571 4.819C14.655 15.108 18.961 12 24 12c3.059 0 5.842 1.154 7.961 3.039l5.657-5.657C34.046 6.053 29.268 4 24 4C16.318 4 9.656 8.337 6.306 14.691z"/>
                 <path fill="#4CAF50" d="M24 44c5.166 0 9.86-1.977 13.409-5.192l-6.19-5.238A11.91 11.91 0 0 1 24 36c-5.202 0-9.619-3.317-11.283-7.946l-6.522 5.025C9.505 39.556 16.227 44 24 44z"/>
                 <path fill="#1976D2" d="M43.611 20.083H42V20H24v8h11.303a12.04 12.04 0 0 1-4.087 5.571l.003-.002l6.19 5.238C36.971 35.741 44 30.988 44 24c0-1.341-.138-2.65-.389-3.917z"/>
               </svg>
-              <span className="text-sm font-medium font-['Roboto',sans-serif]">Continue with Google</span>
+              <span>Continue with Google</span>
             </button>
 
-            <p className="text-center text-slate-400 text-sm">
-              Don't have an account?{' '}
-              <Link to="/register" className="text-white font-bold hover:text-purple-400 transition-colors">Sign up for free</Link>
+            <p className="text-center text-[#854F6C] text-sm font-medium">
+              New to Upzy?{' '}
+              <Link to="/register" className="text-[#2B124C] font-bold hover:underline transition-all">Create account</Link>
             </p>
           </div>
         </div>
