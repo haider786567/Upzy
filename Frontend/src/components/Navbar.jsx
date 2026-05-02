@@ -11,7 +11,7 @@ const Navbar = () => {
           </div>
           <input 
             type="text" 
-            placeholder="Search analytics, logs, incidents..." 
+            placeholder="Search analytics, monitors, incidents..." 
             className="w-full bg-white/50 border border-rose text-dark rounded-full py-2.5 pl-12 pr-4 outline-none focus:border-secondary focus:ring-4 focus:ring-secondary/5 transition-all text-sm font-medium"
           />
         </div>

@@ -81,14 +81,14 @@ const DashboardPage = () => {
                     </div>
                   </div>
                   <h3 className="text-accent text-xs font-bold mb-1 uppercase tracking-widest">{stat.label}</h3>
-                  <p className="text-3xl font-bold text-[#190019] tabular-nums tracking-tight">{stat.value}</p>
+                  <p className="text-3xl font-bold text-dark tabular-nums tracking-tight">{stat.value}</p>
                 </div>
               ))}
             </div>
 
             {/* Main Content Sections */}
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-              <div className="lg:col-span-2 chart-section bg-linear-to-br from-dark to-deep p-8 rounded-[2.5rem] shadow-2xl text-cream min-h-[400px] relative overflow-hidden group/chart opacity-0 border border-white/5">
+              <div className="lg:col-span-2 chart-section bg-linear-to-br from-dark to-deep p-8 rounded-4xl shadow-2xl text-cream min-h-[400px] relative overflow-hidden group/chart opacity-0 border border-white/5">
                 <div className="absolute inset-0 opacity-10 pointer-events-none" style={{ backgroundImage: `radial-gradient(#DFB6B2 1px, transparent 1px)`, backgroundSize: '24px 24px' }}></div>
                 <div className="relative z-10 flex flex-col h-full">
                   <div className="flex justify-between items-center mb-10">
@@ -115,7 +115,7 @@ const DashboardPage = () => {
                       return (
                         <div key={i} className="flex-1 group/bar relative h-full flex flex-col justify-end">
                           {/* Tooltip */}
-                          <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-6 w-36 p-4 bg-[#190019] rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.5)] opacity-0 group-hover/bar:opacity-100 translate-y-2 group-hover/bar:translate-y-0 transition-all duration-300 pointer-events-none z-50 border border-white/10 backdrop-blur-md">
+                          <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-6 w-36 p-4 bg-dark rounded-2xl shadow-2xl opacity-0 group-hover/bar:opacity-100 translate-y-2 group-hover/bar:translate-y-0 transition-all duration-300 pointer-events-none z-50 border border-white/10 backdrop-blur-md">
                             <p className="text-xs font-bold text-rose mb-3 border-b border-white/10 pb-2">{time}</p>
                             <div className="space-y-2">
                               <div className="flex justify-between items-center">
@@ -128,7 +128,7 @@ const DashboardPage = () => {
                               </div>
                             </div>
                             {/* Tooltip Arrow */}
-                            <div className="absolute top-full left-1/2 -translate-x-1/2 border-8 border-transparent border-t-[#190019]"></div>
+                            <div className="absolute top-full left-1/2 -translate-x-1/2 border-8 border-transparent border-t-dark"></div>
                           </div>
 
                           {/* Bar */}
@@ -143,7 +143,7 @@ const DashboardPage = () => {
                 </div>
               </div>
 
-              <div className="chart-section bg-linear-to-br from-dark to-deep border border-white/5 p-8 rounded-[2.5rem] shadow-xl space-y-6 opacity-0 relative overflow-hidden">
+              <div className="chart-section bg-linear-to-br from-dark to-deep border border-white/5 p-8 rounded-4xl shadow-xl space-y-6 opacity-0 relative overflow-hidden">
                 <div className="absolute inset-0 opacity-5 pointer-events-none" style={{ backgroundImage: `radial-gradient(#DFB6B2 1px, transparent 1px)`, backgroundSize: '24px 24px' }}></div>
                 <h2 className="text-xl font-bold text-cream relative z-10">Recent Alerts</h2>
                 <div className="space-y-4 relative z-10">

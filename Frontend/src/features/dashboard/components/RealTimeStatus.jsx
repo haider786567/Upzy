@@ -26,7 +26,7 @@ const RealTimeStatus = () => {
   };
 
   return (
-    <div className="bg-linear-to-br from-dark to-deep rounded-[2.5rem] shadow-2xl overflow-hidden animate-item border border-white/5 relative">
+    <div className="bg-linear-to-br from-dark to-deep rounded-4xl shadow-2xl overflow-hidden animate-item border border-white/5 relative">
       <div className="absolute inset-0 opacity-5 pointer-events-none" style={{ backgroundImage: `radial-gradient(#DFB6B2 1px, transparent 1px)`, backgroundSize: '32px 32px' }}></div>
       
       <div className="p-8 border-b border-white/5 flex justify-between items-center relative z-10">

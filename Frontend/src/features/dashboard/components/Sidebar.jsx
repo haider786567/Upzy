@@ -2,7 +2,6 @@ import React from 'react';
 import { 
   LayoutDashboard, 
   Activity, 
-  FileText, 
   Shield, 
   Settings, 
   LogOut, 
@@ -17,7 +16,6 @@ const Sidebar = () => {
   const menuItems = [
     { icon: LayoutDashboard, label: 'Overview', path: '/dashboard' },
     { icon: Activity, label: 'Monitors', path: '/dashboard/monitors' },
-    { icon: FileText, label: 'Logs', path: '/dashboard/logs' },
     { icon: Shield, label: 'Incidents', path: '/dashboard/incidents' },
     { icon: BarChart3, label: 'Analytics', path: '/dashboard/analytics' },
   ];
