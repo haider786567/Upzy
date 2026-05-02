@@ -3,6 +3,7 @@ import monitorRoutes from './routes/monitorRoutes.js';
 import logRoutes from './routes/logRoutes.js';
 import incidentRoutes from "./routes/incidentRoutes.js";
 import errorHandler from './middlewares/errormiddleware.js';
+import authRoutes from './routes/authRoutes.js';
 
 const app = express();
 
@@ -10,10 +11,12 @@ app.use(express.json());
 app.use('/api/monitor', monitorRoutes);
 app.use('/api/logs', logRoutes);
 app.use('/api/incidents', incidentRoutes);
+app.use('/auth', authRoutes);
 
 app.get('/', (req, res) => {
   res.send('Hello, World!');
 });
 app.use(errorHandler);
+
 
 export default app;
