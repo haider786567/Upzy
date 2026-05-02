@@ -5,6 +5,9 @@ import monitorModel from "../models/monitor.model.js";
 export const getAllMonitors = async (req, res,next) => {
   try {
     const monitors = await monitorModel.find({ userId: req.user._id });
+    if (!monitors) {
+      return next(new Error("No monitors found for this user"));
+    }
     res.json(monitors);
   } catch (err) {
     next(err);
@@ -36,7 +39,7 @@ export const getMonitorById = async (req, res,next) => {
   try {
     const monitor = await monitorModel.findOne({ _id: req.params.id, userId: req.user._id });
     if (!monitor) {
-      return res.status(404).json({ error: "Monitor not found" });
+      return next(new Error("Monitor not found"));
     }
     res.json(monitor);
   } catch (err) {
@@ -53,7 +56,7 @@ export const updateMonitor = async (req, res,next) => {
       { new: true }
     );
     if (!monitor) {
-      return res.status(404).json({ error: "Monitor not found" });
+      return next(new Error("Monitor not found"));
     }
     res.json(monitor);
   } catch (err) {
@@ -65,7 +68,7 @@ export const deleteMonitor = async (req, res,next) => {
   try {
     const monitor = await monitorModel.findOneAndDelete({ _id: req.params.id, userId: req.user._id });
     if (!monitor) {
-      return res.status(404).json({ error: "Monitor not found" });
+      return next(new Error("Monitor not found"));
     }
     // Also delete related incidents and logs
     await incidentModel.deleteMany({ monitorId: monitor._id });
@@ -75,4 +78,3 @@ export const deleteMonitor = async (req, res,next) => {
     next(err);
   }
 };
- 
