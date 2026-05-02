@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import Sidebar from '../components/Sidebar';
-import Navbar from '../components/Navbar';
+import Navbar from '../../../components/Navbar';
 import RealTimeStatus from '../components/RealTimeStatus';
 import gsap from 'gsap';
 import { 
