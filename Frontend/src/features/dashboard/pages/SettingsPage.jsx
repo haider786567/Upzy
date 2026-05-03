@@ -16,7 +16,7 @@ import {
   ArrowLeft,
   CheckCircle
 } from 'lucide-react';
-import { useAuth } from '../../auth/hook/useAuth';
+import { useAuth } from '../../auth/hooks/useAuth';
 
 const SettingsPage = () => {
   const [activeView, setActiveView] = useState('MAIN'); // MAIN, CHANGE_PASSWORD_EMAIL, CHANGE_PASSWORD_OTP, CHANGE_PASSWORD_RESET
