@@ -1,10 +1,11 @@
 import jwt from "jsonwebtoken";
 import User from "../models/user.model.js";
+import config from "../config/config.js";
 
 const authMiddleware = async (req, res, next) => {
     try {
         // Get token from cookies
-        const token = req.cookies.token;
+        const { token } = req.cookies || {};
 
         // Check if token exists
         if (!token) {
@@ -16,7 +17,7 @@ const authMiddleware = async (req, res, next) => {
         }
 
         // Verify token
-        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        const decoded = jwt.verify(token, config.JWT_SECRET || process.env.JWT_SECRET);
 
         // Fetch user from database
         const user = await User.findById(decoded.id);
@@ -84,11 +85,7 @@ const adminMiddleware = (req, res, next) => {
 
     } catch (error) {
         console.error("Admin middleware error:", error.message);
-        return res.status(500).json({
-            message: "Internal server error",
-            success: false,
-            error: error.message
-        });
+        next(error);
     }
 };
 

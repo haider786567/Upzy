@@ -12,6 +12,8 @@ import VerifyOtp from '../features/auth/pages/VerifyOtp';
 import ResetPassword from '../features/auth/pages/ResetPassword';
 import AlertsPage from '../features/alerts/pages/AlertsPage';
 import SettingsPage from '../features/dashboard/pages/SettingsPage';
+import Layout from "../features/admin/Layout";
+import Monitors from "../features/admin/monitors/pages/Monitors";
 
 const routes = createBrowserRouter([
     { path: '/', element: <LandingPage /> },
@@ -27,6 +29,14 @@ const routes = createBrowserRouter([
     { path: '/dashboard/analytics', element: <AnalyticsPage /> },
     { path: '/dashboard/alerts', element: <AlertsPage /> },
     { path: '/dashboard/settings', element: <SettingsPage /> },
+    {
+        path: "/admin",
+        element: <Layout />,
+        children: [
+            { index: true, element: <Navigate to="/admin/monitors" replace /> },
+            { path: "monitors", element: <Monitors /> },
+        ],
+    },
 ]);
 
 export default routes;

@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+import mongoose from "mongoose";
 
 const monitorSchema = new mongoose.Schema({
   userId: {
@@ -73,5 +73,6 @@ const monitorSchema = new mongoose.Schema({
 
 // 🔥 Index for faster cron queries
 monitorSchema.index({ isActive: 1 });
+const Monitor = mongoose.model("Monitor", monitorSchema);
 
-module.exports = mongoose.model("Monitor", monitorSchema);
+export default Monitor;
