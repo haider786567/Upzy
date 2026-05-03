@@ -6,7 +6,10 @@ import gsap from "gsap";
 const navItems = [
   {
     section: "Admin",
-    links: [{ label: "Monitors", path: "/admin/monitors", icon: "◈" }],
+    links: [
+      { label: "Monitors", path: "/admin/monitors", icon: "◈" },
+      { label: "Users", path: "/admin/users", icon: "⌘" }
+    ],
   },
 ];
 
@@ -140,8 +143,8 @@ const Layout = () => {
                           ${collapsed ? "justify-center" : "gap-3 px-3"}
                           ${
                             isActive
-                              ? "bg-white/20 text-white"
-                              : "text-white/60 hover:bg-white/10"
+                            ? "bg-white/20 text-white"
+                            : "text-white/60 hover:bg-white/10"
                           }
                         `}
                       >

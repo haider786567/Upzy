@@ -14,6 +14,7 @@ import AlertsPage from '../features/alerts/pages/AlertsPage';
 import SettingsPage from '../features/dashboard/pages/SettingsPage';
 import Layout from "../features/admin/Layout";
 import Monitors from "../features/admin/monitors/pages/Monitors";
+import AdminUsersPage from "../features/admin/users/pages/AdminUsersPage";
 
 const routes = createBrowserRouter([
     { path: '/', element: <LandingPage /> },
@@ -35,6 +36,7 @@ const routes = createBrowserRouter([
         children: [
             { index: true, element: <Navigate to="/admin/monitors" replace /> },
             { path: "monitors", element: <Monitors /> },
+            { path: "users", element: <AdminUsersPage /> },
         ],
     },
 ]);
