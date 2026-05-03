@@ -1,47 +1,58 @@
-import OpenAI from "openai";
+import { ChatGoogleGenerativeAI } from "@langchain/google-genai";
+import { ChatPromptTemplate } from "@langchain/core/prompts";
+import { StructuredOutputParser } from "@langchain/core/output_parsers";
+import { z } from "zod";
+import config from "../config/config.js";
 
-const client = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY
+// 🔥 1. Define structured output
+const parser = StructuredOutputParser.fromZodSchema(
+  z.object({
+    summary: z.string(),
+    rootCause: z.string(),
+    suggestion: z.string()
+  })
+);
+
+// 🔥 2. Create Gemini model
+const model = new ChatGoogleGenerativeAI({
+  model: "gemini-2.5-flash",
+  temperature: 0.2,
+  apiKey: config.GEMNI_API_KEY
 });
 
-// keep payload tight & safe
+// 🔥 3. Clean logs
 const shapeLogs = (logs = []) =>
   logs.map(l => ({
     status: l.status,
     statusCode: l.statusCode,
     responseTime: l.responseTime,
     error: l.errorMessage || null,
-    at: l.createdAt
+    time: l.createdAt
   }));
 
-const buildPrompt = ({ url, method, recentLogs, previousLogs }) => {
-  return `
-You are a senior SRE. Analyze these monitoring logs and produce a concise diagnosis.
+// 🔥 4. Prompt template
+const prompt = ChatPromptTemplate.fromTemplate(`
+You are a backend monitoring expert.
 
-Target:
-- URL: ${url}
-- Method: ${method}
+URL: {url}
+Method: {method}
 
-Recent logs (latest first):
-${JSON.stringify(shapeLogs(recentLogs), null, 2)}
+Recent logs:
+{recentLogs}
 
 Previous logs:
-${JSON.stringify(shapeLogs(previousLogs), null, 2)}
+{previousLogs}
 
 Instructions:
-- Identify pattern (latency spike, status mismatch, timeouts, auth errors, etc.)
-- Provide a short root cause hypothesis (1 sentence)
-- Provide one actionable next step
+- Detect patterns (timeouts, latency spikes, failures)
+- Explain root cause in 1 sentence
+- Suggest one actionable fix
 
-Return ONLY valid JSON in this exact shape:
-{
-  "summary": "...",
-  "rootCause": "...",
-  "suggestion": "..."
-}
-`;
-};
+{format_instructions}
+`);
 
+
+// 🔥 5. Main function
 export const generateSummary = async ({
   url,
   method,
@@ -49,42 +60,34 @@ export const generateSummary = async ({
   previousLogs
 }) => {
   try {
-    const prompt = buildPrompt({ url, method, recentLogs, previousLogs });
-
-    const resp = await client.responses.create({
-      model: "gpt-4.1-mini",   // fast/cheap; upgrade if needed
-      input: prompt,
-      temperature: 0.2,
-      max_output_tokens: 150
+    const formattedPrompt = await prompt.format({
+      url,
+      method,
+      recentLogs: JSON.stringify(shapeLogs(recentLogs), null, 2),
+      previousLogs: JSON.stringify(shapeLogs(previousLogs), null, 2),
+      format_instructions: parser.getFormatInstructions()
     });
 
-    const text = (resp.output_text || "").trim();
+    const response = await model.invoke([
+      { role: "user", content: formattedPrompt }
+    ]);
+    console.log(response);
+    
 
-    // 🔒 enforce JSON output
-    let parsed;
-    try {
-      parsed = JSON.parse(text);
-    } catch {
-      // fallback if model slips format
-      parsed = {
-        summary: text.slice(0, 120) || "Issue detected.",
-        rootCause: "Unable to parse AI output.",
-        suggestion: "Check recent logs and server metrics."
-      };
-    }
+    // 🔒 parse structured output
+    const result = await parser.parse(response.content);
+    console.log(result);
+    
 
-    // basic shape guard
-    return {
-      summary: parsed.summary || "Issue detected.",
-      rootCause: parsed.rootCause || "Unknown cause.",
-      suggestion: parsed.suggestion || "Inspect logs and metrics."
-    };
+    return result;
+
   } catch (err) {
-    console.error("AI Service Error:", err.message);
+    console.error("Gemini LangChain Error:", err.message);
+
     return {
-      summary: "Issue detected.",
-      rootCause: "AI unavailable.",
-      suggestion: "Check logs and retry."
+      summary: "Issue detected",
+      rootCause: "AI unavailable",
+      suggestion: "Check logs manually"
     };
   }
 };

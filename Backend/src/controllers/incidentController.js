@@ -23,26 +23,40 @@ export const getIncidentsForMonitor = async (req, res, next) => {
 export const resolveIncident = async (req, res, next) => {
     try {
         const { incidentId } = req.params;
+
         const incident = await incidentModel.findById(incidentId);
         if (!incident) {
-            return res.status(404).json({ error: "Incident not found" });
+        return res.status(404).json({ error: "Incident not found" });
         }
 
-        // Verify monitor belongs to user
-        const monitor = await monitorModel.findOne({ _id: incident.monitorId, userId: req.user._id });
-        if (!monitor) return res.status(404).json({ error: "Monitor not found or unauthorized" });
+        // ownership check
+        const monitor = await monitorModel.findOne({
+        _id: incident.monitorId,
+        userId: req.user._id
+        });
 
+        if (!monitor) {
+        return res.status(404).json({ error: "Monitor not found or unauthorized" });
+        }
+
+        // already resolved check
+        if (incident.resolved) {
+        return res.status(400).json({ message: "Incident already resolved" });
+        }
+
+        // resolve incident
         incident.resolved = true;
         incident.endTime = new Date();
         await incident.save();
 
-        // 🔥 also update monitor status
-        await monitorModel.findByIdAndUpdate(incident.monitorId, { status: "UP" });
+        res.json({
+        message: "Incident resolved manually",
+        incident
+        });
 
-        res.json({ message: "Incident resolved successfully", incident });
     } catch (err) {
         next(err);
-    }
+  }
 };
 
 export const deleteIncidentsForMonitor = async (req, res, next) => {
