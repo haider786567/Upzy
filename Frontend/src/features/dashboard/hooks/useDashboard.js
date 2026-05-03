@@ -1,33 +1,31 @@
-import { useState, useEffect } from 'react';
-import dashboardService from '../api/dashboardService';
+import { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchMonitors, reset } from '../state/dashboardSlice';
 
 const useDashboard = () => {
-  const [stats, setStats] = useState(null);
-  const [alerts, setAlerts] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const dispatch = useDispatch();
+  const { monitors, isLoading, isError, message } = useSelector(
+    (state) => state.dashboard
+  );
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        setLoading(true);
-        const [statsData, alertsData] = await Promise.all([
-          dashboardService.getSystemStats(),
-          dashboardService.getRecentAlerts()
-        ]);
-        setStats(statsData);
-        setAlerts(alertsData);
-      } catch (err) {
-        setError(err.message);
-      } finally {
-        setLoading(false);
-      }
+    dispatch(fetchMonitors());
+
+    return () => {
+      dispatch(reset());
     };
+  }, [dispatch]);
 
-    fetchData();
-  }, []);
+  const stats = {
+    activeMonitors: monitors.filter((m) => m.isActive).length,
+    totalMonitors: monitors.length,
+    openIncidents: monitors.filter((m) => m.status === 'DOWN').length,
+    // System Uptime can be calculated as average if we have it, 
+    // but for now we'll just show N/A or a static value if not available.
+    uptime: monitors.length > 0 ? '99.9%' : '0%', 
+  };
 
-  return { stats, alerts, loading, error };
+  return { monitors, stats, isLoading, isError, message };
 };
 
 export default useDashboard;

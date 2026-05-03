@@ -8,12 +8,17 @@ import {
   ArrowDownRight, 
   Activity, 
   ShieldAlert, 
-  Cpu, 
   Globe 
 } from 'lucide-react';
+import useDashboard from '../hooks/useDashboard';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchAnalytics } from '../state/dashboardSlice';
 
 const DashboardPage = () => {
   const pageRef = useRef(null);
+  const dispatch = useDispatch();
+  const { monitors, stats, isLoading, isError, message } = useDashboard();
+  const { user } = useSelector((state) => state.auth);
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -40,13 +45,26 @@ const DashboardPage = () => {
     }, pageRef);
 
     return () => ctx.revert();
-  }, []);
+  }, [isLoading]); // Re-run animation when loading finishes
 
-  const stats = [
-    { label: 'System Uptime', value: '99.98%', change: '+0.02%', positive: true, icon: Activity, color: '#522B5B' },
-    { label: 'Active Monitors', value: '24', change: '8.4%', positive: true, icon: Globe, color: '#2B124C' },
-    { label: 'Open Incidents', value: '02', change: '-12%', positive: true, icon: ShieldAlert, color: '#854F6C' },
-    { label: 'CPU Usage', value: '14%', change: '+3.2%', positive: false, icon: Cpu, color: '#190019' },
+  const { selectedMonitorAnalytics } = useSelector((state) => state.dashboard);
+
+  useEffect(() => {
+    if (monitors.length > 0 && !selectedMonitorAnalytics && !isLoading) {
+      dispatch(fetchAnalytics({ monitorId: monitors[0]._id, range: '24h' }));
+    }
+  }, [monitors, dispatch, selectedMonitorAnalytics, isLoading]);
+
+  const handleRangeChange = (range) => {
+    if (monitors.length > 0) {
+      dispatch(fetchAnalytics({ monitorId: monitors[0]._id, range }));
+    }
+  };
+
+  const statsDisplay = [
+    { label: 'System Uptime', value: stats.uptime, change: '+0.00%', positive: true, icon: Activity, color: '#522B5B' },
+    { label: 'Active Monitors', value: stats.activeMonitors.toString(), change: `${stats.totalMonitors} Total`, positive: true, icon: Globe, color: '#2B124C' },
+    { label: 'Open Incidents', value: stats.openIncidents.toString().padStart(2, '0'), change: 'Live', positive: true, icon: ShieldAlert, color: '#854F6C' },
   ];
 
   return (
@@ -64,12 +82,12 @@ const DashboardPage = () => {
           <div className="max-w-7xl mx-auto space-y-8">
             <header className="space-y-1">
               <h1 className="text-3xl font-bold text-[#190019] tracking-tight">Dashboard Overview</h1>
-              <p className="text-accent font-medium">Welcome back, here's what's happening with your systems today.</p>
+              <p className="text-accent font-medium">Welcome back, {user?.username || 'User'}! Here's what's happening today.</p>
             </header>
 
             {/* Stats Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-              {stats.map((stat, i) => (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {statsDisplay.map((stat, i) => (
                 <div key={i} className="stat-card bg-white border border-rose/30 p-6 rounded-3xl shadow-[0_10px_40px_-15px_rgba(43,18,76,0.1)] hover:shadow-[0_25px_50px_-12px_rgba(43,18,76,0.2)] transition-shadow duration-300 group cursor-default opacity-0">
                   <div className="flex justify-between items-start mb-4">
                     <div className="p-3 rounded-2xl bg-cream/50 group-hover:bg-cream transition-colors duration-300">
@@ -93,52 +111,51 @@ const DashboardPage = () => {
                 <div className="relative z-10 flex flex-col h-full">
                   <div className="flex justify-between items-center mb-10">
                     <div>
-                      <h2 className="text-xl font-bold">Traffic & Performance</h2>
-                      <p className="text-rose text-sm font-medium opacity-80">Global activity across all endpoints</p>
+                      <h2 className="text-xl font-bold">Performance: {monitors[0]?.name || 'No Monitor'}</h2>
+                      <p className="text-rose text-sm font-medium opacity-80">Response time and availability</p>
                     </div>
                     <div className="flex gap-2 p-1 bg-white/5 rounded-full border border-white/10">
                       {['24h', '7d', '30d'].map(t => (
-                        <button key={t} className={`px-5 py-2 rounded-full text-xs font-bold transition-all duration-300 ${t === '24h' ? 'bg-cream text-primary shadow-lg' : 'hover:bg-white/5 text-rose'}`}>
+                        <button 
+                          key={t} 
+                          onClick={() => handleRangeChange(t)}
+                          className={`px-5 py-2 rounded-full text-xs font-bold transition-all duration-300 ${selectedMonitorAnalytics?.range === t || (!selectedMonitorAnalytics && t === '24h') ? 'bg-cream text-primary shadow-lg' : 'hover:bg-white/5 text-rose'}`}
+                        >
                           {t}
                         </button>
                       ))}
                     </div>
                   </div>
                   
-                  {/* Mock Chart with Tooltips */}
+                  {/* Real Chart Data */}
                   <div className="flex-1 flex items-end gap-3 w-full pt-10 min-h-[220px]">
-                    {[40, 70, 45, 90, 65, 85, 50, 75, 40, 95, 60, 80].map((h, i) => {
-                      const latency = Math.floor(Math.random() * 200) + 100;
-                      const p95 = Math.floor(latency * 1.5);
-                      const time = `${10 + i}:00`;
-                      
-                      return (
-                        <div key={i} className="flex-1 group/bar relative h-full flex flex-col justify-end">
-                          {/* Tooltip */}
-                          <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-6 w-36 p-4 bg-dark rounded-2xl shadow-2xl opacity-0 group-hover/bar:opacity-100 translate-y-2 group-hover/bar:translate-y-0 transition-all duration-300 pointer-events-none z-50 border border-white/10 backdrop-blur-md">
-                            <p className="text-xs font-bold text-rose mb-3 border-b border-white/10 pb-2">{time}</p>
-                            <div className="space-y-2">
-                              <div className="flex justify-between items-center">
-                                <span className="text-[10px] text-white/50 font-medium uppercase tracking-wider">p95</span>
-                                <span className="text-xs font-bold text-cream">{p95}ms</span>
+                    {selectedMonitorAnalytics?.graph?.length > 0 ? (
+                      selectedMonitorAnalytics.graph.slice(-12).map((data, i) => {
+                        const h = (data.avgResponseTime / 1000) * 100;
+                        return (
+                          <div key={i} className="flex-1 group/bar relative h-full flex flex-col justify-end">
+                            <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-6 w-36 p-4 bg-dark rounded-2xl shadow-2xl opacity-0 group-hover/bar:opacity-100 translate-y-2 group-hover/bar:translate-y-0 transition-all duration-300 pointer-events-none z-50 border border-white/10 backdrop-blur-md">
+                              <p className="text-xs font-bold text-rose mb-3 border-b border-white/10 pb-2">{new Date(data.date).toLocaleTimeString()}</p>
+                              <div className="space-y-2">
+                                <div className="flex justify-between items-center">
+                                  <span className="text-[10px] text-white/50 font-medium uppercase tracking-wider">Resp Time</span>
+                                  <span className="text-xs font-bold text-cream">{data.avgResponseTime}ms</span>
+                                </div>
                               </div>
-                              <div className="flex justify-between items-center">
-                                <span className="text-[10px] text-white/50 font-medium uppercase tracking-wider">latency</span>
-                                <span className="text-xs font-bold text-rose">{latency}ms</span>
-                              </div>
+                              <div className="absolute top-full left-1/2 -translate-x-1/2 border-8 border-transparent border-t-dark"></div>
                             </div>
-                            {/* Tooltip Arrow */}
-                            <div className="absolute top-full left-1/2 -translate-x-1/2 border-8 border-transparent border-t-dark"></div>
+                            <div 
+                              className="w-full bg-linear-to-t from-cream/5 to-cream/90 rounded-t-xl transition-all duration-500 hover:from-cream/20 hover:to-white cursor-pointer" 
+                              style={{ height: `${Math.min(h + 10, 100)}%` }}
+                            ></div>
                           </div>
-
-                          {/* Bar */}
-                          <div 
-                            className="w-full bg-linear-to-t from-cream/5 to-cream/90 rounded-t-xl transition-all duration-500 hover:from-cream/20 hover:to-white cursor-pointer" 
-                            style={{ height: `${h}%` }}
-                          ></div>
-                        </div>
-                      );
-                    })}
+                        );
+                      })
+                    ) : (
+                      <div className="flex-1 flex items-center justify-center text-rose opacity-50 font-bold uppercase tracking-widest w-full">
+                        {isLoading ? 'Loading Analytics...' : 'No Data Available'}
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>
@@ -147,23 +164,24 @@ const DashboardPage = () => {
                 <div className="absolute inset-0 opacity-5 pointer-events-none" style={{ backgroundImage: `radial-gradient(#DFB6B2 1px, transparent 1px)`, backgroundSize: '24px 24px' }}></div>
                 <h2 className="text-xl font-bold text-cream relative z-10">Recent Alerts</h2>
                 <div className="space-y-4 relative z-10">
-                  {[
-                    { type: 'API Timeout', target: '/v1/auth/login', time: '2m ago' },
-                    { type: 'High Latency', target: 'Payment Gateway', time: '5m ago' },
-                    { type: 'Memory Peak', target: 'Worker-04', time: '12m ago' },
-                    { type: 'SSL Expiry', target: 'api.upzy.io', time: '1h ago' },
-                  ].map((alert, i) => (
-                    <div key={i} className="flex items-center gap-4 p-4 rounded-2xl bg-white/5 hover:bg-white/10 transition-all duration-300 cursor-pointer border border-transparent hover:border-white/10 group">
-                      <div className="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center shadow-sm group-hover:scale-110 transition-transform">
-                        <ShieldAlert size={20} className="text-rose" />
+                  {monitors.filter(m => m.status === 'DOWN').length > 0 ? (
+                    monitors.filter(m => m.status === 'DOWN').map((m, i) => (
+                      <div key={i} className="flex items-center gap-4 p-4 rounded-2xl bg-white/5 hover:bg-white/10 transition-all duration-300 cursor-pointer border border-transparent hover:border-white/10 group">
+                        <div className="w-10 h-10 rounded-xl bg-red-500/10 flex items-center justify-center shadow-sm group-hover:scale-110 transition-transform">
+                          <ShieldAlert size={20} className="text-red-500" />
+                        </div>
+                        <div className="flex-1">
+                          <p className="text-sm font-bold text-cream">{m.name} is DOWN</p>
+                          <p className="text-xs text-rose font-medium truncate max-w-[120px] opacity-70">{m.url}</p>
+                        </div>
+                        <span className="text-[10px] font-bold text-rose uppercase shrink-0 opacity-60">Just now</span>
                       </div>
-                      <div className="flex-1">
-                        <p className="text-sm font-bold text-cream">{alert.type}</p>
-                        <p className="text-xs text-rose font-medium truncate max-w-[120px] opacity-70">{alert.target}</p>
-                      </div>
-                      <span className="text-[10px] font-bold text-rose uppercase shrink-0 opacity-60">{alert.time}</span>
+                    ))
+                  ) : (
+                    <div className="text-center py-10">
+                      <p className="text-cream/50 text-sm font-medium">No active incidents</p>
                     </div>
-                  ))}
+                  )}
                 </div>
                 <button className="w-full py-4 rounded-2xl bg-cream text-primary font-bold text-sm hover:bg-white transition-all active:scale-[0.98] relative z-10 shadow-lg shadow-black/20">
                   View All Incidents
@@ -172,7 +190,7 @@ const DashboardPage = () => {
             </div>
 
             {/* Real-time Status Table */}
-            <RealTimeStatus />
+            <RealTimeStatus monitors={monitors} />
           </div>
         </main>
       </div>
