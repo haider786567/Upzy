@@ -21,7 +21,6 @@ const config = {
     NODE_ENV: process.env.NODE_ENV ,
     EMAIL: process.env.EMAIL,
     EMAIL_PASS: process.env.EMAIL_PASS,
-    FRONTEND_URL: process.env.FRONTEND_URL,
     JWT_SECRET: process.env.JWT_SECRET,
     GEMNI_API_KEY: process.env.GEMNI_API_KEY
 };
