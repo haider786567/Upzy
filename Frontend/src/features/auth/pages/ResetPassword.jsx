@@ -12,7 +12,16 @@ const ResetPassword = () => {
   const containerRef = useRef(null);
   const blobRef = useRef(null);
   const navigate = useNavigate();
-  const { resetPassword, loading } = useAuth();
+  const { resetPassword, loading, error, resetAuth } = useAuth();
+
+  useEffect(() => {
+    if (error) {
+      import('react-hot-toast').then(({ default: toast }) => {
+        toast.error(error);
+        resetAuth();
+      });
+    }
+  }, [error, resetAuth]);
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -47,7 +56,9 @@ const ResetPassword = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (password !== confirmPassword) {
-      alert("Passwords do not match!");
+      import('react-hot-toast').then(({ default: toast }) => {
+        toast.error("Passwords do not match!");
+      });
       return;
     }
     const success = await resetPassword(password);

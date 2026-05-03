@@ -10,7 +10,16 @@ const ForgotPassword = () => {
   const containerRef = useRef(null);
   const blobRef = useRef(null);
   const navigate = useNavigate();
-  const { forgotPassword, loading } = useAuth();
+  const { forgotPassword, loading, error, resetAuth } = useAuth();
+
+  useEffect(() => {
+    if (error) {
+      import('react-hot-toast').then(({ default: toast }) => {
+        toast.error(error);
+        resetAuth();
+      });
+    }
+  }, [error, resetAuth]);
 
   useEffect(() => {
     const ctx = gsap.context(() => {

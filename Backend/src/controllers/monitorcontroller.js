@@ -13,6 +13,34 @@ export const getAllMonitors = async (req, res, next) => {
       .sort({ createdAt: -1 })
       .lean();
 
+    // Attach response, uptime, and history for each monitor
+    for (let monitor of monitors) {
+      const logs = await logModel.find({ monitorId: monitor._id })
+        .sort({ createdAt: -1 })
+        .limit(24)
+        .lean();
+      
+      if (logs.length > 0) {
+        monitor.response = `${logs[0].responseTime}ms`;
+        monitor.status = logs[0].status;
+        // Reverse logs for chronological history (left to right)
+        monitor.history = logs.reverse().map(l => {
+          if (l.status === 'DOWN') return 35;
+          if (l.status === 'DEGRADED') return 60;
+          return Math.min(100, Math.max(85, 100 - (l.responseTime / 50))); 
+        });
+
+        // Calculate uptime percentage over retained logs
+        const totalLogs = await logModel.countDocuments({ monitorId: monitor._id });
+        const upLogs = await logModel.countDocuments({ monitorId: monitor._id, status: 'UP' });
+        monitor.uptime = totalLogs > 0 ? `${((upLogs / totalLogs) * 100).toFixed(2)}%` : '-';
+      } else {
+        monitor.response = '-';
+        monitor.history = [];
+        monitor.uptime = '-';
+      }
+    }
+
     res.json(monitors);
   } catch (err) {
     next(err);

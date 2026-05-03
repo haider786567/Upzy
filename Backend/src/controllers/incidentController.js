@@ -19,6 +19,22 @@ export const getIncidentsForMonitor = async (req, res, next) => {
             .limit(parseInt(limit))
             .lean();
             
+        // Populate logs for each incident
+        for (let i = 0; i < incidents.length; i++) {
+             const incidentLogs = await logModel.find({ 
+                 monitorId, 
+                 createdAt: { $gte: incidents[i].startTime, $lte: incidents[i].endTime || new Date() } 
+             }).sort({ createdAt: -1 }).limit(10).lean();
+
+             incidents[i].logs = incidentLogs.map(log => ({
+                 time: new Date(log.createdAt).toLocaleString(),
+                 method: monitor.method || 'GET',
+                 path: monitor.url || '/',
+                 status: log.statusCode || log.status,
+                 message: log.errorMessage || 'OK'
+             }));
+        }
+
         if (!incidents) {
             next(new Error('Incidents not found for this monitor'));
         }

@@ -12,7 +12,7 @@ export const useAlerts = () => {
     try {
       const data = await alertService.getAllAlerts();
       setAlerts(data);
-    } catch (err) {
+    } catch {
       setError('Failed to fetch alerts');
       toast.error('Could not load alerts history');
     } finally {
@@ -25,7 +25,7 @@ export const useAlerts = () => {
       await alertService.resolveAlert(incidentId);
       toast.success('Incident marked as resolved');
       fetchAlerts(); // refresh
-    } catch (err) {
+    } catch {
       toast.error('Failed to resolve incident');
     }
   };

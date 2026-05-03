@@ -1,39 +1,71 @@
-// Analytics Service for 4-layer architecture
+import axios from 'axios';
+
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
+
+/**
+ * Analytics Service - Fetches monitor analytics and uptime data
+ * Supports time ranges: 24h, 7d, 30d
+ */
 export const analyticsService = {
-  getAnalyticsData: async () => {
-    // Simulate API fetch delay
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    
+  normalizeAnalyticsData: (data = {}) => {
+    const graph = Array.isArray(data.graph) ? data.graph : [];
+
+    const normalizedGraph = graph.map((entry, index) => {
+      const date = entry.date ? new Date(entry.date) : entry.createdAt ? new Date(entry.createdAt) : null;
+      const fallbackLabel = `Point ${index + 1}`;
+
+      return {
+        ...entry,
+        time: date ? date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : fallbackLabel,
+        day: date ? date.toLocaleDateString([], { weekday: 'short' }) : fallbackLabel,
+        value: Number(entry.avgResponseTime ?? entry.value ?? 0),
+        percentage: Number(entry.uptime ?? entry.percentage ?? 0),
+      };
+    });
+
     return {
-      metrics: {
-        uptime: 99.98,
-        avgLatency: 124,
-        failureRate: 0.02,
-        totalIncidents: 12
-      },
-      latencyHistory: [
-        { time: '00:00', value: 110 },
-        { time: '04:00', value: 130 },
-        { time: '08:00', value: 150 },
-        { time: '12:00', value: 120 },
-        { time: '16:00', value: 140 },
-        { time: '20:00', value: 115 },
-        { time: '23:59', value: 125 },
-      ],
-      uptimeHistory: [
-        { day: 'Mon', status: 'UP', percentage: 100 },
-        { day: 'Tue', status: 'UP', percentage: 100 },
-        { day: 'Wed', status: 'DOWN', percentage: 95 },
-        { day: 'Thu', status: 'UP', percentage: 100 },
-        { day: 'Fri', status: 'UP', percentage: 100 },
-        { day: 'Sat', status: 'UP', percentage: 100 },
-        { day: 'Sun', status: 'UP', percentage: 100 },
-      ],
-      aiInsights: {
-        summary: "System stability is high, but we noticed a recurring latency spike every Wednesday at 08:00 UTC. This correlates with your scheduled database backup tasks.",
-        recommendation: "Consider moving the database backup to a lower-traffic window (e.g., Sunday 02:00 UTC) to maintain optimal response times.",
-        confidence: 94
-      }
+      ...data,
+      graph: normalizedGraph,
     };
-  }
+  },
+
+  /**
+   * Get analytics for a specific monitor
+   * @param {string} monitorId - Monitor ID
+   * @param {string} range - Time range: '24h' | '7d' | '30d' (default: '24h')
+   * @returns {Promise<Object>} Analytics data including uptime %, response time, error rate, etc.
+   */
+  getAnalyticsData: async (monitorId, range = '24h') => {
+    try {
+      const response = await axios.get(
+        `${API_URL}/analytics/${monitorId}?range=${range}`,
+        { withCredentials: true }
+      );
+      return analyticsService.normalizeAnalyticsData(response.data);
+    } catch (error) {
+      console.error(`Failed to fetch analytics for monitor ${monitorId}:`, error);
+      throw error;
+    }
+  },
+
+  /**
+   * Get analytics for multiple monitors
+   * @param {Array<string>} monitorIds - Array of monitor IDs
+   * @param {string} range - Time range: '24h' | '7d' | '30d'
+   * @returns {Promise<Object>} Aggregated analytics
+   */
+  getMultipleAnalytics: async (monitorIds, range = '24h') => {
+    try {
+      const analyticsPromises = monitorIds.map(monitorId =>
+        analyticsService.getAnalyticsData(monitorId, range)
+      );
+      return await Promise.all(analyticsPromises);
+    } catch (error) {
+      console.error('Failed to fetch multiple analytics:', error);
+      throw error;
+    }
+  },
+
 };
+
+export default analyticsService;

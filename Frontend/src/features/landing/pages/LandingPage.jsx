@@ -736,7 +736,7 @@ const LandingPage = () => {
                   color: "text-green-500",
                   change: "0 this week",
                 },
-              ].map((stat, idx) => (
+              ].map((stat) => (
                 <div
                   key={stat.label}
                   className="bg-cream/50 rounded-xl p-4 border border-[#0a0a0a]/8 hover:border-[#0a0a0a]/20 transition-all hover:scale-105 cursor-pointer"
@@ -829,7 +829,7 @@ const LandingPage = () => {
                   latency: "56ms",
                   icon: <SiPostgresql className="text-blue-600" />,
                 },
-              ].map((service, idx) => (
+              ].map((service) => (
                 <div
                   key={service.name}
                   ref={(el) => el && serviceItemsRef.current.push(el)}
@@ -1162,7 +1162,7 @@ const LandingPage = () => {
               "Railway",
               "Cloudflare",
               "AWS",
-            ].map((brand, i) => (
+            ].map((brand) => (
               <div
                 key={brand}
                 className="text-[#0a0a0a]/30 font-black text-xl tracking-wide hover:text-[#0a0a0a]/60 transition-all hover:scale-105 cursor-pointer"

@@ -1,6 +1,7 @@
 import Analytics from "../models/analytics.model.js";
 import Incident from "../models/incident.model.js";
 import Monitor from "../models/monitor.model.js";
+import Log from "../models/log.model.js";
 import mongoose from "mongoose";
 import redis from "../config/redis.js";
 
@@ -37,7 +38,30 @@ export const getAnalytics = async (req, res, next) => {
     const analytics = await Analytics.find({
       monitorId: objectId,
       date: { $gte: startDate }
-    }).sort({ date: 1 });
+    }).sort({ date: 1 }).lean();
+
+    // 🔥 REAL-TIME FALLBACK: If cron hasn't run yet, build analytics from live logs!
+    if (analytics.length === 0) {
+      const logs = await Log.find({
+        monitorId: objectId,
+        createdAt: { $gte: startDate }
+      }).lean();
+
+      if (logs.length > 0) {
+        let total = logs.length;
+        let totalDown = logs.filter(l => l.status === 'DOWN').length;
+        let totalLatency = logs.reduce((sum, l) => sum + (l.responseTime || 0), 0);
+        
+        analytics.push({
+           date: new Date(),
+           totalRequests: total,
+           downCount: totalDown,
+           avgResponseTime: totalLatency / total,
+           uptime: ((total - totalDown) / total) * 100,
+           errorRate: (totalDown / total) * 100
+        });
+      }
+    }
 
     let total = 0;
     let totalDown = 0;

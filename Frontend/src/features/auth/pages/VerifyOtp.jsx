@@ -10,7 +10,16 @@ const VerifyOtp = () => {
   const containerRef = useRef(null);
   const blobRef = useRef(null);
   const navigate = useNavigate();
-  const { verifyOtp, loading } = useAuth();
+  const { verifyOtp, loading, error, resetAuth } = useAuth();
+
+  useEffect(() => {
+    if (error) {
+      import('react-hot-toast').then(({ default: toast }) => {
+        toast.error(error);
+        resetAuth();
+      });
+    }
+  }, [error, resetAuth]);
 
   useEffect(() => {
     const ctx = gsap.context(() => {

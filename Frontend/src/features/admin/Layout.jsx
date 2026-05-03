@@ -1,27 +1,56 @@
-import { NavLink, Outlet } from "react-router-dom";
+import { NavLink, Outlet, useNavigate } from "react-router-dom";
 import React, { useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import gsap from "gsap";
+import authService from "../auth/service/authService";
+import { useAuth } from "../auth/hooks/useAuth";
 
 const navItems = [
   {
     section: "Admin",
-    links: [{ label: "Monitors", path: "/admin/monitors", icon: "◈" }],
+    links: [
+      { label: "Monitors", path: "/admin/monitors", icon: "◈" },
+      { label: "Users", path: "/admin/users", icon: "👥" }
+    ],
   },
 ];
 
 const Layout = () => {
   const sidebarRef = useRef(null);
+  const navigate = useNavigate();
+  const { logoutUser } = useAuth();
 
   const [collapsed, setCollapsed] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 
-  // fake loading
+  // Auth check & token verification
   useEffect(() => {
-    const t = setTimeout(() => setIsLoading(false), 500);
-    return () => clearTimeout(t);
-  }, []);
+    const checkAuth = async () => {
+      // Direct cookie check (if cookie is not httpOnly)
+      const hasCookieToken = document.cookie.split(';').some(c => c.trim().startsWith('token='));
+      
+      // We primarily rely on the API response since the token might be httpOnly
+      try {
+        const isAdmin = await authService.isAdmin();
+        if (!isAdmin && !hasCookieToken) {
+          navigate('/login', { replace: true });
+          return;
+        }
+      } catch (error) {
+        navigate('/login', { replace: true });
+        return;
+      }
+      setIsLoading(false);
+    };
+    
+    checkAuth();
+  }, [navigate]);
+
+  const handleLogout = async () => {
+    await logoutUser();
+    navigate('/login', { replace: true });
+  };
 
   // animation
   useEffect(() => {
@@ -119,43 +148,58 @@ const Layout = () => {
           {isLoading ? (
             <p className="text-white/50 text-sm">Loading...</p>
           ) : (
-            navItems.map((group) => (
-              <div key={group.section}>
-                {!collapsed && (
-                  <p className="text-white/40 text-xs mb-2 px-2">
-                    {group.section}
-                  </p>
-                )}
+            <>
+              {navItems.map((group) => (
+                <div key={group.section}>
+                  {!collapsed && (
+                    <p className="text-white/40 text-xs mb-2 px-2">
+                      {group.section}
+                    </p>
+                  )}
 
-                {group.links.map((link) => (
-                  <NavLink
-                    key={link.path}
-                    to={link.path}
-                    onClick={() => setMobileOpen(false)}
-                  >
-                    {({ isActive }) => (
-                      <div
-                        className={`
-                          mb-2 rounded-lg flex items-center py-2
-                          ${collapsed ? "justify-center" : "gap-3 px-3"}
-                          ${
-                            isActive
-                              ? "bg-white/20 text-white"
-                              : "text-white/60 hover:bg-white/10"
-                          }
-                        `}
-                      >
-                        <span className="text-lg">{link.icon}</span>
+                  {group.links.map((link) => (
+                    <NavLink
+                      key={link.path}
+                      to={link.path}
+                      onClick={() => setMobileOpen(false)}
+                    >
+                      {({ isActive }) => (
+                        <div
+                          className={`
+                            mb-2 rounded-lg flex items-center py-2
+                            ${collapsed ? "justify-center" : "gap-3 px-3"}
+                            ${
+                              isActive
+                                ? "bg-white/20 text-white"
+                                : "text-white/60 hover:bg-white/10"
+                            }
+                          `}
+                        >
+                          <span className="text-lg">{link.icon}</span>
 
-                        {!collapsed && (
-                          <span className="text-sm">{link.label}</span>
-                        )}
-                      </div>
-                    )}
-                  </NavLink>
-                ))}
+                          {!collapsed && (
+                            <span className="text-sm">{link.label}</span>
+                          )}
+                        </div>
+                      )}
+                    </NavLink>
+                  ))}
+                </div>
+              ))}
+              
+              <div className="mt-4 pt-4 border-t border-white/10">
+                <button
+                  onClick={handleLogout}
+                  className={`
+                    w-full rounded-lg flex items-center py-2 text-white/60 hover:bg-red-500/10 hover:text-red-400 transition-colors
+                    ${collapsed ? "justify-center" : "gap-3 px-3"}
+                  `}
+                >
+                  <span className="text-lg">🚪</span>
+                  {!collapsed && <span className="text-sm font-medium">Logout</span>}
+                </button>
               </div>
-            ))
+            </>
           )}
         </nav>
       </aside>

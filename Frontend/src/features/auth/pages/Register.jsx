@@ -13,7 +13,7 @@ const Register = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-  const { register, loading, user } = useAuth();
+  const { register, loading, user, error, resetAuth } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -25,6 +25,13 @@ const Register = () => {
       }
     }
   }, [user, navigate]);
+
+  useEffect(() => {
+    if (error) {
+      toast.error(error);
+      resetAuth();
+    }
+  }, [error, resetAuth]);
 
 
 
@@ -68,7 +75,11 @@ const Register = () => {
       return;
     }
     // Mapping fullname to username for the backend
-    await register(fullname, email, password);
+    const res = await register(fullname, email, password);
+    if (res) {
+      toast.success('Registration successful! Please login.');
+      navigate('/login');
+    }
   };
 
   return (

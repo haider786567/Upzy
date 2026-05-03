@@ -11,7 +11,7 @@ export const login = createAsyncThunk(
       const user = response.user || response;
       return { ...user, role: isAdmin ? 'admin' : 'user' };
     } catch (error) {
-      const message = error.response?.data?.error || error.message || error.toString();
+      const message = error.response?.data?.error || error.response?.data?.message || error.message || error.toString();
       return thunkAPI.rejectWithValue(message);
     }
   }
@@ -65,6 +65,18 @@ export const resetPassword = createAsyncThunk(
   }
 );
 
+export const logoutAsync = createAsyncThunk(
+  'auth/logoutAsync',
+  async (_, thunkAPI) => {
+    try {
+      return await authService.logout();
+    } catch (error) {
+      const message = error.response?.data?.error || error.message || error.toString();
+      return thunkAPI.rejectWithValue(message);
+    }
+  }
+);
+
 const initialState = {
   user: JSON.parse(localStorage.getItem('user')) || null,
   isError: false,
@@ -93,7 +105,7 @@ export const authSlice = createSlice({
       .addCase(register.pending, (state) => {
         state.isLoading = true;
       })
-      .addCase(register.fulfilled, (state, action) => {
+      .addCase(register.fulfilled, (state) => {
         state.isLoading = false;
         state.isSuccess = true;
         // User might not be logged in immediately after register, 
@@ -162,6 +174,24 @@ export const authSlice = createSlice({
         state.isLoading = false;
         state.isError = true;
         state.message = action.payload;
+      })
+      .addCase(logoutAsync.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(logoutAsync.fulfilled, (state) => {
+        state.isLoading = false;
+        state.isSuccess = true;
+        localStorage.removeItem('user');
+        state.user = null;
+        state.message = 'Logged out successfully';
+      })
+      .addCase(logoutAsync.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isError = true;
+        state.message = action.payload;
+        // Still clear user on logout error
+        localStorage.removeItem('user');
+        state.user = null;
       });
   },
 });

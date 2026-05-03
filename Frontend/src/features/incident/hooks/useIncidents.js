@@ -1,5 +1,30 @@
-import { useState, useEffect } from 'react';
-import incidentService from '../services/incidentService';
+import { useState, useEffect, useCallback } from 'react';
+import incidentService from '../service/incidentService';
+import toast from 'react-hot-toast';
+import socketService from '../../../services/socketService';
+
+const formatIncident = (incident) => {
+  const startTime = incident.startTime ? new Date(incident.startTime) : null;
+  const endTime = incident.endTime ? new Date(incident.endTime) : null;
+  const status = incident.resolved ? 'recovered' : incident.type;
+  const durationMs = startTime ? (endTime || new Date()).getTime() - startTime.getTime() : 0;
+  const durationMinutes = Math.max(1, Math.round(durationMs / 60000));
+
+  return {
+    ...incident,
+    id: incident._id,
+    service: incident.monitorName || 'Unknown monitor',
+    url: incident.monitorUrl || '#',
+    status,
+    time: startTime ? startTime.toLocaleString() : '-',
+    duration: `${durationMinutes}m`,
+    ongoing: !incident.resolved,
+    aiAnalysis: incident.ai ? {
+      summary: incident.ai.summary,
+      recommendation: incident.ai.suggestion || incident.ai.rootCause,
+    } : null,
+  };
+};
 
 export const useIncidents = () => {
   const [incidents, setIncidents] = useState([]);
@@ -9,8 +34,8 @@ export const useIncidents = () => {
   useEffect(() => {
     const fetchIncidents = async () => {
       try {
-        const data = await incidentService.getIncidents();
-        setIncidents(data);
+        const data = await incidentService.getAllIncidents();
+        setIncidents(data.map(formatIncident));
       } catch (err) {
         setError(err.message);
       } finally {
@@ -19,7 +44,40 @@ export const useIncidents = () => {
     };
 
     fetchIncidents();
+
+    const refreshIncidents = () => {
+      fetchIncidents();
+    };
+
+    socketService.onIncidentCreated(refreshIncidents);
+    return () => socketService.off('incidentUpdate', refreshIncidents);
   }, []);
 
-  return { incidents, loading, error };
+  const resolveIncident = useCallback(async (incidentId) => {
+    try {
+      await incidentService.resolveIncident(incidentId);
+      toast.success('Incident marked as resolved');
+      // Refresh incidents
+      const data = await incidentService.getAllIncidents();
+      setIncidents(data.map(formatIncident));
+    } catch (err) {
+      toast.error('Failed to resolve incident');
+      throw err;
+    }
+  }, []);
+
+  const deleteIncidents = useCallback(async (monitorId) => {
+    try {
+      await incidentService.deleteIncidents(monitorId);
+      toast.success('Incident history cleared');
+      // Refresh incidents
+      const data = await incidentService.getAllIncidents();
+      setIncidents(data.map(formatIncident));
+    } catch (err) {
+      toast.error('Failed to clear incidents');
+      throw err;
+    }
+  }, []);
+
+  return { incidents, loading, error, resolveIncident, deleteIncidents };
 };

@@ -1,0 +1,223 @@
+
+> frontend@0.0.0 lint
+> eslint .
+
+
+/Users/haiderkhan/Desktop/UpZy/Frontend/src/features/admin/Layout.jsx
+  3:10  error  'motion' is defined but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+
+/Users/haiderkhan/Desktop/UpZy/Frontend/src/features/admin/monitors/pages/Monitors.jsx
+  295:10  error  Error: Cannot create components during render
+
+Components created during render will reset their state each time they are created. Declare components outside of render.
+
+  293 |       {/* Stats Cards */}
+  294 |       <div className="grid grid-cols-3 gap-3 sm:gap-4 mb-6">
+> 295 |         <StatCard
+      |          ^^^^^^^^ This component is created during render
+  296 |           title="Total"
+  297 |           value={totalMonitors}
+  298 |           subtext="Endpoints"
+
+  147 |     totalMonitors > 0 ? Math.round((onlineCount / totalMonitors) * 100) : 0;
+  148 |
+> 149 |   const StatCard = ({
+      |                    ^^
+> 150 |     title,
+      | ^^^^^^^^^^
+> 151 |     value,
+      …
+      | ^^^^^^^^^^
+> 165 |     </div>
+      | ^^^^^^^^^^
+> 166 |   );
+      | ^^^^ The component is created during render here
+  167 |
+  168 |   const MonitorMobileCard = ({ monitor, style }) => {
+  169 |     const isMenuOpen = activeMenuId === monitor.id;                           react-hooks/static-components
+  301:10  error  Error: Cannot create components during render
+
+Components created during render will reset their state each time they are created. Declare components outside of render.
+
+  299 |           icon={<div className="w-1 h-1" />}
+  300 |         />
+> 301 |         <StatCard
+      |          ^^^^^^^^ This component is created during render
+  302 |           title="Online"
+  303 |           value={onlineCount}
+  304 |           subtext={`${healthPercentage}% healthy`}
+
+  147 |     totalMonitors > 0 ? Math.round((onlineCount / totalMonitors) * 100) : 0;
+  148 |
+> 149 |   const StatCard = ({
+      |                    ^^
+> 150 |     title,
+      | ^^^^^^^^^^
+> 151 |     value,
+      …
+      | ^^^^^^^^^^
+> 165 |     </div>
+      | ^^^^^^^^^^
+> 166 |   );
+      | ^^^^ The component is created during render here
+  167 |
+  168 |   const MonitorMobileCard = ({ monitor, style }) => {
+  169 |     const isMenuOpen = activeMenuId === monitor.id;                                      react-hooks/static-components
+  308:10  error  Error: Cannot create components during render
+
+Components created during render will reset their state each time they are created. Declare components outside of render.
+
+  306 |           icon={<BsCheckCircle className="text-emerald-400" />}
+  307 |         />
+> 308 |         <StatCard
+      |          ^^^^^^^^ This component is created during render
+  309 |           title="Issues"
+  310 |           value={issuesCount}
+  311 |           subtext={issuesCount > 0 ? "Need attention" : "All good"}
+
+  147 |     totalMonitors > 0 ? Math.round((onlineCount / totalMonitors) * 100) : 0;
+  148 |
+> 149 |   const StatCard = ({
+      |                    ^^
+> 150 |     title,
+      | ^^^^^^^^^^
+> 151 |     value,
+      …
+      | ^^^^^^^^^^
+> 165 |     </div>
+      | ^^^^^^^^^^
+> 166 |   );
+      | ^^^^ The component is created during render here
+  167 |
+  168 |   const MonitorMobileCard = ({ monitor, style }) => {
+  169 |     const isMenuOpen = activeMenuId === monitor.id;  react-hooks/static-components
+
+/Users/haiderkhan/Desktop/UpZy/Frontend/src/features/admin/users/pages/UsersPage.jsx
+  16:14  error  'error' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           no-unused-vars
+  24:5   error  Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+  22 |
+  23 |   useEffect(() => {
+> 24 |     fetchUsers();
+     |     ^^^^^^^^^^ Avoid calling setState() directly within an effect
+  25 |   }, []);
+  26 |
+  27 |   const removeUser = async (id) => {  react-hooks/set-state-in-effect
+  33:16  error  'error' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           no-unused-vars
+
+/Users/haiderkhan/Desktop/UpZy/Frontend/src/features/alerts/hook/useAlerts.js
+  15:14  error  'err' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     no-unused-vars
+  28:14  error  'err' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     no-unused-vars
+  34:5   error  Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+  32 |
+  33 |   useEffect(() => {
+> 34 |     fetchAlerts();
+     |     ^^^^^^^^^^^ Avoid calling setState() directly within an effect
+  35 |   }, []);
+  36 |
+  37 |   return {  react-hooks/set-state-in-effect
+
+/Users/haiderkhan/Desktop/UpZy/Frontend/src/features/alerts/pages/AlertsPage.jsx
+   6:10  error    'motion' is defined but never used. Allowed unused vars must match /^[A-Z_]/u                                                               no-unused-vars
+  28:6   warning  React Hook useEffect has missing dependencies: 'fetchAllIncidents' and 'fetchMonitors'. Either include them or remove the dependency array  react-hooks/exhaustive-deps
+  45:14  error    'err' is defined but never used                                                                                                             no-unused-vars
+
+/Users/haiderkhan/Desktop/UpZy/Frontend/src/features/analytics/components/MetricCard.jsx
+  4:43  error  'Icon' is defined but never used  no-unused-vars
+
+/Users/haiderkhan/Desktop/UpZy/Frontend/src/features/analytics/hooks/useAnalytics.js
+  64:7  error  Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+  62 |   useEffect(() => {
+  63 |     if (autoFetch && monitorId) {
+> 64 |       fetchAnalytics(monitorId, range);
+     |       ^^^^^^^^^^^^^^ Avoid calling setState() directly within an effect
+  65 |     }
+  66 |   }, [monitorId, range, autoFetch, fetchAnalytics]);
+  67 |  react-hooks/set-state-in-effect
+
+/Users/haiderkhan/Desktop/UpZy/Frontend/src/features/analytics/pages/AnalyticsPage.jsx
+  29:6  warning  React Hook useEffect has a missing dependency: 'fetchMonitors'. Either include it or remove the dependency array                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    react-hooks/exhaustive-deps
+  34:7  error    Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+  32 |   useEffect(() => {
+  33 |     if (monitors.length > 0 && !selectedMonitorId) {
+> 34 |       setSelectedMonitorId(monitors[0]._id);
+     |       ^^^^^^^^^^^^^^^^^^^^ Avoid calling setState() directly within an effect
+  35 |     }
+  36 |   }, [monitors, selectedMonitorId]);
+  37 |  react-hooks/set-state-in-effect
+  46:6  warning  React Hook useEffect has a missing dependency: 'fetchAnalytics'. Either include it or remove the dependency array                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   react-hooks/exhaustive-deps
+
+/Users/haiderkhan/Desktop/UpZy/Frontend/src/features/auth/hooks/useAuth.js
+  2:27  error  'logout' is defined but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+
+/Users/haiderkhan/Desktop/UpZy/Frontend/src/features/auth/service/authService.js
+  46:14  error  'error' is defined but never used  no-unused-vars
+
+/Users/haiderkhan/Desktop/UpZy/Frontend/src/features/auth/state/authSlice.js
+  108:44  error  'action' is defined but never used  no-unused-vars
+
+/Users/haiderkhan/Desktop/UpZy/Frontend/src/features/dashboard/components/Sidebar.jsx
+  32:9  error  'bottomItems' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+
+/Users/haiderkhan/Desktop/UpZy/Frontend/src/features/dashboard/pages/SettingsPage.jsx
+  4:10  error  'motion' is defined but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+
+/Users/haiderkhan/Desktop/UpZy/Frontend/src/features/dashboard/service/dashboardService.js
+  1:8  error  'axios' is defined but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+
+/Users/haiderkhan/Desktop/UpZy/Frontend/src/features/incident/pages/IncidentPage.jsx
+  6:10  error  'motion' is defined but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+
+/Users/haiderkhan/Desktop/UpZy/Frontend/src/features/landing/components/LoadingScreen.jsx
+  91:6  warning  React Hook useEffect has a missing dependency: 'onComplete'. Either include it or remove the dependency array. If 'onComplete' changes too often, find the parent component that defines it and wrap that definition in useCallback  react-hooks/exhaustive-deps
+
+/Users/haiderkhan/Desktop/UpZy/Frontend/src/features/landing/pages/LandingPage.jsx
+   739:28  error  'idx' is defined but never used  no-unused-vars
+   832:31  error  'idx' is defined but never used  no-unused-vars
+  1165:27  error  'i' is defined but never used    no-unused-vars
+
+/Users/haiderkhan/Desktop/UpZy/Frontend/src/features/monitors/pages/CreateMonitorPage.jsx
+   68:16  error  'e' is defined but never used    no-unused-vars
+   76:16  error  'e' is defined but never used    no-unused-vars
+  116:14  error  'err' is defined but never used  no-unused-vars
+
+/Users/haiderkhan/Desktop/UpZy/Frontend/src/features/monitors/pages/EditMonitorPage.jsx
+   64:16  error    'err' is defined but never used                                                                                                     no-unused-vars
+   70:6   warning  React Hook useEffect has missing dependencies: 'getMonitorById' and 'navigate'. Either include them or remove the dependency array  react-hooks/exhaustive-deps
+   92:16  error    'e' is defined but never used                                                                                                       no-unused-vars
+  100:16  error    'e' is defined but never used                                                                                                       no-unused-vars
+  140:14  error    'err' is defined but never used                                                                                                     no-unused-vars
+
+/Users/haiderkhan/Desktop/UpZy/Frontend/src/features/monitors/pages/MonitorsPage.jsx
+  22:6   warning  React Hook useEffect has a missing dependency: 'fetchMonitors'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+  56:16  error    'err' is defined but never used                                                                                   no-unused-vars
+
+✖ 39 problems (33 errors, 6 warnings)
+

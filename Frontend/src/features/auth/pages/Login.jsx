@@ -11,7 +11,7 @@ const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
-  const { login, loading, user } = useAuth();
+  const { login, loading, user, error, resetAuth } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -23,6 +23,15 @@ const Login = () => {
       }
     }
   }, [user, navigate]);
+
+  useEffect(() => {
+    if (error) {
+      import('react-hot-toast').then(({ default: toast }) => {
+        toast.error(error);
+        resetAuth();
+      });
+    }
+  }, [error, resetAuth]);
 
 
 

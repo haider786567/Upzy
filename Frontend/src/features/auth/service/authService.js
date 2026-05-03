@@ -13,6 +13,17 @@ const authService = {
     return response.data;
   },
 
+  logout: async () => {
+    try {
+      const response = await axios.post(`${API_URL}/auth/logout`, {}, { withCredentials: true });
+      return response.data;
+    } catch {
+      console.error('Logout error occurred');
+      // Still consider logout successful even if request fails
+      return { success: true };
+    }
+  },
+
   forgotPassword: async (email) => {
     const response = await axios.post(`${API_URL}/auth/forget-password`, { email }, { withCredentials: true });
     return response.data;
@@ -27,13 +38,19 @@ const authService = {
     const response = await axios.post(`${API_URL}/auth/reset-password`, { password }, { withCredentials: true });
     return response.data;
   },
+
   isAdmin: async () => {
     try {
       const response = await axios.get(`${API_URL}/admin/users`, { withCredentials: true });
       return response.status === 200;
-    } catch (error) {
+    } catch {
       return false;
     }
+  },
+
+  getMe: async () => {
+    const response = await axios.get(`${API_URL}/auth/me`, { withCredentials: true });
+    return response.data;
   }
 };
 

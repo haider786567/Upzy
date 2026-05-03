@@ -1,15 +1,16 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import DashboardLayout from '../../dashboard/components/DashboardLayout';
 import { useMonitor } from '../hooks/useMonitor';
 import { Globe, ArrowLeft, Zap, CheckCircle2, Loader, AlertCircle } from 'lucide-react';
 import gsap from 'gsap';
 import toast from 'react-hot-toast';
 
-const CreateMonitorPage = () => {
+const EditMonitorPage = () => {
+  const { id } = useParams();
   const navigate = useNavigate();
   const pageRef = useRef(null);
-  const { createMonitor, loading } = useMonitor();
+  const { getMonitorById, updateMonitor, loading } = useMonitor();
   
   const [formData, setFormData] = useState({
     name: '',
@@ -43,6 +44,29 @@ const CreateMonitorPage = () => {
 
     return () => ctx.revert();
   }, []);
+
+  useEffect(() => {
+    const fetchMonitor = async () => {
+      if (!id) return;
+      try {
+        const monitor = await getMonitorById(id);
+        setFormData({
+          name: monitor.name || '',
+          url: monitor.url || '',
+          method: monitor.method || 'GET',
+          interval: monitor.interval || 30,
+          expectedStatus: monitor.expectedStatus || 200,
+          timeout: monitor.timeout || 5000,
+          headers: monitor.headers ? JSON.stringify(monitor.headers) : '',
+          body: monitor.body ? JSON.stringify(monitor.body) : '',
+        });
+      } catch {
+        toast.error('Failed to fetch monitor details');
+        navigate('/dashboard/monitors');
+      }
+    };
+    fetchMonitor();
+  }, [id]);
 
   const validateForm = () => {
     const newErrors = {};
@@ -101,7 +125,7 @@ const CreateMonitorPage = () => {
     }
 
     try {
-      await createMonitor({
+      await updateMonitor(id, {
         name: formData.name,
         url: formData.url,
         method: formData.method,
@@ -113,7 +137,7 @@ const CreateMonitorPage = () => {
       });
       navigate('/dashboard/monitors');
     } catch {
-      toast.error('Failed to create monitor');
+      toast.error('Failed to update monitor');
     }
   };
 
@@ -142,8 +166,8 @@ const CreateMonitorPage = () => {
                 <Globe size={32} />
               </div>
               <div className="space-y-1 form-animate">
-                <h1 className="text-3xl font-bold text-dark tracking-tight">Add a new monitor</h1>
-                <p className="text-accent/60 font-medium">We'll start checking your endpoint within seconds.</p>
+                <h1 className="text-3xl font-bold text-dark tracking-tight">Edit monitor</h1>
+                <p className="text-accent/60 font-medium">Update your endpoint configuration.</p>
               </div>
             </div>
 
@@ -318,12 +342,12 @@ const CreateMonitorPage = () => {
                   {loading ? (
                     <>
                       <Loader size={20} className="animate-spin" />
-                      Creating...
+                      Updating...
                     </>
                   ) : (
                     <>
                       <CheckCircle2 size={20} />
-                      Start Monitoring
+                      Save Changes
                     </>
                   )}
                 </button>
@@ -343,4 +367,4 @@ const CreateMonitorPage = () => {
   );
 };
 
-export default CreateMonitorPage;
+export default EditMonitorPage;
