@@ -173,14 +173,14 @@ export default function Monitors() {
         <div className="flex items-start justify-between mb-3">
           <div className="flex items-center gap-2 flex-1 min-w-0">
             <div
-              className="w-2.5 h-2.5 rounded-full flex-shrink-0"
+              className="w-2.5 h-2.5 rounded-full shrink-0"
               style={{ backgroundColor: style.dot }}
             />
             <span className="font-semibold text-[#1a0e08] truncate text-sm sm:text-base">
               {monitor.name}
             </span>
           </div>
-          <div className="flex items-center gap-2 flex-shrink-0">
+          <div className="flex items-center gap-2 shrink-0">
             <span
               className="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-semibold"
               style={{ backgroundColor: style.bg, color: style.color }}
@@ -244,7 +244,7 @@ export default function Monitors() {
   return (
     <div
       className="min-h-screen p-4 sm:p-6 md:p-8"
-      style={{ backgroundColor: "#FBE4D8" }}
+      style={{ backgroundColor: "#FAF9F6" }}
     >
       {/* Header */}
       <div className="mb-6">
@@ -343,7 +343,7 @@ export default function Monitors() {
                 <div className="hidden md:grid md:grid-cols-12 gap-4 px-4 py-3 items-center border-b border-[#1a0e08]/5 hover:bg-white/30 transition-colors">
                   <div className="md:col-span-4 flex items-center gap-2 min-w-0 pl-2">
                     <div
-                      className="w-2 h-2 rounded-full flex-shrink-0"
+                      className="w-2 h-2 rounded-full shrink-0"
                       style={{ backgroundColor: style.dot }}
                     />
                     <span className="font-medium text-[#1a0e08] truncate text-sm">

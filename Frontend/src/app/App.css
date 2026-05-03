@@ -1,14 +1,14 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
 @import "tailwindcss";
 
-:root {
-  --color-primary: #2B124C;
+@theme {
+  --color-primary: #0a0a0a;
   --color-secondary: #522B5B;
   --color-accent: #854F6C;
   --color-rose: #DFB6B2;
-  --color-cream: #FDFBFA;
+  --color-cream: #FAF9F6;
   --color-dark: #0a0a0a;
-  --color-deep: #080312;
+  --color-deep: #000000;
 }
 
 @keyframes blob {
@@ -24,7 +24,6 @@
     padding: 0;
     height: 100%;
     width: 100%;
-    background-color: #FDFBFA;
   }
 }
 

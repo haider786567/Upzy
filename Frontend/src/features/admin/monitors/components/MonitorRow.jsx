@@ -20,7 +20,7 @@ const statusBadge = (status) => {
 
 const MonitorRow = ({ monitor, onDelete }) => {
   return (
-    <tr className="hover:bg-[#fdf6f2] transition-colors">
+    <tr className="hover:bg-cream transition-colors">
       <td className="px-5 py-3.5">
         <p className="text-sm font-medium text-[#7a3d20]">{monitor.name}</p>
       </td>

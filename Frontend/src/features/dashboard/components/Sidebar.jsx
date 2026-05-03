@@ -17,6 +17,7 @@ const Sidebar = () => {
     { icon: LayoutDashboard, label: 'Overview', path: '/dashboard' },
     { icon: Activity, label: 'Monitors', path: '/dashboard/monitors' },
     { icon: Shield, label: 'Incidents', path: '/dashboard/incidents' },
+    { icon: Bell, label: 'Alerts', path: '/dashboard/alerts' },
     { icon: BarChart3, label: 'Analytics', path: '/dashboard/analytics' },
   ];
 
