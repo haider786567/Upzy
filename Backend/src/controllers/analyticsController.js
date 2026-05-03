@@ -1,11 +1,25 @@
 import Analytics from "../models/analytics.model.js";
 import Incident from "../models/incident.model.js";
+import Monitor from "../models/monitor.model.js";
 import mongoose from "mongoose";
+import redis from "../config/redis.js";
 
 export const getAnalytics = async (req, res, next) => {
   try {
     const { monitorId } = req.params;
     const { range = "24h" } = req.query;
+
+    // 🔥 SECURITY FIX: Verify monitor belongs to user
+    const monitor = await Monitor.findOne({ _id: monitorId, userId: req.user._id });
+    if (!monitor) return res.status(404).json({ error: "Monitor not found or unauthorized" });
+
+    const cacheKey = `analytics:${monitorId}:${range}`;
+
+    // 🔥 1. Try Redis first
+    const cached = await redis.get(cacheKey);
+    if (cached) {
+      return res.json(JSON.parse(cached));
+    }
 
     const objectId = new mongoose.Types.ObjectId(monitorId);
 
@@ -19,12 +33,12 @@ export const getAnalytics = async (req, res, next) => {
       startDate = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
     }
 
+    // 🔥 Fetch analytics
     const analytics = await Analytics.find({
       monitorId: objectId,
       date: { $gte: startDate }
     }).sort({ date: 1 });
 
-    // aggregate from precomputed data
     let total = 0;
     let totalDown = 0;
     let totalLatency = 0;
@@ -39,8 +53,11 @@ export const getAnalytics = async (req, res, next) => {
     const errorRate = total ? (totalDown / total) * 100 : 0;
     const avgResponseTime = total ? totalLatency / total : 0;
 
-    // 🔥 downtime (still real-time from incidents)
-    const incidents = await Incident.find({ monitorId: objectId });
+    // 🔥 Only fetch relevant incidents (IMPORTANT FIX)
+    const incidents = await Incident.find({
+      monitorId: objectId,
+      startTime: { $gte: startDate }
+    });
 
     let totalDowntime = 0;
 
@@ -52,13 +69,18 @@ export const getAnalytics = async (req, res, next) => {
       }
     });
 
-    res.json({
-      uptime: uptime.toFixed(2),
-      errorRate: errorRate.toFixed(2),
-      avgResponseTime: avgResponseTime.toFixed(2),
+    const response = {
+      uptime: Number(uptime.toFixed(2)),
+      errorRate: Number(errorRate.toFixed(2)),
+      avgResponseTime: Number(avgResponseTime.toFixed(2)),
       totalDowntimeMinutes: Math.round(totalDowntime / (1000 * 60)),
       graph: analytics
-    });
+    };
+
+    // 🔥 2. Store in Redis (TTL)
+    await redis.set(cacheKey, JSON.stringify(response), "EX", 60);
+
+    res.json(response);
 
   } catch (err) {
     next(err);

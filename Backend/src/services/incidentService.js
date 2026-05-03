@@ -39,12 +39,14 @@ export const handleIncident = async (monitorId) => {
         monitorId,
         type,
         startTime: logs[logs.length - 1].createdAt, // first failure in window
-        resolved: false
+        resolved: false,
       });
+      console.log(incident);
+      
 
       // fire-and-forget AI (don’t block)
       generateAISummary(monitorId, incident._id).catch(() => { });
-      notifyIncidentCreated({ monitorId, type, startTime: incident.startTime }).catch(() => { });
+      notifyIncidentCreated({ monitorId, type, startTime: incident.startTime  }).catch(() => { });
 
       // realtime notify (best-effort)
       try {

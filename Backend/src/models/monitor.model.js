@@ -65,14 +65,18 @@ const monitorSchema = new mongoose.Schema({
   isActive: {
     type: Boolean,
     default: true
-  }
+  },
+  nextRunAt: {
+  type: Date,
+  index: true
+}
 
 }, {
   timestamps: true
 });
 
 // 🔥 Index for faster cron queries
-monitorSchema.index({ isActive: 1 });
+monitorSchema.index({ isActive: 1, nextRunAt: 1 });
 const Monitor = mongoose.model("Monitor", monitorSchema);
 
 export default Monitor;

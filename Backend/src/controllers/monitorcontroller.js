@@ -2,23 +2,29 @@ import monitorModel from "../models/monitor.model.js";
 import incidentModel from "../models/incident.model.js";
 import logModel from "../models/log.model.js";
 
-export const getAllMonitors = async (req, res,next) => {
+/**
+ * 🟢 GET ALL MONITORS
+ */
+export const getAllMonitors = async (req, res, next) => {
   try {
-    const monitors = await monitorModel.find({ userId: req.user._id });
-    if (!monitors) {
-      return next(new Error("No monitors found for this user"));
-    }
+    // 🔥 PERFORMANCE FIX: .lean() stops Mongoose from attaching heavy DB methods to results
+    const monitors = await monitorModel
+      .find({ userId: req.user._id })
+      .sort({ createdAt: -1 })
+      .lean();
+
     res.json(monitors);
   } catch (err) {
     next(err);
   }
 };
 
-export const createMonitor = async (req, res,next) => {
+/**
+ * 🟢 CREATE MONITOR
+ */
+export const createMonitor = async (req, res, next) => {
   try {
-    const { name, url, method, headers, body, expectedStatus, timeout, interval } = req.body;
-    const newMonitor = new monitorModel({
-      userId: req.user._id,
+    let {
       name,
       url,
       method,
@@ -27,53 +33,179 @@ export const createMonitor = async (req, res,next) => {
       expectedStatus,
       timeout,
       interval
+    } = req.body;
+
+    // 🔥 default + validation
+    const finalInterval = interval || 15;
+
+    if (finalInterval < 5 || finalInterval > 3600) {
+      return res.status(400).json({
+        error: "Interval must be between 5 and 3600 seconds"
+      });
+    }
+
+    const monitor = await monitorModel.create({
+      userId: req.user._id,
+      name,
+      url,
+      method,
+      headers,
+      body,
+      expectedStatus,
+      timeout,
+      interval: finalInterval,
+
+      // 🔥 critical for scheduler
+      nextRunAt: new Date(Date.now() + finalInterval * 1000)
     });
-    await newMonitor.save();
-    res.status(201).json(newMonitor);
+
+    res.status(201).json(monitor);
   } catch (err) {
     next(err);
   }
 };
 
-export const getMonitorById = async (req, res,next) => {
+/**
+ * 🟢 GET ONE MONITOR
+ */
+export const getMonitorById = async (req, res, next) => {
   try {
-    const monitor = await monitorModel.findOne({ _id: req.params.monitorId, userId: req.user._id });
+    const monitor = await monitorModel.findOne({
+      _id: req.params.monitorId,
+      userId: req.user._id
+    });
+
     if (!monitor) {
-      return next(new Error("Monitor not found"));
+      return res.status(404).json({ error: "Monitor not found" });
     }
+
     res.json(monitor);
   } catch (err) {
     next(err);
   }
 };
 
-export const updateMonitor = async (req, res,next) => {
+/**
+ * 🟡 UPDATE MONITOR
+ */
+export const updateMonitor = async (req, res, next) => {
   try {
-    const { name, url, method, headers, body, expectedStatus, timeout, interval } = req.body;
+    const updateData = { ...req.body };
+
+    // 🔥 interval update must reset schedule
+    if (req.body.interval !== undefined) {
+      const interval = Number(req.body.interval);
+
+      if (interval < 5 || interval > 3600) {
+        return res.status(400).json({
+          error: "Interval must be between 5 and 3600 seconds"
+        });
+      }
+
+      updateData.interval = interval;
+
+      // 🔥 reset nextRunAt
+      updateData.nextRunAt = new Date(Date.now() + interval * 1000);
+    }
+
     const monitor = await monitorModel.findOneAndUpdate(
       { _id: req.params.monitorId, userId: req.user._id },
-      { name, url, method, headers, body, expectedStatus, timeout, interval },
+      { $set: updateData },
       { new: true }
     );
+
     if (!monitor) {
-      return next(new Error("Monitor not found"));
+      return res.status(404).json({ error: "Monitor not found" });
     }
+
     res.json(monitor);
   } catch (err) {
     next(err);
   }
 };
 
-export const deleteMonitor = async (req, res,next) => {
+/**
+ * 🔴 DELETE MONITOR
+ */
+export const deleteMonitor = async (req, res, next) => {
   try {
-    const monitor = await monitorModel.findOneAndDelete({ _id: req.params.monitorId, userId: req.user._id });
+    const monitor = await monitorModel.findOneAndDelete({
+      _id: req.params.monitorId,
+      userId: req.user._id
+    });
+
     if (!monitor) {
-      return next(new Error("Monitor not found"));
+      return res.status(404).json({ error: "Monitor not found" });
     }
-    // Also delete related incidents and logs
-    await incidentModel.deleteMany({ monitorId: monitor._id });
-    await logModel.deleteMany({ monitorId: monitor._id });
-    res.json({ message: "Monitor and related data deleted" });
+
+    // 🔥 cleanup related data
+    await Promise.all([
+      incidentModel.deleteMany({ monitorId: monitor._id }),
+      logModel.deleteMany({ monitorId: monitor._id })
+    ]);
+
+    res.json({ message: "Monitor deleted successfully" });
+  } catch (err) {
+    next(err);
+  }
+};
+
+/**
+ * 🟢 PAUSE / RESUME MONITOR
+ */
+export const toggleMonitor = async (req, res, next) => {
+  try {
+    const monitor = await monitorModel.findOne({
+      _id: req.params.monitorId,
+      userId: req.user._id
+    });
+
+    if (!monitor) {
+      return res.status(404).json({ error: "Monitor not found" });
+    }
+
+    monitor.isActive = !monitor.isActive;
+
+    // 🔥 if re-activated → reset schedule
+    if (monitor.isActive) {
+      monitor.nextRunAt = new Date(
+        Date.now() + monitor.interval * 1000
+      );
+    }
+
+    await monitor.save();
+
+    res.json({
+      message: `Monitor ${monitor.isActive ? "resumed" : "paused"}`,
+      monitor
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
+/**
+ * ⚡ MANUAL CHECK (force run)
+ */
+import { checkMonitor } from "../services/monitorService.js";
+
+export const runMonitorNow = async (req, res, next) => {
+  try {
+    const monitor = await monitorModel.findOne({
+      _id: req.params.monitorId,
+      userId: req.user._id
+    });
+
+    if (!monitor) {
+      return res.status(404).json({ error: "Monitor not found" });
+    }
+
+    const result = await checkMonitor(monitor);
+
+    res.json({
+      message: "Monitor executed successfully",
+      result
+    });
   } catch (err) {
     next(err);
   }
