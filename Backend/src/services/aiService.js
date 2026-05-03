@@ -71,12 +71,12 @@ export const generateSummary = async ({
     const response = await model.invoke([
       { role: "user", content: formattedPrompt }
     ]);
-    console.log(response);
+    
     
 
     // 🔒 parse structured output
     const result = await parser.parse(response.content);
-    console.log(result);
+    
     
 
     return result;

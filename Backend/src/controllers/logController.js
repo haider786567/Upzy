@@ -11,7 +11,12 @@ export const getLogsForMonitor = async (req, res, next) => {
         if (!monitor) return res.status(404).json({ error: "Monitor not found or unauthorized" });
 
         const { page = 1, limit = 20 } = req.query;
-        const logs = await logModel.find({ monitorId }).sort({ timestamp: -1 }).skip((page - 1) * limit).limit(parseInt(limit));
+        // 🔥 PERFORMANCE FIX: sort by 'createdAt' to use the DB index, and use .lean() for faster JSON parsing
+        const logs = await logModel.find({ monitorId })
+            .sort({ createdAt: -1 })
+            .skip((page - 1) * limit)
+            .limit(parseInt(limit))
+            .lean();
         if (!logs) {
             next(new Error('Logs not found for this monitor'));
         }

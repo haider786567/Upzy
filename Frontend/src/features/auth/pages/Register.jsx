@@ -1,12 +1,20 @@
-import React, { useEffect, useRef } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useEffect, useRef, useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import gsap from 'gsap';
-import { User, Mail, Lock, ArrowRight, ShieldCheck, ChevronRight } from 'lucide-react';
+import { User, Mail, Lock, ArrowRight, ShieldCheck, ChevronRight, Loader2 } from 'lucide-react';
 import authChar from '../../../assets/auth-char-2.png';
+import { useAuth } from '../hooks/useAuth';
+import toast from 'react-hot-toast';
 
 const Register = () => {
   const containerRef = useRef(null);
   const blobRef = useRef(null);
+  const [fullname, setFullname] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const { register, loading } = useAuth();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -40,6 +48,19 @@ const Register = () => {
 
     return () => ctx.revert();
   }, []);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (password !== confirmPassword) {
+      toast.error('Passwords do not match');
+      return;
+    }
+    // Mapping fullname to username for the backend
+    const success = await register(fullname, email, password);
+    if (success) {
+      navigate('/dashboard');
+    }
+  };
 
   return (
     <div className="h-screen w-full bg-cream flex items-center justify-center relative overflow-hidden font-['Inter',sans-serif]">
@@ -86,7 +107,7 @@ const Register = () => {
             <p className="text-accent/80 font-medium text-base">Join our community of innovators</p>
           </div>
 
-          <form className="space-y-7 max-w-md w-full mx-auto mt-6" onSubmit={(e) => e.preventDefault()}>
+          <form className="space-y-7 max-w-md w-full mx-auto mt-6" onSubmit={handleSubmit}>
             <div className="animate-item relative">
               <div className="absolute inset-y-0 left-0 pl-5 flex items-center pointer-events-none text-accent z-20">
                 <User size={18} />
@@ -95,6 +116,9 @@ const Register = () => {
                 id="fullname"
                 type="text" 
                 placeholder=" "
+                value={fullname}
+                onChange={(e) => setFullname(e.target.value)}
+                required
                 className="peer w-full bg-white/40 border border-rose text-dark rounded-full py-3.5 pl-14 pr-4 outline-none focus:border-secondary focus:ring-4 focus:ring-secondary/5 transition-all font-medium shadow-sm"
               />
               <label 
@@ -115,6 +139,9 @@ const Register = () => {
                 id="email"
                 type="email" 
                 placeholder=" "
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
                 className="peer w-full bg-white/40 border border-rose text-dark rounded-full py-3.5 pl-14 pr-4 outline-none focus:border-secondary focus:ring-4 focus:ring-secondary/5 transition-all font-medium shadow-sm"
               />
               <label 
@@ -136,6 +163,9 @@ const Register = () => {
                     id="password"
                     type="password" 
                     placeholder=" "
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    required
                     className="peer w-full bg-white/40 border border-rose text-dark rounded-full py-3.5 pl-14 pr-4 outline-none focus:border-secondary focus:ring-4 focus:ring-secondary/5 transition-all font-medium shadow-sm"
                   />
                   <label 
@@ -155,6 +185,9 @@ const Register = () => {
                     id="confirm"
                     type="password" 
                     placeholder=" "
+                    value={confirmPassword}
+                    onChange={(e) => setConfirmPassword(e.target.value)}
+                    required
                     className="peer w-full bg-white/40 border border-rose text-dark rounded-full py-3.5 pl-14 pr-4 outline-none focus:border-secondary focus:ring-4 focus:ring-secondary/5 transition-all font-medium shadow-sm"
                   />
                   <label 
@@ -170,11 +203,21 @@ const Register = () => {
 
             <button 
               type="submit"
-              className="w-full bg-primary hover:bg-black text-cream font-bold py-4 rounded-full shadow-lg shadow-primary/20 transition-all active:scale-[0.98] flex items-center justify-center gap-2 group mt-4 overflow-hidden relative"
+              disabled={loading}
+              className="w-full bg-primary hover:bg-black text-cream font-bold py-4 rounded-full shadow-lg shadow-primary/20 transition-all active:scale-[0.98] flex items-center justify-center gap-2 group mt-4 overflow-hidden relative disabled:opacity-70 disabled:cursor-not-allowed"
             >
               <span className="relative z-10 flex items-center gap-2">
-                Create Account
-                <ChevronRight size={18} className="group-hover:translate-x-1 transition-transform" />
+                {loading ? (
+                  <>
+                    <Loader2 size={18} className="animate-spin" />
+                    Creating Account...
+                  </>
+                ) : (
+                  <>
+                    Create Account
+                    <ChevronRight size={18} className="group-hover:translate-x-1 transition-transform" />
+                  </>
+                )}
               </span>
             </button>
           </form>

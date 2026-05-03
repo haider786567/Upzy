@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import gsap from 'gsap';
 import { Lock, ChevronRight, Eye, ShieldCheck } from 'lucide-react';
-import { useAuth } from '../hook/useAuth';
+import { useAuth } from '../hooks/useAuth';
 import authChar from '../../../assets/auth-char-2.png';
 
 const ResetPassword = () => {
