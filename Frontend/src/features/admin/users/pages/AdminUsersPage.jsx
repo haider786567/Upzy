@@ -70,10 +70,11 @@ const AdminUsersContent = () => {
   }, [activeMenuId]);
 
   const filteredList = users.filter((user) => {
-    const fullName = `${user.firstName} ${user.lastName}`.toLowerCase();
-    const email = user.email.toLowerCase();
+    const username = (user.username || "").toLowerCase();
+    const email = (user.email || "").toLowerCase();
+    const id = (user._id || "").toLowerCase();
     const query = searchQuery.toLowerCase();
-    return fullName.includes(query) || email.includes(query);
+    return username.includes(query) || email.includes(query) || id.includes(query);
   });
 
   const adminCount = users.filter(u => u.role === 'admin').length;
@@ -111,8 +112,9 @@ const AdminUsersContent = () => {
             </div>
             <div className="min-w-0">
               <p className="font-semibold text-[#1a0e08] truncate text-sm sm:text-base">
-                {user.firstName} {user.lastName}
+                {user.username}
               </p>
+              <p className="text-[10px] text-[#1a0e08]/40 font-mono">ID: {user._id}</p>
               <p className="text-xs text-[#1a0e08]/40 truncate">{user.email}</p>
             </div>
           </div>
@@ -249,9 +251,14 @@ const AdminUsersContent = () => {
                       <div className="w-8 h-8 rounded-full bg-[#1a0e08]/5 flex items-center justify-center shrink-0">
                         <BsPerson className="text-[#1a0e08]/40" />
                       </div>
-                      <span className="font-medium text-[#1a0e08] truncate text-sm">
-                        {user.firstName} {user.lastName}
-                      </span>
+                      <div className="flex flex-col min-w-0">
+                        <span className="font-medium text-[#1a0e08] truncate text-sm">
+                          {user.username}
+                        </span>
+                        <span className="text-[10px] text-[#1a0e08]/30 font-mono truncate">
+                          ID: {user._id}
+                        </span>
+                      </div>
                     </div>
                     <div className="md:col-span-4 text-sm text-[#1a0e08]/60 truncate">
                       {user.email}

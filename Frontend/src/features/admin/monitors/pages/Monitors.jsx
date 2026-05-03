@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import {
   HiOutlineTrash,
   HiOutlineRefresh,
@@ -12,54 +12,8 @@ import {
   BsExclamationTriangle,
   BsClock,
 } from "react-icons/bs";
-
-const initialMonitors = [
-  {
-    id: 1,
-    name: "api.myapp.com",
-    type: "API",
-    status: "up",
-    latency: "98ms",
-    uptime: "99.9%",
-    interval: "1 min",
-  },
-  {
-    id: 2,
-    name: "dashboard.myapp.com",
-    type: "HTTPS",
-    status: "slow",
-    latency: "210ms",
-    uptime: "97.4%",
-    interval: "5 min",
-  },
-  {
-    id: 3,
-    name: "payments.myapp.com",
-    type: "API",
-    status: "down",
-    latency: "—",
-    uptime: "89.1%",
-    interval: "1 min",
-  },
-  {
-    id: 4,
-    name: "cdn.myapp.com",
-    type: "HTTPS",
-    status: "up",
-    latency: "44ms",
-    uptime: "100%",
-    interval: "10 min",
-  },
-  {
-    id: 5,
-    name: "auth.myapp.com",
-    type: "API",
-    status: "up",
-    latency: "120ms",
-    uptime: "99.5%",
-    interval: "1 min",
-  },
-];
+import { AdminMonitorProvider, useAdminMonitorStore } from "../state/adminMonitorStore";
+import { useAdminMonitors } from "../hooks/useAdminMonitors";
 
 const statusStyles = {
   up: {
@@ -77,7 +31,7 @@ const statusStyles = {
     icon: <BsExclamationTriangle className="text-xs" />,
   },
   slow: {
-    label: "Slow",
+    label: "Issues",
     color: "#9a3412",
     bg: "#ffedd5",
     dot: "#f97316",
@@ -85,18 +39,35 @@ const statusStyles = {
   },
 };
 
-const monitorTypes = ["API", "HTTPS", "TCP", "Ping"];
-const intervals = ["1 min", "5 min", "10 min", "30 min", "1 hour"];
+const mapStatus = (backendStatus) => {
+  switch (backendStatus?.toUpperCase()) {
+    case 'UP': return 'up';
+    case 'DOWN': return 'down';
+    case 'DEGRADED':
+    case 'UNKNOWN':
+    default: return 'slow';
+  }
+};
 
-export default function Monitors() {
-  const [list, setList] = useState(initialMonitors);
+const monitorTypes = ["API", "HTTPS", "TCP", "Ping"];
+const intervals = [
+  { label: "1 min", value: 1 },
+  { label: "5 min", value: 5 },
+  { label: "10 min", value: 10 },
+  { label: "30 min", value: 30 },
+  { label: "1 hour", value: 60 },
+];
+
+const MonitorsContent = () => {
+  const { monitors, loading, refreshMonitors, createMonitor, deleteMonitor } = useAdminMonitors();
   const [searchQuery, setSearchQuery] = useState("");
   const [activeMenuId, setActiveMenuId] = useState(null);
   const [showAddModal, setShowAddModal] = useState(false);
   const [newMonitor, setNewMonitor] = useState({
     name: "",
+    url: "",
     type: "API",
-    interval: "1 min",
+    interval: "5", // 5 min default matching backend min
   });
 
   useEffect(() => {
@@ -109,42 +80,26 @@ export default function Monitors() {
     return () => document.removeEventListener("click", handleClickOutside);
   }, [activeMenuId]);
 
-  const removeMonitor = (id) => {
-    setList((prev) => prev.filter((m) => m.id !== id));
-    setActiveMenuId(null);
+  const handleAddMonitor = async () => {
+    if (!newMonitor.name.trim() || !newMonitor.url.trim()) return;
+    const success = await createMonitor({
+      ...newMonitor,
+      interval: parseInt(newMonitor.interval)
+    });
+    if (success) {
+      setNewMonitor({ name: "", url: "", type: "API", interval: "5" });
+      setShowAddModal(false);
+    }
   };
 
-  const addMonitor = () => {
-    if (!newMonitor.name.trim()) return;
-
-    const newId = Math.max(...list.map((m) => m.id), 0) + 1;
-    const monitorToAdd = {
-      id: newId,
-      name: newMonitor.name,
-      type: newMonitor.type,
-      status: "up",
-      latency: "—",
-      uptime: "100%",
-      interval: newMonitor.interval,
-    };
-
-    setList([monitorToAdd, ...list]);
-    setNewMonitor({ name: "", type: "API", interval: "1 min" });
-    setShowAddModal(false);
-  };
-
-  const totalMonitors = list.filter((monitor) =>
-    monitor.name.toLowerCase().includes(searchQuery.toLowerCase()),
-  ).length;
-
-  const filteredList = list.filter((monitor) =>
-    monitor.name.toLowerCase().includes(searchQuery.toLowerCase()),
+  const filteredList = monitors.filter((monitor) =>
+    monitor.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    monitor.url?.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  const onlineCount = filteredList.filter((m) => m.status === "up").length;
-  const issuesCount = filteredList.filter((m) => m.status !== "up").length;
-  const healthPercentage =
-    totalMonitors > 0 ? Math.round((onlineCount / totalMonitors) * 100) : 0;
+  const onlineCount = filteredList.filter((m) => mapStatus(m.status) === "up").length;
+  const issuesCount = filteredList.filter((m) => mapStatus(m.status) !== "up").length;
+  const healthPercentage = filteredList.length > 0 ? Math.round((onlineCount / filteredList.length) * 100) : 0;
 
   const StatCard = ({
     title,
@@ -166,7 +121,7 @@ export default function Monitors() {
   );
 
   const MonitorMobileCard = ({ monitor, style }) => {
-    const isMenuOpen = activeMenuId === monitor.id;
+    const isMenuOpen = activeMenuId === monitor._id;
 
     return (
       <div className="bg-white/80 rounded-2xl border border-[#1a0e08]/8 p-4 mb-3 shadow-sm hover:shadow-md transition-shadow">
@@ -176,9 +131,12 @@ export default function Monitors() {
               className="w-2.5 h-2.5 rounded-full shrink-0"
               style={{ backgroundColor: style.dot }}
             />
-            <span className="font-semibold text-[#1a0e08] truncate text-sm sm:text-base">
-              {monitor.name}
-            </span>
+            <div className="truncate">
+              <span className="font-semibold text-[#1a0e08] block text-sm sm:text-base truncate">
+                {monitor.name}
+              </span>
+              <span className="text-[10px] text-[#1a0e08]/40 block truncate">{monitor.url}</span>
+            </div>
           </div>
           <div className="flex items-center gap-2 shrink-0">
             <span
@@ -192,7 +150,7 @@ export default function Monitors() {
               <button
                 onClick={(e) => {
                   e.stopPropagation();
-                  setActiveMenuId(isMenuOpen ? null : monitor.id);
+                  setActiveMenuId(isMenuOpen ? null : monitor._id);
                 }}
                 className="p-1.5 rounded-full hover:bg-[#1a0e08]/5 transition-colors"
               >
@@ -201,7 +159,7 @@ export default function Monitors() {
               {isMenuOpen && (
                 <div className="absolute right-0 top-8 z-20 w-32 bg-white rounded-xl shadow-lg border border-[#1a0e08]/10 py-1">
                   <button
-                    onClick={() => removeMonitor(monitor.id)}
+                    onClick={() => deleteMonitor(monitor._id)}
                     className="w-full px-4 py-2 text-left text-sm text-red-600 hover:bg-red-50 transition-colors flex items-center gap-2"
                   >
                     <HiOutlineTrash className="text-sm" />
@@ -215,26 +173,14 @@ export default function Monitors() {
 
         <div className="grid grid-cols-2 gap-y-2 gap-x-3 text-sm">
           <div className="flex items-center justify-between">
-            <span className="text-[#1a0e08]/40 text-xs">Type</span>
+            <span className="text-[#1a0e08]/40 text-xs">Method</span>
             <span className="text-[#1a0e08]/70 font-medium">
-              {monitor.type}
+              {monitor.method}
             </span>
           </div>
           <div className="flex items-center justify-between">
             <span className="text-[#1a0e08]/40 text-xs">Interval</span>
-            <span className="text-[#1a0e08]/70">{monitor.interval}</span>
-          </div>
-          <div className="flex items-center justify-between">
-            <span className="text-[#1a0e08]/40 text-xs">Latency</span>
-            <span className="text-[#1a0e08]/70 font-mono">
-              {monitor.latency}
-            </span>
-          </div>
-          <div className="flex items-center justify-between">
-            <span className="text-[#1a0e08]/40 text-xs">Uptime</span>
-            <span className="text-[#1a0e08]/70 font-semibold">
-              {monitor.uptime}
-            </span>
+            <span className="text-[#1a0e08]/70">{monitor.interval} min</span>
           </div>
         </div>
       </div>
@@ -242,10 +188,7 @@ export default function Monitors() {
   };
 
   return (
-    <div
-      className="min-h-screen p-4 sm:p-6 md:p-8"
-      style={{ backgroundColor: "#FAF9F6" }}
-    >
+    <div className="min-h-screen p-4 sm:p-6 md:p-8" style={{ backgroundColor: "#FAF9F6" }}>
       {/* Header */}
       <div className="mb-6">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
@@ -260,14 +203,15 @@ export default function Monitors() {
 
           <div className="flex items-center gap-2">
             <button
-              onClick={() => setSearchQuery("")}
-              className="p-2 rounded-xl bg-white/50 border border-[#1a0e08]/8 text-[#1a0e08]/50 hover:bg-white transition-colors"
+              onClick={refreshMonitors}
+              className="p-2 rounded-xl bg-white/50 border border-[#1a0e08]/8 text-[#1a0e08]/50 hover:bg-white transition-colors cursor-pointer"
+              disabled={loading}
             >
-              <HiOutlineRefresh className="text-lg" />
+              <HiOutlineRefresh className={`text-lg ${loading ? 'animate-spin' : ''}`} />
             </button>
             <button
               onClick={() => setShowAddModal(true)}
-              className="hidden sm:flex items-center gap-2 px-4 py-2 rounded-xl bg-[#1a0e08] text-white text-sm font-medium hover:bg-[#1a0e08]/85 transition-colors shadow-sm"
+              className="hidden sm:flex items-center gap-2 px-4 py-2 rounded-xl bg-[#1a0e08] text-white text-sm font-medium hover:bg-[#1a0e08]/85 transition-colors shadow-sm cursor-pointer"
             >
               <HiOutlinePlus className="text-base" />
               Add Monitor
@@ -294,7 +238,7 @@ export default function Monitors() {
       <div className="grid grid-cols-3 gap-3 sm:gap-4 mb-6">
         <StatCard
           title="Total"
-          value={totalMonitors}
+          value={filteredList.length}
           subtext="Endpoints"
           icon={<div className="w-1 h-1" />}
         />
@@ -312,9 +256,7 @@ export default function Monitors() {
           valueColor={issuesCount > 0 ? "text-rose-700" : "text-[#1a0e08]"}
           icon={
             <BsExclamationTriangle
-              className={
-                issuesCount > 0 ? "text-amber-500" : "text-[#1a0e08]/30"
-              }
+              className={issuesCount > 0 ? "text-amber-500" : "text-[#1a0e08]/30"}
             />
           }
         />
@@ -325,104 +267,88 @@ export default function Monitors() {
         {/* Desktop Table Header */}
         <div className="hidden md:grid md:grid-cols-12 gap-4 px-4 py-3 bg-white/20 border-b border-[#1a0e08]/8 text-xs font-semibold text-[#1a0e08]/50 uppercase tracking-wider">
           <div className="md:col-span-4 pl-2">Monitor</div>
-          <div className="md:col-span-2">Type</div>
+          <div className="md:col-span-2">URL</div>
+          <div className="md:col-span-1">Method</div>
           <div className="md:col-span-2">Interval</div>
-          <div className="md:col-span-1">Latency</div>
-          <div className="md:col-span-1">Uptime</div>
-          <div className="md:col-span-1">Status</div>
+          <div className="md:col-span-2">Status</div>
           <div className="md:col-span-1 text-center">Actions</div>
         </div>
 
         {/* List Items */}
         <div>
-          {filteredList.map((monitor) => {
-            const style = statusStyles[monitor.status];
-            return (
-              <div key={monitor.id}>
-                {/* Desktop Row */}
-                <div className="hidden md:grid md:grid-cols-12 gap-4 px-4 py-3 items-center border-b border-[#1a0e08]/5 hover:bg-white/30 transition-colors">
-                  <div className="md:col-span-4 flex items-center gap-2 min-w-0 pl-2">
-                    <div
-                      className="w-2 h-2 rounded-full shrink-0"
-                      style={{ backgroundColor: style.dot }}
-                    />
-                    <span className="font-medium text-[#1a0e08] truncate text-sm">
-                      {monitor.name}
-                    </span>
+          {loading && filteredList.length === 0 ? (
+            <div className="text-center py-20">
+              <div className="w-8 h-8 border-2 border-[#1a0e08]/20 border-t-[#1a0e08] rounded-full animate-spin mx-auto mb-4" />
+              <p className="text-[#1a0e08]/40">Scanning network endpoints...</p>
+            </div>
+          ) : (
+            filteredList.map((monitor) => {
+              const status = mapStatus(monitor.status);
+              const style = statusStyles[status];
+              return (
+                <div key={monitor._id}>
+                  {/* Desktop Row */}
+                  <div className="hidden md:grid md:grid-cols-12 gap-4 px-4 py-3 items-center border-b border-[#1a0e08]/5 hover:bg-white/30 transition-colors">
+                    <div className="md:col-span-4 flex items-center gap-2 min-w-0 pl-2">
+                      <div
+                        className="w-2 h-2 rounded-full shrink-0"
+                        style={{ backgroundColor: style.dot }}
+                      />
+                      <span className="font-medium text-[#1a0e08] truncate text-sm">
+                        {monitor.name}
+                      </span>
+                    </div>
+                    <div className="md:col-span-2 text-xs text-[#1a0e08]/60 truncate">
+                      {monitor.url}
+                    </div>
+                    <div className="md:col-span-1 text-xs font-bold text-[#1a0e08]/40">
+                      {monitor.method}
+                    </div>
+                    <div className="md:col-span-2 text-sm text-[#1a0e08]/60">
+                      Every {monitor.interval} min
+                    </div>
+                    <div className="md:col-span-2">
+                      <span
+                        className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold uppercase"
+                        style={{ backgroundColor: style.bg, color: style.color }}
+                      >
+                        {style.icon}
+                        {style.label}
+                      </span>
+                    </div>
+                    <div className="md:col-span-1 text-center">
+                      <button
+                        onClick={() => deleteMonitor(monitor._id)}
+                        className="text-[#1a0e08]/30 hover:text-red-500 transition-colors p-1 cursor-pointer"
+                      >
+                        <HiOutlineTrash className="text-base" />
+                      </button>
+                    </div>
                   </div>
-                  <div className="md:col-span-2 text-sm text-[#1a0e08]/60">
-                    {monitor.type}
-                  </div>
-                  <div className="md:col-span-2 text-sm text-[#1a0e08]/60">
-                    {monitor.interval}
-                  </div>
-                  <div className="md:col-span-1 text-sm font-mono text-[#1a0e08]/60">
-                    {monitor.latency}
-                  </div>
-                  <div className="md:col-span-1 text-sm font-semibold text-[#1a0e08]/70">
-                    {monitor.uptime}
-                  </div>
-                  <div className="md:col-span-1">
-                    <span
-                      className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold"
-                      style={{ backgroundColor: style.bg, color: style.color }}
-                    >
-                      {style.icon}
-                      {style.label}
-                    </span>
-                  </div>
-                  <div className="md:col-span-1 text-center">
-                    <button
-                      onClick={() => removeMonitor(monitor.id)}
-                      className="text-[#1a0e08]/30 hover:text-red-500 transition-colors p-1"
-                    >
-                      <HiOutlineTrash className="text-base" />
-                    </button>
-                  </div>
-                </div>
 
-                {/* Mobile Card */}
-                <div className="md:hidden">
-                  <MonitorMobileCard monitor={monitor} style={style} />
+                  {/* Mobile Card */}
+                  <div className="md:hidden p-3 pb-0">
+                    <MonitorMobileCard monitor={monitor} style={style} />
+                  </div>
                 </div>
-              </div>
-            );
-          })}
+              );
+            })
+          )}
         </div>
 
         {/* Empty State */}
-        {filteredList.length === 0 && (
+        {!loading && filteredList.length === 0 && (
           <div className="text-center py-12 sm:py-16">
             <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-[#1a0e08]/5 flex items-center justify-center">
-              <svg
-                className="w-8 h-8 text-[#1a0e08]/30"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={1.5}
-                  d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-                />
-              </svg>
+              <HiOutlineSearch className="w-8 h-8 text-[#1a0e08]/30" />
             </div>
             <p className="text-[#1a0e08]/40 text-base">No monitors found.</p>
             {searchQuery && (
               <button
                 onClick={() => setSearchQuery("")}
-                className="mt-3 text-sm text-[#1a0e08]/50 hover:text-[#1a0e08] transition-colors"
+                className="mt-3 text-sm text-[#1a0e08]/50 hover:text-[#1a0e08] transition-colors cursor-pointer"
               >
                 Clear search
-              </button>
-            )}
-            {!searchQuery && (
-              <button
-                onClick={() => setShowAddModal(true)}
-                className="mt-4 px-4 py-2 rounded-xl bg-[#1a0e08] text-white text-sm font-medium hover:bg-[#1a0e08]/85 transition-colors"
-              >
-                + Add your first monitor
               </button>
             )}
           </div>
@@ -433,7 +359,7 @@ export default function Monitors() {
       <div className="fixed bottom-6 right-6 md:hidden">
         <button
           onClick={() => setShowAddModal(true)}
-          className="w-14 h-14 rounded-full bg-[#1a0e08] text-white shadow-lg flex items-center justify-center hover:bg-[#1a0e08]/85 transition-colors active:scale-95"
+          className="w-14 h-14 rounded-full bg-[#1a0e08] text-white shadow-lg flex items-center justify-center hover:bg-[#1a0e08]/85 transition-colors active:scale-95 cursor-pointer"
         >
           <HiOutlinePlus className="w-6 h-6" />
         </button>
@@ -449,7 +375,7 @@ export default function Monitors() {
               </h2>
               <button
                 onClick={() => setShowAddModal(false)}
-                className="p-1 rounded-full hover:bg-[#1a0e08]/5 transition-colors"
+                className="p-1 rounded-full hover:bg-[#1a0e08]/5 transition-colors cursor-pointer"
               >
                 <HiOutlineX className="text-xl text-[#1a0e08]/50" />
               </button>
@@ -458,7 +384,7 @@ export default function Monitors() {
             <div className="p-5 space-y-4">
               <div>
                 <label className="block text-sm font-medium text-[#1a0e08]/70 mb-1">
-                  Monitor Name
+                  Friendly Name
                 </label>
                 <input
                   type="text"
@@ -466,69 +392,93 @@ export default function Monitors() {
                   onChange={(e) =>
                     setNewMonitor({ ...newMonitor, name: e.target.value })
                   }
-                  placeholder="e.g., api.myapp.com"
+                  placeholder="e.g., Main API Server"
                   className="w-full px-3 py-2 rounded-xl border border-[#1a0e08]/15 focus:outline-none focus:ring-2 focus:ring-[#1a0e08]/20 text-sm"
-                  autoFocus
                 />
               </div>
 
               <div>
                 <label className="block text-sm font-medium text-[#1a0e08]/70 mb-1">
-                  Monitor Type
+                  URL / Endpoint
                 </label>
-                <select
-                  value={newMonitor.type}
+                <input
+                  type="text"
+                  value={newMonitor.url}
                   onChange={(e) =>
-                    setNewMonitor({ ...newMonitor, type: e.target.value })
+                    setNewMonitor({ ...newMonitor, url: e.target.value })
                   }
-                  className="w-full px-3 py-2 rounded-xl border border-[#1a0e08]/15 focus:outline-none focus:ring-2 focus:ring-[#1a0e08]/20 text-sm bg-white"
-                >
-                  {monitorTypes.map((type) => (
-                    <option key={type} value={type}>
-                      {type}
-                    </option>
-                  ))}
-                </select>
+                  placeholder="https://api.myapp.com/health"
+                  className="w-full px-3 py-2 rounded-xl border border-[#1a0e08]/15 focus:outline-none focus:ring-2 focus:ring-[#1a0e08]/20 text-sm"
+                />
               </div>
 
-              <div>
-                <label className="block text-sm font-medium text-[#1a0e08]/70 mb-1">
-                  Check Interval
-                </label>
-                <select
-                  value={newMonitor.interval}
-                  onChange={(e) =>
-                    setNewMonitor({ ...newMonitor, interval: e.target.value })
-                  }
-                  className="w-full px-3 py-2 rounded-xl border border-[#1a0e08]/15 focus:outline-none focus:ring-2 focus:ring-[#1a0e08]/20 text-sm bg-white"
-                >
-                  {intervals.map((interval) => (
-                    <option key={interval} value={interval}>
-                      {interval}
-                    </option>
-                  ))}
-                </select>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-[#1a0e08]/70 mb-1">
+                    Method
+                  </label>
+                  <select
+                    value={newMonitor.type}
+                    onChange={(e) =>
+                      setNewMonitor({ ...newMonitor, type: e.target.value })
+                    }
+                    className="w-full px-3 py-2 rounded-xl border border-[#1a0e08]/15 focus:outline-none focus:ring-2 focus:ring-[#1a0e08]/20 text-sm bg-white"
+                  >
+                    {monitorTypes.map((type) => (
+                      <option key={type} value={type}>
+                        {type}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-[#1a0e08]/70 mb-1">
+                    Interval
+                  </label>
+                  <select
+                    value={newMonitor.interval}
+                    onChange={(e) =>
+                      setNewMonitor({ ...newMonitor, interval: e.target.value })
+                    }
+                    className="w-full px-3 py-2 rounded-xl border border-[#1a0e08]/15 focus:outline-none focus:ring-2 focus:ring-[#1a0e08]/20 text-sm bg-white"
+                  >
+                    {intervals.map((int) => (
+                      <option key={int.value} value={int.value}>
+                        {int.label}
+                      </option>
+                    ))}
+                  </select>
+                </div>
               </div>
             </div>
 
             <div className="flex gap-3 p-5 border-t border-[#1a0e08]/10">
               <button
                 onClick={() => setShowAddModal(false)}
-                className="flex-1 px-4 py-2 rounded-xl border border-[#1a0e08]/20 text-[#1a0e08]/60 hover:bg-[#1a0e08]/5 transition-colors text-sm font-medium"
+                className="flex-1 px-4 py-2 rounded-xl border border-[#1a0e08]/20 text-[#1a0e08]/60 hover:bg-[#1a0e08]/5 transition-colors text-sm font-medium cursor-pointer"
               >
                 Cancel
               </button>
               <button
-                onClick={addMonitor}
-                disabled={!newMonitor.name.trim()}
-                className="flex-1 px-4 py-2 rounded-xl bg-[#1a0e08] text-white text-sm font-medium hover:bg-[#1a0e08]/85 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                onClick={handleAddMonitor}
+                disabled={!newMonitor.name.trim() || !newMonitor.url.trim()}
+                className="flex-1 px-4 py-2 rounded-xl bg-[#1a0e08] text-white text-sm font-medium hover:bg-[#1a0e08]/85 transition-colors disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
               >
-                Add Monitor
+                Create Monitor
               </button>
             </div>
           </div>
         </div>
       )}
     </div>
+  );
+};
+
+export default function Monitors() {
+  return (
+    <AdminMonitorProvider>
+      <MonitorsContent />
+    </AdminMonitorProvider>
   );
 }

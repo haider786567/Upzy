@@ -10,7 +10,7 @@ const UserRow = ({ user, onDelete }) => {
             <User size={20} />
           </div>
           <div className="ml-4">
-            <div className="text-sm font-bold text-dark">{user.firstName} {user.lastName}</div>
+            <div className="text-sm font-bold text-dark">{user.username}</div>
             <div className="text-xs text-accent">ID: {user._id}</div>
           </div>
         </div>
