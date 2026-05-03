@@ -15,6 +15,12 @@ export const AdminMonitorProvider = ({ children }) => {
     setMonitors((prev) => [monitor, ...prev]);
   }, []);
 
+  const updateMonitorInState = useCallback((updatedMonitor) => {
+    setMonitors((prev) => 
+      prev.map((m) => (m._id === updatedMonitor._id ? updatedMonitor : m))
+    );
+  }, []);
+
   const removeMonitorFromState = useCallback((id) => {
     setMonitors((prev) => prev.filter((m) => m._id !== id));
   }, []);
@@ -27,6 +33,7 @@ export const AdminMonitorProvider = ({ children }) => {
     setError,
     setMonitorsData,
     addMonitorToState,
+    updateMonitorInState,
     removeMonitorFromState
   };
 

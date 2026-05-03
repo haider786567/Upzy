@@ -6,7 +6,7 @@ const UserRow = ({ user, onDelete }) => {
     <tr className="hover:bg-rose/5 transition-colors border-b border-rose/10">
       <td className="px-6 py-4 whitespace-nowrap">
         <div className="flex items-center">
-          <div className="h-10 w-10 flex-shrink-0 rounded-full bg-linear-to-br from-rose to-accent flex items-center justify-center text-cream">
+          <div className="h-10 w-10 shrink-0 rounded-full bg-linear-to-br from-rose to-accent flex items-center justify-center text-cream">
             <User size={20} />
           </div>
           <div className="ml-4">

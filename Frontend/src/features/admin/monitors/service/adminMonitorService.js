@@ -16,22 +16,11 @@ const adminMonitorService = {
   },
 
   /**
-   * Create a new monitor
-   * @param {Object} monitorData - The monitor details
+   * Get a specific monitor by ID
    */
-  createMonitor: async (monitorData) => {
+  getMonitorById: async (id) => {
     try {
-      // Backend expects: { name, url, method, headers, body, expectedStatus, timeout, interval }
-      // We map the UI names to backend fields
-      const payload = {
-        name: monitorData.name,
-        url: monitorData.url || 'https://example.com', // Default if missing
-        method: monitorData.method || 'GET',
-        interval: parseInt(monitorData.interval) || 5,
-        expectedStatus: 200,
-        timeout: 5000
-      };
-      const response = await axios.post(`${API_URL}/monitor/create`, payload, { withCredentials: true });
+      const response = await axios.get(`${API_URL}/monitor/${id}`, { withCredentials: true });
       return response.data;
     } catch (error) {
       throw error.response?.data || error.message;
@@ -39,12 +28,59 @@ const adminMonitorService = {
   },
 
   /**
-   * Delete a monitor by ID
-   * @param {string} id - The monitor ID
+   * Create a new monitor
+   */
+  createMonitor: async (monitorData) => {
+    try {
+      const response = await axios.post(`${API_URL}/monitor/create`, monitorData, { withCredentials: true });
+      return response.data;
+    } catch (error) {
+      throw error.response?.data || error.message;
+    }
+  },
+
+  /**
+   * Update an existing monitor
+   */
+  updateMonitor: async (id, monitorData) => {
+    try {
+      const response = await axios.put(`${API_URL}/monitor/${id}/update`, monitorData, { withCredentials: true });
+      return response.data;
+    } catch (error) {
+      throw error.response?.data || error.message;
+    }
+  },
+
+  /**
+   * Delete a monitor
    */
   deleteMonitor: async (id) => {
     try {
-      const response = await axios.delete(`${API_URL}/monitor/delete/${id}`, { withCredentials: true });
+      const response = await axios.delete(`${API_URL}/monitor/${id}/delete`, { withCredentials: true });
+      return response.data;
+    } catch (error) {
+      throw error.response?.data || error.message;
+    }
+  },
+
+  /**
+   * Manually run a monitor check now
+   */
+  runMonitorNow: async (id) => {
+    try {
+      const response = await axios.post(`${API_URL}/monitor/${id}/run`, {}, { withCredentials: true });
+      return response.data;
+    } catch (error) {
+      throw error.response?.data || error.message;
+    }
+  },
+
+  /**
+   * Toggle monitor active/inactive (Pause/Resume)
+   */
+  toggleMonitor: async (id) => {
+    try {
+      const response = await axios.patch(`${API_URL}/monitor/${id}/toggle`, {}, { withCredentials: true });
       return response.data;
     } catch (error) {
       throw error.response?.data || error.message;

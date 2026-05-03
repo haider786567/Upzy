@@ -12,6 +12,7 @@ export const useAdminMonitors = () => {
     setError, 
     setMonitorsData, 
     addMonitorToState,
+    updateMonitorInState,
     removeMonitorFromState 
   } = useAdminMonitorStore();
 
@@ -41,6 +42,18 @@ export const useAdminMonitors = () => {
     }
   }, [addMonitorToState]);
 
+  const updateMonitor = useCallback(async (id, monitorData) => {
+    try {
+      const updated = await adminMonitorService.updateMonitor(id, monitorData);
+      updateMonitorInState(updated);
+      toast.success('Monitor updated successfully');
+      return true;
+    } catch (err) {
+      toast.error(err.message || 'Failed to update monitor');
+      return false;
+    }
+  }, [updateMonitorInState]);
+
   const deleteMonitor = useCallback(async (id) => {
     try {
       await adminMonitorService.deleteMonitor(id);
@@ -50,6 +63,27 @@ export const useAdminMonitors = () => {
       toast.error(err.message || 'Failed to delete monitor');
     }
   }, [removeMonitorFromState]);
+
+  const runMonitorNow = useCallback(async (id) => {
+    try {
+      const result = await adminMonitorService.runMonitorNow(id);
+      toast.success(result.message || 'Check triggered successfully');
+      // Optionally refresh monitors to show new status
+      fetchMonitors();
+    } catch (err) {
+      toast.error(err.message || 'Failed to trigger check');
+    }
+  }, [fetchMonitors]);
+
+  const toggleMonitor = useCallback(async (id) => {
+    try {
+      const updated = await adminMonitorService.toggleMonitor(id);
+      updateMonitorInState(updated);
+      toast.success(`Monitor ${updated.isActive ? 'resumed' : 'paused'}`);
+    } catch (err) {
+      toast.error(err.message || 'Failed to toggle monitor');
+    }
+  }, [updateMonitorInState]);
 
   useEffect(() => {
     fetchMonitors();
@@ -61,6 +95,9 @@ export const useAdminMonitors = () => {
     error,
     refreshMonitors: fetchMonitors,
     createMonitor,
-    deleteMonitor
+    updateMonitor,
+    deleteMonitor,
+    runMonitorNow,
+    toggleMonitor
   };
 };
