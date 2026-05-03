@@ -139,5 +139,17 @@ const resetPassword = async (req, res, next) => {
         next(error); // Pass error to global error handler
     }
 }
+const getme = async (req, res, next) => {
+    try {
+        const user = await User.findById(req.user._id).select("-password -resetPasswordToken -resetPasswordExpire");
+        if (!user) {
+            return res.status(404).json({ message: "User not found", success: false });
+        }
+        res.json({ user, success: true });
+    } catch (error) {
+        console.error('Error in getme:', error.message);
+        next(error); // Pass error to global error handler
+    }
+}   
 
-export { registerUser, loginUser, logoutUser, forgetPassword, resetPassword };
+export { registerUser, loginUser, logoutUser, forgetPassword, resetPassword, getme };
