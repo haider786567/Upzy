@@ -110,7 +110,7 @@ const ForgotPassword = () => {
             <button 
               type="submit"
               disabled={loading}
-              className="w-full bg-primary hover:bg-[#190019] text-cream font-bold py-4 rounded-full shadow-lg shadow-primary/20 transition-all active:scale-[0.98] flex items-center justify-center gap-2 group disabled:opacity-70"
+              className="w-full bg-primary hover:bg-black text-cream font-bold py-4 rounded-full shadow-lg shadow-primary/20 transition-all active:scale-[0.98] flex items-center justify-center gap-2 group disabled:opacity-70"
             >
               <span className="relative z-10 flex items-center gap-2">
                 {loading ? 'Sending...' : 'Send OTP'}

@@ -139,7 +139,7 @@ const Login = () => {
 
             <button 
               type="submit"
-              className="w-full bg-primary hover:bg-[#190019] text-cream font-bold py-4 rounded-full shadow-lg shadow-primary/20 transition-all active:scale-[0.98] flex items-center justify-center gap-2 group overflow-hidden relative"
+              className="w-full bg-primary hover:bg-black text-cream font-bold py-4 rounded-full shadow-lg shadow-primary/20 transition-all active:scale-[0.98] flex items-center justify-center gap-2 group overflow-hidden relative"
             >
               <span className="relative z-10 flex items-center gap-2">
                 Sign In to Dashboard

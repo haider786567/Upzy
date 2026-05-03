@@ -60,7 +60,7 @@ const Layout = () => {
   const toggleCollapse = () => setCollapsed(!collapsed);
 
   return (
-    <div className="flex h-screen bg-[#FBE4D8] text-stone-800 overflow-hidden">
+    <div className="flex h-screen bg-cream text-stone-800 overflow-hidden">
       {/* Overlay */}
       <AnimatePresence>
         {mobileOpen && (
@@ -92,7 +92,7 @@ const Layout = () => {
         {/* Header */}
         <div className="flex items-center justify-between px-4 py-5 border-b border-white/10">
           {!collapsed && (
-            <p className="text-[#FBE4D8] text-lg font-semibold">MonitorIQ</p>
+            <p className="text-cream text-lg font-semibold">MonitorIQ</p>
           )}
 
           <div className="flex items-center gap-2">

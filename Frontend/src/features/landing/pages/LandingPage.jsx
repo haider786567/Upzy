@@ -436,7 +436,7 @@ const LandingPage = () => {
   return (
     <div
       style={{
-        backgroundColor: "#FBE4D8",
+        backgroundColor: "#FAF9F6",
         fontFamily: "'Poppins', sans-serif",
       }}
       className="w-full text-[#0a0a0a] overflow-x-hidden relative"
@@ -513,7 +513,7 @@ const LandingPage = () => {
       <nav
         ref={navRef}
         className="fixed top-0 left-0 w-full z-50 flex items-center justify-between px-8 md:px-16 py-5"
-        style={{ backgroundColor: "#FBE4D8cc", backdropFilter: "blur(12px)" }}
+        style={{ backgroundColor: "#FAF9F6cc", backdropFilter: "blur(12px)" }}
       >
         <div className="flex items-center gap-2 group cursor-pointer">
           <HiOutlineStatusOnline className="text-[#0a0a0a] text-xl group-hover:scale-110 transition-transform" />
@@ -959,9 +959,9 @@ const LandingPage = () => {
               icon: (
                 <MdNotificationsActive className="text-[#0a0a0a] text-xl" />
               ),
-              title: "🔔 Real-Time Alerts",
+              title: "Real-Time Alerts",
               desc: "Instant notifications the moment your site goes down or slows — via email, Slack, or SMS. Avg alert time under 30 seconds.",
-              tag: "⚡ Under 30s response",
+              tag: "Under 30s response",
               tagIcon: (
                 <BsLightningChargeFill className="text-yellow-500 text-xs" />
               ),
@@ -971,17 +971,17 @@ const LandingPage = () => {
               icon: (
                 <MdOutlineDashboardCustomize className="text-[#0a0a0a] text-xl" />
               ),
-              title: "📊 Live Dashboards",
+              title: "Live Dashboards",
               desc: "Uptime graphs, latency charts, and response logs — all in one clean, real-time dashboard. Know your status at a glance.",
-              tag: "📈 Real-time metrics",
+              tag: "Real-time metrics",
               tagIcon: <BsGraphUpArrow className="text-blue-500 text-xs" />,
             },
             {
               ref: sol3Ref,
               icon: <RiAiGenerate className="text-[#0a0a0a] text-xl" />,
-              title: "🤖 AI Incident Summaries",
+              title: "AI Incident Summaries",
               desc: "When something breaks, AI tells you exactly what happened, why, and how to fix it — no guesswork, no log-diving.",
-              tag: "✨ Powered by AI",
+              tag: "Powered by AI",
               tagIcon: <MdAutoFixHigh className="text-purple-500 text-xs" />,
             },
           ].map((sol, idx) => (
@@ -989,7 +989,7 @@ const LandingPage = () => {
               key={idx}
               ref={sol.ref}
               className="rounded-2xl p-8 border border-[#0a0a0a]/12 hover:border-[#0a0a0a]/25 hover:-translate-y-1 transition-all duration-200 group card-3d"
-              style={{ backgroundColor: "#f5d9c8" }}
+              style={{ backgroundColor: "#F2F1ED" }}
             >
               <div className="w-11 h-11 rounded-xl flex items-center justify-center mb-5 bg-[#0a0a0a]/8 group-hover:bg-[#0a0a0a]/14 transition-colors group-hover:scale-110">
                 {sol.icon}
@@ -1074,7 +1074,7 @@ const LandingPage = () => {
       {/* HOW IT WORKS */}
       <section
         id="how-it-works"
-        className="min-h-screen flex flex-col justify-center px-6 md:px-20 py-28 bg-[#f5d9c8]/30 relative z-10"
+        className="min-h-screen flex flex-col justify-center px-6 md:px-20 py-28 bg-[#F2F1ED]/30 relative z-10"
       >
         <div ref={howItWorksRef} className="text-center mb-16">
           <p className="text-[10px] tracking-[0.3em] uppercase text-[#0a0a0a]/35 mb-3">
