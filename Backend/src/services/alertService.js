@@ -172,7 +172,7 @@ export const notifyIncidentCreated = async ({ monitorId, type, startTime }) => {
     await sendEmailAlert({
       to: user.email,
       subject: `🚨 ${type}: ${monitorName} is ${type}`,
-      html: buildIncidentEmail({ monitorName, url: monitor.url, type, startTime })
+      html: buildIncidentEmail({ monitorName, url: monitor.url, type, startTime }) // Remove problem from here
     });
   } catch (err) {
     console.error("Alert (created) error:", err.message);
@@ -200,3 +200,5 @@ export const notifyIncidentResolved = async ({ monitorId, type, startTime, endTi
     console.error("Alert (resolved) error:", err.message);
   }
 };
+
+

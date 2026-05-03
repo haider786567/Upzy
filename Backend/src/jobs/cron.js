@@ -8,27 +8,37 @@ let isAnalyticsRunning = false;
 
 const startCron = () => {
 
-  // 🔥 MONITOR CHECK (every 15 sec)
+  // 🔥 SMART MONITOR SCHEDULER
   cron.schedule("*/15 * * * * *", async () => {
-    if (isMonitoringRunning) {
-      console.log("⚠️ Skipping overlapping monitor run");
-      return;
-    }
+    if (isMonitoringRunning) return;
 
     isMonitoringRunning = true;
-    console.log("⏱ Running monitor checks...");
 
     try {
-      const monitors = await monitorModel.find({ isActive: true });
+      const now = new Date();
 
-      // 🔥 LIMIT CONCURRENCY (important)
+      // 🔥 ONLY FETCH DUE MONITORS
+      const monitors = await monitorModel.find({
+        isActive: true,
+        nextRunAt: { $lte: now }
+      });
+
       const batchSize = 10;
 
       for (let i = 0; i < monitors.length; i += batchSize) {
         const batch = monitors.slice(i, i + batchSize);
 
         await Promise.allSettled(
-          batch.map((monitor) => checkMonitor(monitor))
+          batch.map(async (monitor) => {
+            await checkMonitor(monitor);
+
+            // 🔥 FIXED SCHEDULING (NO DRIFT)
+            monitor.nextRunAt = new Date(
+              monitor.nextRunAt.getTime() + monitor.interval * 1000
+            );
+
+            await monitor.save();
+          })
         );
       }
 
@@ -39,15 +49,11 @@ const startCron = () => {
     }
   });
 
-  // 🔥 ANALYTICS (every hour)
+  // 🔥 ANALYTICS
   cron.schedule("0 * * * *", async () => {
-    if (isAnalyticsRunning) {
-      console.log("⚠️ Skipping overlapping analytics run");
-      return;
-    }
+    if (isAnalyticsRunning) return;
 
     isAnalyticsRunning = true;
-    console.log("📊 Running hourly analytics...");
 
     try {
       await computeHourlyAnalytics();

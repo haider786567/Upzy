@@ -42,6 +42,11 @@ export const validateMonitor = [
     .isInt({ min: 5 })
     .withMessage("Interval must be at least 5 seconds"),
 
+  body("nextRunAt")
+    .optional()
+    .isDate()
+    .withMessage("Next run time must be a valid date"),
+
   // 🔥 validation result handler
   (req, res, next) => {
     const errors = validationResult(req);

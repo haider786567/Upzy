@@ -9,11 +9,12 @@ import incidentRoutes from "./routes/incidentRoutes.js";
 import errorHandler from './middlewares/errormiddleware.js';
 import analyticsRoutes from './routes/analyticsRoutes.js';
 import adminRoutes from './routes/adminRoutes.js';
+import { securityHeaders } from './utils/security.js';
 // import { globalLimiter } from './middlewares/ratelimiter.js';
 
 const app = express();
 
-
+app.use(securityHeaders);
 
 app.use(morgan('dev'));
 // app.use(globalLimiter); // Apply global rate limiter to all routes

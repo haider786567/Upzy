@@ -10,7 +10,15 @@ export const getIncidentsForMonitor = async (req, res, next) => {
         const monitor = await monitorModel.findOne({ _id: monitorId, userId: req.user._id });
         if (!monitor) return res.status(404).json({ error: "Monitor not found or unauthorized" });
 
-        const incidents = await incidentModel.find({ monitorId }).sort({ startTime: -1 });
+        const { page = 1, limit = 20 } = req.query;
+        
+        // 🔥 PERFORMANCE FIX: use .lean() to make GET requests up to 5x faster by returning pure JSON
+        const incidents = await incidentModel.find({ monitorId })
+            .sort({ startTime: -1 })
+            .skip((page - 1) * limit)
+            .limit(parseInt(limit))
+            .lean();
+            
         if (!incidents) {
             next(new Error('Incidents not found for this monitor'));
         }
