@@ -1,4 +1,6 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import LoadingScreen from "../components/LoadingScreen";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import {
@@ -26,6 +28,8 @@ import { SiPostgresql } from "react-icons/si";
 gsap.registerPlugin(ScrollTrigger);
 
 const LandingPage = () => {
+  const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(true);
   // Refs for animations
   const navRef = useRef(null);
   const heroTitleLettersRef = useRef([]);
@@ -375,10 +379,10 @@ const LandingPage = () => {
       requestAnimationFrame(updateCounter);
     };
 
-    const counterTrigger = ScrollTrigger.create({
+    ScrollTrigger.create({
       trigger: dashboardMockRef.current,
       start: "top 70%",
-      onEnter: () => {
+      onEnter: (self) => {
         if (uptimeValueRef.current)
           animateValue(uptimeValueRef.current, 99.5, 99.99, 1500, "%");
         if (responseValueRef.current)
@@ -387,7 +391,7 @@ const LandingPage = () => {
           animateValue(checksValueRef.current, 30, 45, 1500, "K");
         if (incidentValueRef.current)
           animateValue(incidentValueRef.current, 5, 0, 1500, "");
-        counterTrigger.kill();
+        self.kill();
       },
     });
 
@@ -429,18 +433,21 @@ const LandingPage = () => {
     // Cleanup
     return () => {
       ScrollTrigger.getAll().forEach((t) => t.kill());
-      counterTrigger?.kill();
     };
   }, []);
 
   return (
-    <div
-      style={{
-        backgroundColor: "#FAF9F6",
-        fontFamily: "'Poppins', sans-serif",
-      }}
-      className="w-full text-[#0a0a0a] overflow-x-hidden relative"
-    >
+    <>
+      {isLoading && <LoadingScreen onComplete={() => setIsLoading(false)} />}
+      <div
+        className={`w-full text-[#0a0a0a] overflow-x-hidden relative transition-opacity duration-1000 ${
+          isLoading ? "opacity-0" : "opacity-100"
+        }`}
+        style={{
+          backgroundColor: "#FAF9F6",
+          fontFamily: "'Poppins', sans-serif",
+        }}
+      >
       <style>
         {`
           @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap');
@@ -554,10 +561,16 @@ const LandingPage = () => {
           </a>
         </div>
         <div className="flex items-center gap-3">
-          <button className="text-sm font-medium px-5 py-2 rounded-full border border-[#0a0a0a]/20 hover:border-[#0a0a0a]/60 transition-all hover:scale-105">
+          <button
+            onClick={() => navigate("/login")}
+            className="text-sm font-medium px-5 py-2 rounded-full border border-[#0a0a0a]/20 hover:border-[#0a0a0a]/60 transition-all hover:scale-105"
+          >
             Log in
           </button>
-          <button className="text-sm font-medium px-5 py-2 rounded-full bg-[#0a0a0a] text-cream hover:scale-110 active:scale-95 transition-all duration-200 shadow-lg hover:shadow-xl">
+          <button
+            onClick={() => navigate("/register")}
+            className="text-sm font-medium px-5 py-2 rounded-full bg-[#0a0a0a] text-cream hover:scale-110 active:scale-95 transition-all duration-200 shadow-lg hover:shadow-xl"
+          >
             Sign up free
           </button>
         </div>
@@ -601,7 +614,10 @@ const LandingPage = () => {
           ref={heroBtnsRef}
           className="mt-10 flex items-center gap-4 flex-wrap justify-center"
         >
-          <button className="bg-[#0a0a0a] text-cream px-8 py-3.5 rounded-full text-sm font-medium hover:scale-110 active:scale-95 transition-all duration-200 flex items-center gap-2 shadow-xl group">
+          <button
+            onClick={() => navigate("/register")}
+            className="bg-[#0a0a0a] text-cream px-8 py-3.5 rounded-full text-sm font-medium hover:scale-110 active:scale-95 transition-all duration-200 flex items-center gap-2 shadow-xl group"
+          >
             <BsLightningChargeFill className="text-yellow-400 group-hover:rotate-12 transition-transform group-hover:scale-110" />
             Start Monitoring Free
           </button>
@@ -1263,6 +1279,7 @@ const LandingPage = () => {
         </div>
       </footer>
     </div>
+    </>
   );
 };
 
