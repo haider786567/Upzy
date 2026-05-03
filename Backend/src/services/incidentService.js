@@ -2,7 +2,8 @@ import Log from "../models/log.model.js";
 import Incident from "../models/incident.model.js";
 import Monitor from "../models/monitor.model.js";
 import { getIO } from "../socket/socket.js";
-import { generateSummary } from "./aiService.js"; 
+import { generateSummary } from "./aiService.js";
+import { notifyIncidentCreated, notifyIncidentResolved } from "./alertService.js";
 
 // tune these once
 const WINDOW = 3;              // logs to inspect
@@ -42,7 +43,8 @@ export const handleIncident = async (monitorId) => {
       });
 
       // fire-and-forget AI (don’t block)
-      generateAISummary(monitorId, incident._id).catch(() => {});
+      generateAISummary(monitorId, incident._id).catch(() => { });
+      notifyIncidentCreated({ monitorId, type, startTime: incident.startTime }).catch(() => { });
 
       // realtime notify (best-effort)
       try {
@@ -53,7 +55,7 @@ export const handleIncident = async (monitorId) => {
           resolved: false,
           startTime: incident.startTime
         });
-      } catch (_) {}
+      } catch (_) { }
 
       return;
     }
@@ -74,6 +76,9 @@ export const handleIncident = async (monitorId) => {
           { new: true }
         );
 
+        // fire-and-forget email alert
+        notifyIncidentResolved({ monitorId, type: updated.type, startTime: active.startTime, endTime: updated.endTime }).catch(() => { });
+
         try {
           const io = getIO();
           io.emit("incidentUpdate", {
@@ -82,7 +87,7 @@ export const handleIncident = async (monitorId) => {
             resolved: true,
             endTime: updated.endTime
           });
-        } catch (_) {}
+        } catch (_) { }
       }
     }
   } catch (err) {

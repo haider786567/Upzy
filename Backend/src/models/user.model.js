@@ -16,20 +16,24 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    role: { 
+    role: {
         type: String,
-        enum: ["user", "admin"], 
-        default: "user" 
+        enum: ["user", "admin"],
+        default: "user"
     },
 
-    // ✅ Forgot Password ke liye add karo
-    resetPasswordToken: {
-        type: String,
+    // OTP-based password reset (never exposed in URL)
+    resetOtp: {
+        type: String,        // stored as bcrypt hash
         default: undefined
     },
-    resetPasswordExpire: {
+    resetOtpExpire: {
         type: Date,
         default: undefined
+    },
+    resetOtpAttempts: {
+        type: Number,
+        default: 0           // max 5 attempts allowed
     }
 
 }, {
