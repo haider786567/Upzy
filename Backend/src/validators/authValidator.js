@@ -30,6 +30,18 @@ const forgetPasswordValidator = [
         .isEmail().withMessage('Enter a valid email'),
 ];
 
+const verifyOtpValidator = [
+    body('otp')
+        .notEmpty().withMessage('OTP is required')
+        .isLength({ min: 6, max: 6 }).withMessage('OTP must be 6 digits'),
+];
+
+const resetPasswordValidator = [
+    body('password')
+        .notEmpty().withMessage('Password is required')
+        .isLength({ min: 6 }).withMessage('Password must be at least 6 characters'),
+];
+
 // Middleware to handle validation errors
 const validate = (req, res, next) => {
     const errors = validationResult(req);
@@ -39,4 +51,4 @@ const validate = (req, res, next) => {
     next();
 };
 
-export { registerValidator, loginValidator, forgetPasswordValidator, validate };
+export { registerValidator, loginValidator, forgetPasswordValidator, verifyOtpValidator, resetPasswordValidator, validate };

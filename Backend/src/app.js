@@ -8,6 +8,7 @@ import logRoutes from './routes/logRoutes.js';
 import incidentRoutes from "./routes/incidentRoutes.js";
 import errorHandler from './middlewares/errormiddleware.js';
 import analyticsRoutes from './routes/analyticsRoutes.js';
+import adminRoutes from './routes/adminRoutes.js';
 // import { globalLimiter } from './middlewares/ratelimiter.js';
 
 const app = express();
@@ -24,6 +25,7 @@ app.use('/api/logs', logRoutes);
 app.use('/api/incidents', incidentRoutes);
 app.use('/api/auth', authRoutes);
 app.use('/api/analytics', analyticsRoutes);
+app.use('/api/admin', adminRoutes);
 
 app.get('/', (req, res) => {
   res.send('Hello, World!');

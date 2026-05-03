@@ -85,11 +85,7 @@ const adminMiddleware = (req, res, next) => {
 
     } catch (error) {
         console.error("Admin middleware error:", error.message);
-        return res.status(500).json({
-            message: "Internal server error",
-            success: false,
-            error: error.message
-        });
+        next(error);
     }
 };
 
