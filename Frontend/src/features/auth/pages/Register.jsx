@@ -53,7 +53,7 @@ const Register = () => {
         className="w-full h-full grid grid-cols-1 md:grid-cols-2 overflow-hidden"
       >
         {/* Left Side: Visual Focus - Graphical Part */}
-        <div className="hidden md:flex flex-col items-center justify-center relative bg-linear-to-b from-dark to-deep m-2 rounded-3xl overflow-hidden shadow-2xl shadow-black/40">
+        <div className="hidden md:flex flex-col items-center justify-center relative bg-dark m-2 rounded-3xl overflow-hidden shadow-2xl shadow-black/40">
           <div className="absolute inset-0 opacity-10 pointer-events-none" style={{ backgroundImage: `radial-gradient(#DFB6B2 1px, transparent 1px)`, backgroundSize: '32px 32px' }}></div>
           
           <div className="relative z-10 w-full h-full flex flex-col items-center justify-between p-10 py-16">
@@ -79,8 +79,8 @@ const Register = () => {
         {/* Right Side: Auth Form - No Background */}
         <div className="flex flex-col justify-center p-6 md:p-12 lg:p-20 space-y-6 overflow-y-auto hide-scrollbar">
           <div className="space-y-2 animate-item max-w-md w-full mx-auto">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-secondary/5 border border-secondary/10 mb-1">
-              <span className="text-[10px] font-bold text-secondary uppercase tracking-[0.2em]">Get Started</span>
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-dark/5 border border-dark/10 mb-1">
+              <span className="text-[10px] font-bold text-dark uppercase tracking-[0.2em]">Get Started</span>
             </div>
             <h1 className="text-4xl lg:text-5xl font-bold text-dark tracking-tight">Create Account</h1>
             <p className="text-accent/80 font-medium text-base">Join our community of innovators</p>
@@ -95,13 +95,13 @@ const Register = () => {
                 id="fullname"
                 type="text" 
                 placeholder=" "
-                className="peer w-full bg-white/40 border border-rose text-dark rounded-full py-3.5 pl-14 pr-4 outline-none focus:border-secondary focus:ring-4 focus:ring-secondary/5 transition-all font-medium shadow-sm"
+                className="peer w-full bg-white/40 border border-rose text-dark rounded-full py-3.5 pl-14 pr-4 outline-none focus:border-dark focus:ring-4 focus:ring-dark/5 transition-all font-medium shadow-sm"
               />
               <label 
                 htmlFor="fullname"
                 className="absolute left-14 top-1/2 -translate-y-1/2 px-2 bg-transparent text-accent font-medium pointer-events-none transition-all duration-200 z-10
-                           peer-focus:-top-2.5 peer-focus:left-6 peer-focus:text-[10px] peer-focus:font-bold peer-focus:text-secondary peer-focus:bg-cream peer-focus:uppercase peer-focus:tracking-widest
-                           peer-[:not(:placeholder-shown)]:-top-2.5 peer-[:not(:placeholder-shown)]:left-6 peer-[:not(:placeholder-shown)]:text-[10px] peer-[:not(:placeholder-shown)]:font-bold peer-[:not(:placeholder-shown)]:text-secondary peer-[:not(:placeholder-shown)]:bg-cream peer-[:not(:placeholder-shown)]:uppercase peer-[:not(:placeholder-shown)]:tracking-widest"
+                           peer-focus:-top-2.5 peer-focus:left-6 peer-focus:text-[10px] peer-focus:font-bold peer-focus:text-dark peer-focus:bg-cream peer-focus:uppercase peer-focus:tracking-widest
+                           peer-[:not(:placeholder-shown)]:-top-2.5 peer-[:not(:placeholder-shown)]:left-6 peer-[:not(:placeholder-shown)]:text-[10px] peer-[:not(:placeholder-shown)]:font-bold peer-[:not(:placeholder-shown)]:text-dark peer-[:not(:placeholder-shown)]:bg-cream peer-[:not(:placeholder-shown)]:uppercase peer-[:not(:placeholder-shown)]:tracking-widest"
               >
                 Full Name
               </label>
@@ -115,13 +115,13 @@ const Register = () => {
                 id="email"
                 type="email" 
                 placeholder=" "
-                className="peer w-full bg-white/40 border border-rose text-dark rounded-full py-3.5 pl-14 pr-4 outline-none focus:border-secondary focus:ring-4 focus:ring-secondary/5 transition-all font-medium shadow-sm"
+                className="peer w-full bg-white/40 border border-rose text-dark rounded-full py-3.5 pl-14 pr-4 outline-none focus:border-dark focus:ring-4 focus:ring-dark/5 transition-all font-medium shadow-sm"
               />
               <label 
                 htmlFor="email"
                 className="absolute left-14 top-1/2 -translate-y-1/2 px-2 bg-transparent text-accent font-medium pointer-events-none transition-all duration-200 z-10
-                           peer-focus:-top-2.5 peer-focus:left-6 peer-focus:text-[10px] peer-focus:font-bold peer-focus:text-secondary peer-focus:bg-cream peer-focus:uppercase peer-focus:tracking-widest
-                           peer-[:not(:placeholder-shown)]:-top-2.5 peer-[:not(:placeholder-shown)]:left-6 peer-[:not(:placeholder-shown)]:text-[10px] peer-[:not(:placeholder-shown)]:font-bold peer-[:not(:placeholder-shown)]:text-secondary peer-[:not(:placeholder-shown)]:bg-cream peer-[:not(:placeholder-shown)]:uppercase peer-[:not(:placeholder-shown)]:tracking-widest"
+                           peer-focus:-top-2.5 peer-focus:left-6 peer-focus:text-[10px] peer-focus:font-bold peer-focus:text-dark peer-focus:bg-cream peer-focus:uppercase peer-focus:tracking-widest
+                           peer-[:not(:placeholder-shown)]:-top-2.5 peer-[:not(:placeholder-shown)]:left-6 peer-[:not(:placeholder-shown)]:text-[10px] peer-[:not(:placeholder-shown)]:font-bold peer-[:not(:placeholder-shown)]:text-dark peer-[:not(:placeholder-shown)]:bg-cream peer-[:not(:placeholder-shown)]:uppercase peer-[:not(:placeholder-shown)]:tracking-widest"
               >
                 Email Address
               </label>
@@ -136,13 +136,13 @@ const Register = () => {
                     id="password"
                     type="password" 
                     placeholder=" "
-                    className="peer w-full bg-white/40 border border-rose text-dark rounded-full py-3.5 pl-14 pr-4 outline-none focus:border-secondary focus:ring-4 focus:ring-secondary/5 transition-all font-medium shadow-sm"
+                    className="peer w-full bg-white/40 border border-rose text-dark rounded-full py-3.5 pl-14 pr-4 outline-none focus:border-dark focus:ring-4 focus:ring-dark/5 transition-all font-medium shadow-sm"
                   />
                   <label 
                     htmlFor="password"
                     className="absolute left-14 top-1/2 -translate-y-1/2 px-2 bg-transparent text-accent font-medium pointer-events-none transition-all duration-200 z-10
-                               peer-focus:-top-2.5 peer-focus:left-6 peer-focus:text-[10px] peer-focus:font-bold peer-focus:text-secondary peer-focus:bg-cream peer-focus:uppercase peer-focus:tracking-widest
-                               peer-[:not(:placeholder-shown)]:-top-2.5 peer-[:not(:placeholder-shown)]:left-6 peer-[:not(:placeholder-shown)]:text-[10px] peer-[:not(:placeholder-shown)]:font-bold peer-[:not(:placeholder-shown)]:text-secondary peer-[:not(:placeholder-shown)]:bg-cream peer-[:not(:placeholder-shown)]:uppercase peer-[:not(:placeholder-shown)]:tracking-widest"
+                               peer-focus:-top-2.5 peer-focus:left-6 peer-focus:text-[10px] peer-focus:font-bold peer-focus:text-dark peer-focus:bg-cream peer-focus:uppercase peer-focus:tracking-widest
+                               peer-[:not(:placeholder-shown)]:-top-2.5 peer-[:not(:placeholder-shown)]:left-6 peer-[:not(:placeholder-shown)]:text-[10px] peer-[:not(:placeholder-shown)]:font-bold peer-[:not(:placeholder-shown)]:text-dark peer-[:not(:placeholder-shown)]:bg-cream peer-[:not(:placeholder-shown)]:uppercase peer-[:not(:placeholder-shown)]:tracking-widest"
                   >
                     Password
                   </label>
@@ -155,13 +155,13 @@ const Register = () => {
                     id="confirm"
                     type="password" 
                     placeholder=" "
-                    className="peer w-full bg-white/40 border border-rose text-dark rounded-full py-3.5 pl-14 pr-4 outline-none focus:border-secondary focus:ring-4 focus:ring-secondary/5 transition-all font-medium shadow-sm"
+                    className="peer w-full bg-white/40 border border-rose text-dark rounded-full py-3.5 pl-14 pr-4 outline-none focus:border-dark focus:ring-4 focus:ring-dark/5 transition-all font-medium shadow-sm"
                   />
                   <label 
                     htmlFor="confirm"
                     className="absolute left-14 top-1/2 -translate-y-1/2 px-2 bg-transparent text-accent font-medium pointer-events-none transition-all duration-200 z-10
-                               peer-focus:-top-2.5 peer-focus:left-6 peer-focus:text-[10px] peer-focus:font-bold peer-focus:text-secondary peer-focus:bg-cream peer-focus:uppercase peer-focus:tracking-widest
-                               peer-[:not(:placeholder-shown)]:-top-2.5 peer-[:not(:placeholder-shown)]:left-6 peer-[:not(:placeholder-shown)]:text-[10px] peer-[:not(:placeholder-shown)]:font-bold peer-[:not(:placeholder-shown)]:text-secondary peer-[:not(:placeholder-shown)]:bg-cream peer-[:not(:placeholder-shown)]:uppercase peer-[:not(:placeholder-shown)]:tracking-widest"
+                               peer-focus:-top-2.5 peer-focus:left-6 peer-focus:text-[10px] peer-focus:font-bold peer-focus:text-dark peer-focus:bg-cream peer-focus:uppercase peer-focus:tracking-widest
+                               peer-[:not(:placeholder-shown)]:-top-2.5 peer-[:not(:placeholder-shown)]:left-6 peer-[:not(:placeholder-shown)]:text-[10px] peer-[:not(:placeholder-shown)]:font-bold peer-[:not(:placeholder-shown)]:text-dark peer-[:not(:placeholder-shown)]:bg-cream peer-[:not(:placeholder-shown)]:uppercase peer-[:not(:placeholder-shown)]:tracking-widest"
                   >
                     Confirm
                   </label>
@@ -170,7 +170,7 @@ const Register = () => {
 
             <button 
               type="submit"
-              className="w-full bg-primary hover:bg-[#190019] text-cream font-bold py-4 rounded-full shadow-lg shadow-primary/20 transition-all active:scale-[0.98] flex items-center justify-center gap-2 group mt-4 overflow-hidden relative"
+              className="w-full bg-dark text-cream font-bold py-4 rounded-full shadow-lg shadow-black/20 transition-all active:scale-[0.98] flex items-center justify-center gap-2 group mt-4 overflow-hidden relative"
             >
               <span className="relative z-10 flex items-center gap-2">
                 Create Account
@@ -182,7 +182,7 @@ const Register = () => {
           <div className="space-y-6 animate-item max-w-md w-full mx-auto">
             <p className="text-center text-accent text-sm font-medium">
               Already a member?{' '}
-              <Link to="/login" className="text-primary font-bold hover:underline transition-all">Sign in here</Link>
+              <Link to="/login" className="text-dark font-bold hover:underline transition-all">Sign in here</Link>
             </p>
 
             <div className="relative">

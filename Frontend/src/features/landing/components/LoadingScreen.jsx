@@ -112,7 +112,7 @@ const LoadingScreen = ({ onComplete }) => {
           style={{
             fontSize: "clamp(4rem, 16vw, 11rem)",
             fontWeight: 800,
-            color: "#FBE4D8",
+            color: "#FDFBFA",
             letterSpacing: "-0.04em",
             lineHeight: 1,
             margin: 0,
@@ -127,7 +127,7 @@ const LoadingScreen = ({ onComplete }) => {
       <p
         ref={taglineRef}
         style={{
-          color: "rgba(251,228,216,0.4)",
+          color: "rgba(253,251,250,0.4)",
           fontSize: "clamp(0.75rem, 1.5vw, 0.95rem)",
           letterSpacing: "0.22em",
           textTransform: "uppercase",
@@ -157,7 +157,7 @@ const LoadingScreen = ({ onComplete }) => {
         >
           <span
             style={{
-              color: "rgba(251,228,216,0.3)",
+              color: "rgba(253,251,250,0.3)",
               fontSize: "11px",
               letterSpacing: "0.15em",
               textTransform: "uppercase",
@@ -168,7 +168,7 @@ const LoadingScreen = ({ onComplete }) => {
           <span
             ref={percentRef}
             style={{
-              color: "#FBE4D8",
+              color: "#FDFBFA",
               fontSize: "13px",
               fontWeight: 600,
               fontVariantNumeric: "tabular-nums",
@@ -182,7 +182,7 @@ const LoadingScreen = ({ onComplete }) => {
         <div
           style={{
             height: "2px",
-            backgroundColor: "rgba(251,228,216,0.12)",
+            backgroundColor: "rgba(253,251,250,0.12)",
             borderRadius: "99px",
             overflow: "hidden",
           }}
@@ -193,7 +193,7 @@ const LoadingScreen = ({ onComplete }) => {
             style={{
               height: "100%",
               width: "0%",
-              backgroundColor: "#FBE4D8",
+              backgroundColor: "#FDFBFA",
               borderRadius: "99px",
               transition: "width 0.05s linear",
             }}

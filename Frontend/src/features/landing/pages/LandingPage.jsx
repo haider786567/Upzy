@@ -436,10 +436,10 @@ const LandingPage = () => {
   return (
     <div
       style={{
-        backgroundColor: "#FBE4D8",
+        backgroundColor: "#FDFBFA",
         fontFamily: "'Poppins', sans-serif",
       }}
-      className="w-full text-[#0a0a0a] overflow-x-hidden relative"
+      className="w-full text-dark overflow-x-hidden relative"
     >
       <style>
         {`
@@ -513,51 +513,51 @@ const LandingPage = () => {
       <nav
         ref={navRef}
         className="fixed top-0 left-0 w-full z-50 flex items-center justify-between px-8 md:px-16 py-5"
-        style={{ backgroundColor: "#FBE4D8cc", backdropFilter: "blur(12px)" }}
+        style={{ backgroundColor: "#FDFBFAcc", backdropFilter: "blur(12px)" }}
       >
         <div className="flex items-center gap-2 group cursor-pointer">
-          <HiOutlineStatusOnline className="text-[#0a0a0a] text-xl group-hover:scale-110 transition-transform" />
+          <HiOutlineStatusOnline className="text-dark text-xl group-hover:scale-110 transition-transform" />
           <span className="text-xl font-black tracking-tight gradient-shimmer">
             Upzy
           </span>
         </div>
-        <div className="hidden md:flex items-center gap-8 text-sm text-[#0a0a0a]/55 font-medium">
+        <div className="hidden md:flex items-center gap-8 text-sm text-dark/55 font-medium">
           <a
             href="#features"
-            className="hover:text-[#0a0a0a] cursor-pointer transition-all hover:scale-105"
+            className="hover:text-dark cursor-pointer transition-all hover:scale-105"
           >
             Features
           </a>
           <a
             href="#how-it-works"
-            className="hover:text-[#0a0a0a] cursor-pointer transition-all hover:scale-105"
+            className="hover:text-dark cursor-pointer transition-all hover:scale-105"
           >
             How it works
           </a>
           <a
             href="#monitoring"
-            className="hover:text-[#0a0a0a] cursor-pointer transition-all hover:scale-105"
+            className="hover:text-dark cursor-pointer transition-all hover:scale-105"
           >
             Live Demo
           </a>
           <a
             href="#docs"
-            className="hover:text-[#0a0a0a] cursor-pointer transition-all hover:scale-105"
+            className="hover:text-dark cursor-pointer transition-all hover:scale-105"
           >
             Docs
           </a>
           <a
             href="#blog"
-            className="hover:text-[#0a0a0a] cursor-pointer transition-all hover:scale-105"
+            className="hover:text-dark cursor-pointer transition-all hover:scale-105"
           >
             Blog
           </a>
         </div>
         <div className="flex items-center gap-3">
-          <button className="text-sm font-medium px-5 py-2 rounded-full border border-[#0a0a0a]/20 hover:border-[#0a0a0a]/60 transition-all hover:scale-105">
+          <button className="text-sm font-medium px-5 py-2 rounded-full border border-dark/20 hover:border-dark/60 transition-all hover:scale-105">
             Log in
           </button>
-          <button className="text-sm font-medium px-5 py-2 rounded-full bg-[#0a0a0a] text-cream hover:scale-110 active:scale-95 transition-all duration-200 shadow-lg hover:shadow-xl">
+          <button className="text-sm font-medium px-5 py-2 rounded-full bg-dark text-cream hover:scale-110 active:scale-95 transition-all duration-200 shadow-lg hover:shadow-xl">
             Sign up free
           </button>
         </div>
@@ -567,7 +567,7 @@ const LandingPage = () => {
       <section className="min-h-screen flex flex-col items-center justify-center px-6 text-center relative pt-20 z-10">
         <div
           ref={heroTagRef}
-          className="text-[10px] tracking-[0.2em] uppercase text-[#0a0a0a]/40 mb-8 border border-[#0a0a0a]/15 px-5 py-2 rounded-full flex items-center gap-2 backdrop-blur-sm"
+          className="text-[10px] tracking-[0.2em] uppercase text-dark/40 mb-8 border border-dark/15 px-5 py-2 rounded-full flex items-center gap-2 backdrop-blur-sm"
         >
           <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse inline-block" />
           ✨ Website Monitoring Platform — Live ✨
@@ -589,10 +589,10 @@ const LandingPage = () => {
 
         <p
           ref={heroSubRef}
-          className="mt-6 text-[clamp(1rem,2vw,1.35rem)] text-[#0a0a0a]/50 max-w-lg leading-relaxed"
+          className="mt-6 text-[clamp(1rem,2vw,1.35rem)] text-dark/50 max-w-lg leading-relaxed"
         >
           Know the moment your website, API, or server breaks —{" "}
-          <span className="font-semibold bg-linear-to-r from-[#0a0a0a] to-[#5a5a5a] bg-clip-text text-transparent">
+          <span className="font-semibold bg-linear-to-r from-dark to-[#5a5a5a] bg-clip-text text-transparent">
             before your users do.
           </span>
         </p>
@@ -601,11 +601,11 @@ const LandingPage = () => {
           ref={heroBtnsRef}
           className="mt-10 flex items-center gap-4 flex-wrap justify-center"
         >
-          <button className="bg-[#0a0a0a] text-cream px-8 py-3.5 rounded-full text-sm font-medium hover:scale-110 active:scale-95 transition-all duration-200 flex items-center gap-2 shadow-xl group">
+          <button className="bg-dark text-cream px-8 py-3.5 rounded-full text-sm font-medium hover:scale-110 active:scale-95 transition-all duration-200 flex items-center gap-2 shadow-xl group">
             <BsLightningChargeFill className="text-yellow-400 group-hover:rotate-12 transition-transform group-hover:scale-110" />
             Start Monitoring Free
           </button>
-          <button className="text-sm font-medium px-8 py-3.5 rounded-full border border-[#0a0a0a]/20 hover:border-[#0a0a0a]/60 transition-all duration-200 hover:bg-[#0a0a0a]/5 hover:scale-105">
+          <button className="text-sm font-medium px-8 py-3.5 rounded-full border border-dark/20 hover:border-dark/60 transition-all duration-200 hover:bg-dark/5 hover:scale-105">
             See how it works →
           </button>
         </div>
@@ -619,7 +619,7 @@ const LandingPage = () => {
           ].map((t, i) => (
             <div
               key={t}
-              className="flex items-center gap-1.5 text-xs text-[#0a0a0a]/35 animate-float"
+              className="flex items-center gap-1.5 text-xs text-dark/35 animate-float"
               style={{ animationDelay: `${i * 0.3}s` }}
             >
               <BsStarFill className="text-yellow-500 text-xs" />
@@ -632,11 +632,11 @@ const LandingPage = () => {
           ref={scrollHintRef}
           className="absolute bottom-10 flex flex-col items-center gap-2 cursor-pointer"
         >
-          <span className="text-[10px] tracking-widest uppercase text-[#0a0a0a]/30">
+          <span className="text-[10px] tracking-widest uppercase text-dark/30">
             scroll to explore
           </span>
-          <div className="w-6 h-10 border-2 border-[#0a0a0a]/30 rounded-full flex justify-center">
-            <div className="w-1 h-2 bg-[#0a0a0a]/50 rounded-full mt-2 animate-bounce"></div>
+          <div className="w-6 h-10 border-2 border-dark/30 rounded-full flex justify-center">
+            <div className="w-1 h-2 bg-dark/50 rounded-full mt-2 animate-bounce"></div>
           </div>
         </div>
       </section>
@@ -645,13 +645,13 @@ const LandingPage = () => {
       <section id="monitoring" className="py-20 px-6 md:px-20 relative z-10">
         <div ref={livePreviewRef} className="max-w-6xl mx-auto">
           <div className="text-center mb-12">
-            <p className="text-[10px] tracking-[0.3em] uppercase text-[#0a0a0a]/35 mb-3">
+            <p className="text-[10px] tracking-[0.3em] uppercase text-dark/35 mb-3">
               Live Preview
             </p>
             <h2 className="text-[clamp(1.8rem,4vw,3rem)] font-bold leading-tight gradient-shimmer">
               Real-time monitoring dashboard
             </h2>
-            <p className="text-[#0a0a0a]/50 text-base max-w-2xl mx-auto mt-4">
+            <p className="text-dark/50 text-base max-w-2xl mx-auto mt-4">
               See your website health at a glance with beautiful graphs, instant
               alerts, and detailed analytics.
             </p>
@@ -659,9 +659,9 @@ const LandingPage = () => {
 
           <div
             ref={dashboardMockRef}
-            className="rounded-3xl bg-linear-to-br from-[#0a0a0a]/5 to-[#0a0a0a]/2 backdrop-blur-sm border border-[#0a0a0a]/15 p-6 shadow-2xl transition-all duration-500 card-3d"
+            className="rounded-3xl bg-linear-to-br from-dark/5 to-dark/2 backdrop-blur-sm border border-dark/15 p-6 shadow-2xl transition-all duration-500 card-3d"
           >
-            <div className="flex items-center justify-between mb-6 pb-4 border-b border-[#0a0a0a]/10">
+            <div className="flex items-center justify-between mb-6 pb-4 border-b border-dark/10">
               <div className="flex items-center gap-3">
                 <div className="relative">
                   <div
@@ -675,16 +675,16 @@ const LandingPage = () => {
                   className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-green-500/10 border border-green-500/30 animate-glow"
                 >
                   <BsCheckCircleFill className="text-green-500 text-xs" />
-                  <span className="text-sm font-semibold text-[#0a0a0a]/80">
+                  <span className="text-sm font-semibold text-dark/80">
                     🚀 System Status: All Systems Operational
                   </span>
                 </div>
               </div>
               <div className="flex gap-2">
-                <div className="w-8 h-8 rounded-lg bg-[#0a0a0a]/10 flex items-center justify-center hover:bg-[#0a0a0a]/20 transition-all cursor-pointer hover:scale-110">
+                <div className="w-8 h-8 rounded-lg bg-dark/10 flex items-center justify-center hover:bg-dark/20 transition-all cursor-pointer hover:scale-110">
                   <BsActivity className="text-sm" />
                 </div>
-                <div className="w-8 h-8 rounded-lg bg-[#0a0a0a]/10 flex items-center justify-center hover:bg-[#0a0a0a]/20 transition-all cursor-pointer hover:scale-110">
+                <div className="w-8 h-8 rounded-lg bg-dark/10 flex items-center justify-center hover:bg-dark/20 transition-all cursor-pointer hover:scale-110">
                   <BsGraphUpArrow className="text-sm" />
                 </div>
               </div>
@@ -723,9 +723,9 @@ const LandingPage = () => {
               ].map((stat, idx) => (
                 <div
                   key={stat.label}
-                  className="bg-cream/50 rounded-xl p-4 border border-[#0a0a0a]/8 hover:border-[#0a0a0a]/20 transition-all hover:scale-105 cursor-pointer"
+                  className="bg-cream/50 rounded-xl p-4 border border-dark/8 hover:border-dark/20 transition-all hover:scale-105 cursor-pointer"
                 >
-                  <p className="text-xs text-[#0a0a0a]/50">{stat.label}</p>
+                  <p className="text-xs text-dark/50">{stat.label}</p>
                   <p ref={stat.ref} className="text-2xl font-bold mt-1">
                     0{stat.suffix}
                   </p>
@@ -736,13 +736,13 @@ const LandingPage = () => {
 
             <div className="mb-6">
               <div className="flex items-center justify-between mb-3">
-                <span className="text-sm font-medium text-[#0a0a0a]/60 flex items-center gap-2">
+                <span className="text-sm font-medium text-dark/60 flex items-center gap-2">
                   <span className="live-dot w-2 h-2 rounded-full bg-green-500 inline-block animate-pulse"></span>
                   📈 Response Time (Last 24 hours)
                 </span>
-                <span className="text-xs text-[#0a0a0a]/40">ms ↓</span>
+                <span className="text-xs text-dark/40">ms ↓</span>
               </div>
-              <div className="h-52 w-full bg-linear-to-br from-[#0a0a0a]/5 to-[#0a0a0a]/2 rounded-xl p-4 relative overflow-hidden border border-[#0a0a0a]/8">
+              <div className="h-52 w-full bg-linear-to-br from-dark/5 to-dark/2 rounded-xl p-4 relative overflow-hidden border border-dark/8">
                 <svg
                   className="w-full h-full"
                   viewBox="0 0 800 180"
@@ -817,7 +817,7 @@ const LandingPage = () => {
                 <div
                   key={service.name}
                   ref={(el) => el && serviceItemsRef.current.push(el)}
-                  className="flex items-center justify-between p-3 rounded-lg border border-[#0a0a0a]/8 hover:bg-[#0a0a0a]/5 transition-all hover:scale-[1.01] cursor-pointer group"
+                  className="flex items-center justify-between p-3 rounded-lg border border-dark/8 hover:bg-dark/5 transition-all hover:scale-[1.01] cursor-pointer group"
                 >
                   <div className="flex items-center gap-3">
                     <div className="relative">
@@ -830,7 +830,7 @@ const LandingPage = () => {
                       <p className="text-sm font-medium group-hover:translate-x-1 transition-transform">
                         {service.name}
                       </p>
-                      <p className="text-xs text-[#0a0a0a]/40">
+                      <p className="text-xs text-dark/40">
                         {service.type}
                       </p>
                     </div>
@@ -840,7 +840,7 @@ const LandingPage = () => {
                       <span className="w-1.5 h-1.5 rounded-full bg-green-500 inline-block animate-pulse"></span>
                       ● {service.status}
                     </span>
-                    <span className="text-xs text-[#0a0a0a]/50 font-mono">
+                    <span className="text-xs text-dark/50 font-mono">
                       {service.latency}
                     </span>
                   </div>
@@ -853,18 +853,18 @@ const LandingPage = () => {
               <div className="flex items-center gap-2 justify-between flex-wrap relative z-10">
                 <div className="flex items-center gap-2">
                   <BsLightningChargeFill className="text-green-500 text-xs animate-pulse" />
-                  <span className="text-xs font-medium text-[#0a0a0a]/70">
+                  <span className="text-xs font-medium text-dark/70">
                     ✨ All systems healthy — No incidents in the last 24 hours
                     ✨
                   </span>
                 </div>
-                <span className="text-[10px] text-[#0a0a0a]/40 font-mono">
+                <span className="text-[10px] text-dark/40 font-mono">
                   Last check: <span className="animate-pulse">just now</span>
                 </span>
               </div>
             </div>
 
-            <div className="mt-4 h-0.5 w-full bg-[#0a0a0a]/10 rounded-full overflow-hidden">
+            <div className="mt-4 h-0.5 w-full bg-dark/10 rounded-full overflow-hidden">
               <div className="h-full w-1/3 bg-linear-to-r from-green-500 to-emerald-500 rounded-full animate-loading-bar"></div>
             </div>
           </div>
@@ -874,7 +874,7 @@ const LandingPage = () => {
       {/* PROBLEM SECTION */}
       <section className="min-h-screen flex flex-col justify-center px-6 md:px-20 py-28 relative z-10">
         <div ref={probHeadRef} className="mb-14">
-          <p className="text-[10px] tracking-[0.3em] uppercase text-[#0a0a0a]/35 mb-3">
+          <p className="text-[10px] tracking-[0.3em] uppercase text-dark/35 mb-3">
             ⚠️ The Problem
           </p>
           <h2 className="text-[clamp(1.8rem,4vw,3.2rem)] font-bold leading-tight max-w-xl">
@@ -882,7 +882,7 @@ const LandingPage = () => {
             <br />
             to know something broke.
           </h2>
-          <p className="mt-4 text-[#0a0a0a]/45 text-base max-w-lg leading-relaxed">
+          <p className="mt-4 text-dark/45 text-base max-w-lg leading-relaxed">
             Every minute of downtime costs money, reputation, and users. And
             most teams find out from frustrated customers — not their tools.
           </p>
@@ -912,10 +912,10 @@ const LandingPage = () => {
             <div
               key={prob.num}
               ref={refs[idx]}
-              className="border-t border-[#0a0a0a]/10 py-7 md:flex md:items-start md:gap-16 card-3d"
+              className="border-t border-dark/10 py-7 md:flex md:items-start md:gap-16 card-3d"
             >
               <div className="flex items-center gap-4 md:block md:w-28 shrink-0">
-                <span className="text-[clamp(2rem,5vw,4rem)] font-black leading-none text-[#0a0a0a]/8 tabular-nums">
+                <span className="text-[clamp(2rem,5vw,4rem)] font-black leading-none text-dark/8 tabular-nums">
                   {prob.num}
                 </span>
               </div>
@@ -926,7 +926,7 @@ const LandingPage = () => {
                     {prob.title}
                   </h3>
                 </div>
-                <p className="text-[#0a0a0a]/50 text-base leading-relaxed max-w-lg">
+                <p className="text-dark/50 text-base leading-relaxed max-w-lg">
                   {prob.desc}
                 </p>
               </div>
@@ -945,9 +945,9 @@ const LandingPage = () => {
           className="text-[clamp(2rem,5vw,4rem)] font-bold leading-tight max-w-2xl mb-4 gradient-shimmer"
         >
           Upzy watches everything —{" "}
-          <span className="text-[#0a0a0a]/30">so you don't have to.</span>
+          <span className="text-dark/30">so you don't have to.</span>
         </h2>
-        <p className="text-[#0a0a0a]/45 text-base max-w-lg mb-14 leading-relaxed">
+        <p className="text-dark/45 text-base max-w-lg mb-14 leading-relaxed">
           One platform for uptime monitoring, latency tracking, and AI-powered
           incident reports. Built for developers and teams who can't afford
           downtime.
@@ -957,7 +957,7 @@ const LandingPage = () => {
             {
               ref: sol1Ref,
               icon: (
-                <MdNotificationsActive className="text-[#0a0a0a] text-xl" />
+                <MdNotificationsActive className="text-dark text-xl" />
               ),
               title: "🔔 Real-Time Alerts",
               desc: "Instant notifications the moment your site goes down or slows — via email, Slack, or SMS. Avg alert time under 30 seconds.",
@@ -969,7 +969,7 @@ const LandingPage = () => {
             {
               ref: sol2Ref,
               icon: (
-                <MdOutlineDashboardCustomize className="text-[#0a0a0a] text-xl" />
+                <MdOutlineDashboardCustomize className="text-dark text-xl" />
               ),
               title: "📊 Live Dashboards",
               desc: "Uptime graphs, latency charts, and response logs — all in one clean, real-time dashboard. Know your status at a glance.",
@@ -978,7 +978,7 @@ const LandingPage = () => {
             },
             {
               ref: sol3Ref,
-              icon: <RiAiGenerate className="text-[#0a0a0a] text-xl" />,
+              icon: <RiAiGenerate className="text-dark text-xl" />,
               title: "🤖 AI Incident Summaries",
               desc: "When something breaks, AI tells you exactly what happened, why, and how to fix it — no guesswork, no log-diving.",
               tag: "✨ Powered by AI",
@@ -988,17 +988,17 @@ const LandingPage = () => {
             <div
               key={idx}
               ref={sol.ref}
-              className="rounded-2xl p-8 border border-[#0a0a0a]/12 hover:border-[#0a0a0a]/25 hover:-translate-y-1 transition-all duration-200 group card-3d"
-              style={{ backgroundColor: "#f5d9c8" }}
+              className="rounded-2xl p-8 border border-dark/12 hover:border-dark/25 hover:-translate-y-1 transition-all duration-200 group card-3d"
+              style={{ backgroundColor: "#FDFBFA" }}
             >
-              <div className="w-11 h-11 rounded-xl flex items-center justify-center mb-5 bg-[#0a0a0a]/8 group-hover:bg-[#0a0a0a]/14 transition-colors group-hover:scale-110">
+              <div className="w-11 h-11 rounded-xl flex items-center justify-center mb-5 bg-dark/8 group-hover:bg-dark/14 transition-colors group-hover:scale-110">
                 {sol.icon}
               </div>
               <h3 className="text-lg font-semibold mb-2">{sol.title}</h3>
-              <p className="text-[#0a0a0a]/50 leading-relaxed text-sm mb-4">
+              <p className="text-dark/50 leading-relaxed text-sm mb-4">
                 {sol.desc}
               </p>
-              <div className="flex items-center gap-1.5 text-xs text-[#0a0a0a]/40 font-medium group-hover:gap-2 transition-all">
+              <div className="flex items-center gap-1.5 text-xs text-dark/40 font-medium group-hover:gap-2 transition-all">
                 {sol.tagIcon}
                 {sol.tag}
               </div>
@@ -1007,7 +1007,7 @@ const LandingPage = () => {
         </div>
         <div
           ref={statsRef}
-          className="mt-12 grid grid-cols-3 gap-4 border-t border-[#0a0a0a]/10 pt-12"
+          className="mt-12 grid grid-cols-3 gap-4 border-t border-dark/10 pt-12"
         >
           {[
             {
@@ -1031,12 +1031,12 @@ const LandingPage = () => {
               <p className="text-[clamp(1.5rem,4vw,3rem)] font-black tracking-tight gradient-shimmer">
                 {s.num}
               </p>
-              <p className="text-[#0a0a0a]/40 text-sm mt-1">{s.label}</p>
+              <p className="text-dark/40 text-sm mt-1">{s.label}</p>
             </div>
           ))}
         </div>
         <div ref={featuresRef} className="mt-16">
-          <p className="text-[10px] tracking-[0.3em] uppercase text-[#0a0a0a]/35 mb-6">
+          <p className="text-[10px] tracking-[0.3em] uppercase text-dark/35 mb-6">
             ✨ Everything included ✨
           </p>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
@@ -1059,9 +1059,9 @@ const LandingPage = () => {
             ].map((f) => (
               <div
                 key={f.text}
-                className="flex items-center gap-3 px-4 py-3 rounded-xl border border-[#0a0a0a]/10 text-sm text-[#0a0a0a]/65 hover:border-[#0a0a0a]/25 hover:text-[#0a0a0a] transition-all duration-150 hover:scale-105 hover:bg-[#0a0a0a]/5"
+                className="flex items-center gap-3 px-4 py-3 rounded-xl border border-dark/10 text-sm text-dark/65 hover:border-dark/25 hover:text-dark transition-all duration-150 hover:scale-105 hover:bg-dark/5"
               >
-                <span className="text-base text-[#0a0a0a]/50 transition-transform group-hover:scale-110">
+                <span className="text-base text-dark/50 transition-transform group-hover:scale-110">
                   {f.icon}
                 </span>
                 {f.text}
@@ -1074,16 +1074,16 @@ const LandingPage = () => {
       {/* HOW IT WORKS */}
       <section
         id="how-it-works"
-        className="min-h-screen flex flex-col justify-center px-6 md:px-20 py-28 bg-[#f5d9c8]/30 relative z-10"
+        className="min-h-screen flex flex-col justify-center px-6 md:px-20 py-28 bg-cream/30 relative z-10"
       >
         <div ref={howItWorksRef} className="text-center mb-16">
-          <p className="text-[10px] tracking-[0.3em] uppercase text-[#0a0a0a]/35 mb-3">
+          <p className="text-[10px] tracking-[0.3em] uppercase text-dark/35 mb-3">
             🚀 Simple Setup
           </p>
           <h2 className="text-[clamp(2rem,4vw,3.5rem)] font-bold leading-tight gradient-shimmer">
             Get started in minutes
           </h2>
-          <p className="text-[#0a0a0a]/45 text-base max-w-md mx-auto mt-4">
+          <p className="text-dark/45 text-base max-w-md mx-auto mt-4">
             No complex configuration. Just add your endpoints and we'll handle
             the rest.
           </p>
@@ -1092,7 +1092,7 @@ const LandingPage = () => {
           {[
             {
               ref: step1Ref,
-              icon: <FaRocket className="text-3xl text-[#0a0a0a]/60" />,
+              icon: <FaRocket className="text-3xl text-dark/60" />,
               num: "01",
               title: "Add your URLs",
               desc: "Enter your website, API endpoints, or server IPs in one click.",
@@ -1100,7 +1100,7 @@ const LandingPage = () => {
             {
               ref: step2Ref,
               icon: (
-                <MdNotificationsActive className="text-3xl text-[#0a0a0a]/60" />
+                <MdNotificationsActive className="text-3xl text-dark/60" />
               ),
               num: "02",
               title: "Set alert channels",
@@ -1108,7 +1108,7 @@ const LandingPage = () => {
             },
             {
               ref: step3Ref,
-              icon: <BsGraphUpArrow className="text-3xl text-[#0a0a0a]/60" />,
+              icon: <BsGraphUpArrow className="text-3xl text-dark/60" />,
               num: "03",
               title: "Monitor & optimize",
               desc: "Watch real-time metrics and let AI analyze incidents.",
@@ -1117,16 +1117,16 @@ const LandingPage = () => {
             <div
               key={step.num}
               ref={step.ref}
-              className="text-center p-6 rounded-2xl border border-[#0a0a0a]/10 bg-cream transform-gpu hover:scale-105 transition-all duration-200 card-3d"
+              className="text-center p-6 rounded-2xl border border-dark/10 bg-cream transform-gpu hover:scale-105 transition-all duration-200 card-3d"
             >
-              <div className="w-20 h-20 rounded-2xl bg-linear-to-br from-[#0a0a0a]/10 to-[#0a0a0a]/5 flex items-center justify-center mx-auto mb-5 animate-float">
+              <div className="w-20 h-20 rounded-2xl bg-linear-to-br from-dark/10 to-dark/5 flex items-center justify-center mx-auto mb-5 animate-float">
                 {step.icon}
               </div>
-              <div className="text-5xl font-black text-[#0a0a0a]/10 mb-2">
+              <div className="text-5xl font-black text-dark/10 mb-2">
                 {step.num}
               </div>
               <h3 className="text-xl font-semibold mb-2">{step.title}</h3>
-              <p className="text-[#0a0a0a]/50 text-sm">{step.desc}</p>
+              <p className="text-dark/50 text-sm">{step.desc}</p>
             </div>
           ))}
         </div>
@@ -1135,7 +1135,7 @@ const LandingPage = () => {
       {/* TRUST BADGES */}
       <section className="py-20 px-6 relative z-10">
         <div ref={trustBadgesRef} className="max-w-5xl mx-auto text-center">
-          <p className="text-[10px] tracking-[0.3em] uppercase text-[#0a0a0a]/35 mb-6">
+          <p className="text-[10px] tracking-[0.3em] uppercase text-dark/35 mb-6">
             💎 Trusted by teams worldwide
           </p>
           <div className="flex flex-wrap justify-center items-center gap-12 gap-y-8">
@@ -1149,7 +1149,7 @@ const LandingPage = () => {
             ].map((brand, i) => (
               <div
                 key={brand}
-                className="text-[#0a0a0a]/30 font-black text-xl tracking-wide hover:text-[#0a0a0a]/60 transition-all hover:scale-105 cursor-pointer"
+                className="text-dark/30 font-black text-xl tracking-wide hover:text-dark/60 transition-all hover:scale-105 cursor-pointer"
               >
                 {brand}
               </div>
@@ -1157,20 +1157,20 @@ const LandingPage = () => {
           </div>
           <div className="mt-12 flex flex-wrap justify-center gap-8">
             <div className="flex items-center gap-2 hover:scale-105 transition-transform">
-              <FaUsers className="text-[#0a0a0a]/40 text-lg" />
-              <span className="text-sm text-[#0a0a0a]/50">
+              <FaUsers className="text-dark/40 text-lg" />
+              <span className="text-sm text-dark/50">
                 100,000+ active users
               </span>
             </div>
             <div className="flex items-center gap-2 hover:scale-105 transition-transform">
-              <FaServer className="text-[#0a0a0a]/40 text-lg" />
-              <span className="text-sm text-[#0a0a0a]/50">
+              <FaServer className="text-dark/40 text-lg" />
+              <span className="text-sm text-dark/50">
                 99.999% uptime SLA
               </span>
             </div>
             <div className="flex items-center gap-2 hover:scale-105 transition-transform">
-              <FaGlobe className="text-[#0a0a0a]/40 text-lg" />
-              <span className="text-sm text-[#0a0a0a]/50">
+              <FaGlobe className="text-dark/40 text-lg" />
+              <span className="text-sm text-dark/50">
                 25+ global monitoring nodes
               </span>
             </div>
@@ -1179,19 +1179,19 @@ const LandingPage = () => {
       </section>
 
       {/* GLOBAL REACH */}
-      <section className="py-20 px-6 border-t border-[#0a0a0a]/8 relative z-10">
+      <section className="py-20 px-6 border-t border-dark/8 relative z-10">
         <div
           ref={globalReachRef}
           className="max-w-6xl mx-auto flex flex-col md:flex-row items-center gap-12"
         >
           <div className="flex-1 text-center md:text-left">
-            <p className="text-[10px] tracking-[0.3em] uppercase text-[#0a0a0a]/35 mb-3">
+            <p className="text-[10px] tracking-[0.3em] uppercase text-dark/35 mb-3">
               🌍 Global Coverage
             </p>
             <h2 className="text-[clamp(1.8rem,3vw,2.8rem)] font-bold leading-tight mb-4 gradient-shimmer">
               Monitoring from 6 continents
             </h2>
-            <p className="text-[#0a0a0a]/50 leading-relaxed mb-6">
+            <p className="text-dark/50 leading-relaxed mb-6">
               Our distributed network checks your services from multiple
               locations worldwide, giving you real insights into global
               performance and latency.
@@ -1201,61 +1201,61 @@ const LandingPage = () => {
                 <span className="font-black text-3xl gradient-shimmer">
                   25+
                 </span>
-                <p className="text-xs text-[#0a0a0a]/40">Check locations</p>
+                <p className="text-xs text-dark/40">Check locations</p>
               </div>
               <div className="text-center">
                 <span className="font-black text-3xl gradient-shimmer">
                   99.999%
                 </span>
-                <p className="text-xs text-[#0a0a0a]/40">Monitoring uptime</p>
+                <p className="text-xs text-dark/40">Monitoring uptime</p>
               </div>
             </div>
           </div>
           <div className="flex-1 flex justify-center">
-            <div className="w-80 h-80 rounded-full bg-linear-to-br from-[#0a0a0a]/5 to-[#0a0a0a]/2 flex items-center justify-center relative">
-              <div className="absolute w-40 h-40 rounded-full bg-[#0a0a0a]/10 animate-ping"></div>
-              <div className="absolute w-32 h-32 rounded-full bg-[#0a0a0a]/15 animate-pulse"></div>
-              <FaGlobe className="text-7xl text-[#0a0a0a]/40 animate-spin-slow" />
+            <div className="w-80 h-80 rounded-full bg-linear-to-br from-dark/5 to-dark/2 flex items-center justify-center relative">
+              <div className="absolute w-40 h-40 rounded-full bg-dark/10 animate-ping"></div>
+              <div className="absolute w-32 h-32 rounded-full bg-dark/15 animate-pulse"></div>
+              <FaGlobe className="text-7xl text-dark/40 animate-spin-slow" />
             </div>
           </div>
         </div>
       </section>
 
       {/* FOOTER */}
-      <footer className="py-8 px-6 md:px-16 border-t border-[#0a0a0a]/10 relative z-10">
+      <footer className="py-8 px-6 md:px-16 border-t border-dark/10 relative z-10">
         <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
           <div className="flex items-center gap-2 group cursor-pointer">
-            <HiOutlineStatusOnline className="text-[#0a0a0a] text-lg group-hover:scale-110 transition-transform" />
+            <HiOutlineStatusOnline className="text-dark text-lg group-hover:scale-110 transition-transform" />
             <span className="text-lg font-black tracking-tight gradient-shimmer">
               upzy
             </span>
           </div>
-          <div className="text-[#0a0a0a]/40 text-xs">
+          <div className="text-dark/40 text-xs">
             © {new Date().getFullYear()} Upzy Monitoring. Made with ⚡ for
             developers.
           </div>
-          <div className="flex items-center gap-6 text-sm text-[#0a0a0a]/50 font-medium">
+          <div className="flex items-center gap-6 text-sm text-dark/50 font-medium">
             <a
               href="#terms"
-              className="hover:text-[#0a0a0a] transition-all hover:scale-105"
+              className="hover:text-dark transition-all hover:scale-105"
             >
               Terms
             </a>
             <a
               href="#privacy"
-              className="hover:text-[#0a0a0a] transition-all hover:scale-105"
+              className="hover:text-dark transition-all hover:scale-105"
             >
               Privacy
             </a>
             <a
               href="#twitter"
-              className="hover:text-[#0a0a0a] transition-all hover:scale-105"
+              className="hover:text-dark transition-all hover:scale-105"
             >
               <BsTwitter />
             </a>
             <a
               href="#github"
-              className="hover:text-[#0a0a0a] transition-all hover:scale-105"
+              className="hover:text-dark transition-all hover:scale-105"
             >
               <BsGithub />
             </a>
@@ -1267,3 +1267,4 @@ const LandingPage = () => {
 };
 
 export default LandingPage;
+ 
