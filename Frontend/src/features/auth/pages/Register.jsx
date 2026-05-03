@@ -13,8 +13,20 @@ const Register = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-  const { register, loading } = useAuth();
+  const { register, loading, user } = useAuth();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (user && user.role) {
+      if (user.role === 'admin') {
+        navigate('/admin/monitors');
+      } else {
+        navigate('/dashboard');
+      }
+    }
+  }, [user, navigate]);
+
+
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -56,10 +68,7 @@ const Register = () => {
       return;
     }
     // Mapping fullname to username for the backend
-    const success = await register(fullname, email, password);
-    if (success) {
-      navigate('/dashboard');
-    }
+    await register(fullname, email, password);
   };
 
   return (

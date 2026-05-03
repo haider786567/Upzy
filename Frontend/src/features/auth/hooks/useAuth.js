@@ -53,11 +53,17 @@ export const useAuth = () => {
     error: isError ? message : null,
     login: async (email, password) => {
       const result = await dispatch(login({ email, password }));
-      return result.meta.requestStatus === 'fulfilled';
+      if (result.meta.requestStatus === 'fulfilled') {
+        return result.payload.user || result.payload;
+      }
+      return null;
     },
     register: async (username, email, password) => {
       const result = await dispatch(register({ username, email, password }));
-      return result.meta.requestStatus === 'fulfilled';
+      if (result.meta.requestStatus === 'fulfilled') {
+        return result.payload.user || result.payload;
+      }
+      return null;
     }
   };
 };

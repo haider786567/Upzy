@@ -26,6 +26,14 @@ const authService = {
   resetPassword: async (password) => {
     const response = await axios.post(`${API_URL}/auth/reset-password`, { password }, { withCredentials: true });
     return response.data;
+  },
+  isAdmin: async () => {
+    try {
+      const response = await axios.get(`${API_URL}/admin/users`, { withCredentials: true });
+      return response.status === 200;
+    } catch (error) {
+      return false;
+    }
   }
 };
 

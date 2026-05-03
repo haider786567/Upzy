@@ -5,7 +5,11 @@ export const login = createAsyncThunk(
   'auth/login',
   async ({ email, password }, thunkAPI) => {
     try {
-      return await authService.login(email, password);
+      const response = await authService.login(email, password);
+      // After successful login, probe if the user is an admin
+      const isAdmin = await authService.isAdmin();
+      const user = response.user || response;
+      return { ...user, role: isAdmin ? 'admin' : 'user' };
     } catch (error) {
       const message = error.response?.data?.error || error.message || error.toString();
       return thunkAPI.rejectWithValue(message);

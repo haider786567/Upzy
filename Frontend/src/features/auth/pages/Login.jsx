@@ -11,8 +11,20 @@ const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
-  const { login, loading } = useAuth();
+  const { login, loading, user } = useAuth();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (user && user.role) {
+      if (user.role === 'admin') {
+        navigate('/admin/monitors');
+      } else {
+        navigate('/dashboard');
+      }
+    }
+  }, [user, navigate]);
+
+
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -49,10 +61,7 @@ const Login = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const success = await login(email, password);
-    if (success) {
-      navigate('/dashboard');
-    }
+    await login(email, password);
   };
 
   return (
