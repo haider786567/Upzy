@@ -9,9 +9,7 @@ if (!process.env.JWT_SECRET) {
     throw new Error('JWT_SECRET is not defined in the environment variables');
 }
 
-if (!process.env.GEMINI_API_KEY) {
-    throw new Error('GEMINI_API_KEY is not defined in the environment variables');
-}
+
 if (!process.env.REDIS_HOST) {
     throw new Error('REDIS_HOST is not defined in the environment variables');
 }
@@ -31,7 +29,6 @@ const config = {
     EMAIL: process.env.EMAIL,
     EMAIL_PASS: process.env.EMAIL_PASS,
     JWT_SECRET: process.env.JWT_SECRET,
-    GEMINI_API_KEY: process.env.GEMINI_API_KEY,
     REDIS_HOST: process.env.REDIS_HOST,
     REDIS_PORT: process.env.REDIS_PORT,
     REDIS_PASSWORD: process.env.REDIS_PASSWORD,
