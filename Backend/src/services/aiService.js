@@ -1,15 +1,23 @@
 import { ChatGroq } from "@langchain/groq";
 import { ChatPromptTemplate } from "@langchain/core/prompts";
+import { z } from "zod";
 import config from "../config/config.js";
 
-// 🔥 1. Create Groq model
-const model = new ChatGroq({
-  apiKey: config.GROQ_API_KEY,
-  model: "llama-3.1-8b-instant",
-  temperature: 0.2,
+// 🔥 1. Schema validation (no StructuredOutputParser)
+const schema = z.object({
+  summary: z.string(),
+  rootCause: z.string(),
+  suggestion: z.string()
 });
 
-// 🔥 2. Clean logs
+// 🔥 2. Groq model (stable + working)
+const model = new ChatGroq({
+  model: "llama-3.1-8b-instant",
+  temperature: 0.2,
+  apiKey: config.GROQ_API_KEY
+});
+
+// 🔥 3. Clean logs
 const shapeLogs = (logs = []) =>
   logs.map(l => ({
     status: l.status,
@@ -19,19 +27,9 @@ const shapeLogs = (logs = []) =>
     time: l.createdAt
   }));
 
-// 🔥 3. Prompt (NO schema)
+// 🔥 4. Prompt (FIXED: escaped braces)
 const prompt = ChatPromptTemplate.fromTemplate(`
 You are a backend monitoring expert.
-
-Return ONLY JSON:
-
-{
-  "summary": "short summary",
-  "rootCause": "1 sentence",
-  "suggestion": "1 fix"
-}
-
-NO markdown. NO explanation.
 
 URL: {url}
 Method: {method}
@@ -41,65 +39,46 @@ Recent logs:
 
 Previous logs:
 {previousLogs}
+
+Instructions:
+- Detect patterns (timeouts, latency spikes, failures)
+- Explain root cause in 1 sentence
+- Suggest one actionable fix
+
+CRITICAL:
+Return ONLY valid JSON in this format:
+
+{{
+  "summary": "...",
+  "rootCause": "...",
+  "suggestion": "..."
+}}
+
+Do NOT include:
+- markdown
+- explanations
+- schema
+- extra text
 `);
 
-// 🔥 4. Clean output
-function cleanOutput(raw) {
-  if (!raw) return "";
-
-  if (Array.isArray(raw)) {
-    raw = raw.map(r => r.text || "").join("");
-  }
-
-  return raw
-    .replace(/```json/gi, "")
-    .replace(/```/g, "")
-    .trim();
-}
-
-// 🔥 5. Extract LAST JSON block
-function extractLastJSON(text) {
+// 🔥 5. Safe JSON extractor (handles messy LLaMA output)
+const extractJSON = (text) => {
   const matches = text.match(/\{[\s\S]*?\}/g);
-  return matches ? matches[matches.length - 1] : null;
-}
+  if (!matches) throw new Error("No JSON found");
 
-// 🔥 6. Safe parse
-function safeParse(jsonString) {
-  try {
-    const parsed = JSON.parse(jsonString);
-
-    if (
-      typeof parsed.summary === "string" &&
-      typeof parsed.rootCause === "string" &&
-      typeof parsed.suggestion === "string"
-    ) {
-      return parsed;
+  // try parsing from last block (most likely correct)
+  for (let i = matches.length - 1; i >= 0; i--) {
+    try {
+      return JSON.parse(matches[i]);
+    } catch {
+      continue;
     }
-
-    return null;
-  } catch {
-    return null;
-  }
-}
-
-// 🔥 7. Retry wrapper
-async function callWithRetry(promptText, retries = 2) {
-  for (let i = 0; i <= retries; i++) {
-    const res = await model.invoke(promptText);
-
-    const cleaned = cleanOutput(res.content);
-    const extracted = extractLastJSON(cleaned);
-    const parsed = safeParse(extracted);
-
-    if (parsed) return parsed;
-
-    promptText += "\nREMEMBER: ONLY JSON.";
   }
 
-  return null;
-}
+  throw new Error("No valid JSON parsed");
+};
 
-// 🔥 8. Main function
+// 🔥 6. Main function
 export const generateSummary = async ({
   url,
   method,
@@ -114,23 +93,22 @@ export const generateSummary = async ({
       previousLogs: JSON.stringify(shapeLogs(previousLogs), null, 2)
     });
 
-    const result = await callWithRetry(formattedPrompt);
+    // ✅ IMPORTANT: pass string, NOT array
+    const response = await model.invoke(formattedPrompt);
 
-    if (result) return result;
+    // 🔥 Extract + validate
+    const json = extractJSON(response.content);
+    const result = schema.parse(json);
 
-    return {
-      summary: "Service issue detected",
-      rootCause: "AI parsing failed",
-      suggestion: "Check logs manually"
-    };
+    return result;
 
   } catch (err) {
-    console.error("Groq Error:", err.message);
+    console.error("Groq AI Error:", err.message);
 
     return {
-      summary: "Monitoring failure",
-      rootCause: "AI error",
-      suggestion: "Inspect system logs"
+      summary: "Issue detected",
+      rootCause: "AI unavailable",
+      suggestion: "Check logs manually"
     };
   }
 };
