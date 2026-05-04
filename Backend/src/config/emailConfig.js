@@ -1,3 +1,4 @@
+import nodemailer from "nodemailer";
 const transporter = nodemailer.createTransport({
   host: "142.250.183.108", // Gmail IPv4
   port: 587,
