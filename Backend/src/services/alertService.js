@@ -2,13 +2,14 @@ import transporter from "../config/emailConfig.js";
 import Monitor from "../models/monitor.model.js";
 import User from "../models/user.model.js";
 import config from "../config/config.js";
+import resend from "../config/emailConfig.js";
 
 // ─── SEND EMAIL ────────────────────────────────────────────
 
 const sendEmailAlert = async ({ to, subject, html }) => {
   try {
-    await transporter.sendMail({
-      from: config.EMAIL,
+    await resend.emails.send({
+      from: config.EMAIL_FROM,
       to,
       subject,
       html

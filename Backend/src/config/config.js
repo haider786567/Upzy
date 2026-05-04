@@ -9,8 +9,8 @@ if (!process.env.JWT_SECRET) {
     throw new Error('JWT_SECRET is not defined in the environment variables');
 }
 
-if (!process.env.GEMNI_API_KEY) {
-    throw new Error('GEMNI_API_KEY is not defined in the environment variables');
+if (!process.env.GEMINI_API_KEY) {
+    throw new Error('GEMINI_API_KEY is not defined in the environment variables');
 }
 if (!process.env.REDIS_HOST) {
     throw new Error('REDIS_HOST is not defined in the environment variables');
@@ -31,11 +31,13 @@ const config = {
     EMAIL: process.env.EMAIL,
     EMAIL_PASS: process.env.EMAIL_PASS,
     JWT_SECRET: process.env.JWT_SECRET,
-    GEMNI_API_KEY: process.env.GEMNI_API_KEY,
+    GEMINI_API_KEY: process.env.GEMINI_API_KEY,
     REDIS_HOST: process.env.REDIS_HOST,
     REDIS_PORT: process.env.REDIS_PORT,
     REDIS_PASSWORD: process.env.REDIS_PASSWORD,
     CLIENT_URL: process.env.CLIENT_URL,
-    GROQ_API_KEY: process.env.GROQ_API_KEY
+    GROQ_API_KEY: process.env.GROQ_API_KEY,
+    RESEND_API_KEY: process.env.RESEND_API_KEY,
+    EMAIL_FROM: process.env.EMAIL_FROM
 };
 export default config;

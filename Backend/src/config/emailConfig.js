@@ -1,15 +1,5 @@
-import nodemailer from "nodemailer";
+import { Resend } from "resend";
 import config from "./config.js";
-const transporter = nodemailer.createTransport({
-  host: "142.250.183.108", // Gmail IPv4
-  port: 587,
-  secure: false,
-  auth: {
-    user: config.EMAIL,
-    pass: config.EMAIL_PASS
-  },
-  tls: {
-    servername: "smtp.gmail.com"
-  }
-});
-export default transporter;
+
+const resend = new Resend(config.RESEND_API_KEY);
+export default resend;
