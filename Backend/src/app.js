@@ -22,12 +22,12 @@ app.use(morgan('dev'));
 app.use(cors({ origin: config.CLIENT_URL, credentials: true }));
 app.use(express.json());
 app.use(cookieParser());
-app.use('/api/monitor', monitorRoutes);
-app.use('/api/logs', logRoutes);
-app.use('/api/incidents', incidentRoutes);
-app.use('/api/auth', authRoutes);
-app.use('/api/analytics', analyticsRoutes);
-app.use('/api/admin', adminRoutes);
+app.use('/monitor', monitorRoutes);
+app.use('/logs', logRoutes);
+app.use('/incidents', incidentRoutes);
+app.use('/auth', authRoutes);
+app.use('/analytics', analyticsRoutes);
+app.use('/admin', adminRoutes);
 
 app.get('/', (req, res) => {
   res.send('Hello, World!');
