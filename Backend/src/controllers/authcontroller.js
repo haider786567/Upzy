@@ -22,7 +22,7 @@ const registerUser = async (req, res, next) => {
 
         const newUser = await User.create({ username, email, password });
         const token = jwt.sign({ id: newUser._id }, config.JWT_SECRET, { expiresIn: "1h" });
-        res.cookie("token", token, { httpOnly: true, secure: config.NODE_ENV === "production", sameSite: "strict" });
+        res.cookie("token", token, { httpOnly: true, secure: config.NODE_ENV === "production", sameSite: "none" });
 
         return res.status(201).json({ message: "User registered successfully", success: true, user: { id: newUser._id, username: newUser.username, email: newUser.email } });
 
@@ -52,7 +52,7 @@ const loginUser = async (req, res, next) => {
         }
 
         const token = jwt.sign({ id: user._id }, config.JWT_SECRET, { expiresIn: "1h" });
-        res.cookie("token", token, { httpOnly: true, secure: config.NODE_ENV === "production", sameSite: "strict" });
+        res.cookie("token", token, { httpOnly: true, secure: config.NODE_ENV === "production", sameSite: "none" });
 
         return res.status(200).json({ message: "Login successful", success: true, user: { id: user._id, username: user.username, email: user.email } });
 
@@ -64,7 +64,7 @@ const loginUser = async (req, res, next) => {
 
 const logoutUser = (req, res, next) => {
     try {
-        res.clearCookie("token", { httpOnly: true, secure: config.NODE_ENV === "production", sameSite: "strict" });
+        res.clearCookie("token", { httpOnly: true, secure: config.NODE_ENV === "production", sameSite: "none" });
         return res.status(200).json({ message: "Logout successful", success: true });
     } catch (error) {
         next(error);
@@ -110,7 +110,7 @@ const forgetPassword = async (req, res, next) => {
         res.cookie("resetEmail", email, {
             httpOnly: true,
             secure: config.NODE_ENV === "production",
-            sameSite: "strict",
+            sameSite: "none",
             maxAge: 15 * 60 * 1000
         });
 
@@ -169,13 +169,13 @@ const verifyOtp = async (req, res, next) => {
         user.resetOtpAttempts = 0;
         await user.save();
 
-        res.clearCookie("resetEmail", { httpOnly: true, secure: config.NODE_ENV === "production", sameSite: "strict" });
+        res.clearCookie("resetEmail", { httpOnly: true, secure: config.NODE_ENV === "production", sameSite: "none" });
 
         const resetToken = jwt.sign({ id: user._id, purpose: "reset" }, config.JWT_SECRET, { expiresIn: "10m" });
         res.cookie("resetToken", resetToken, {
             httpOnly: true,
             secure: config.NODE_ENV === "production",
-            sameSite: "strict",
+            sameSite: "none",
             maxAge: 10 * 60 * 1000
         });
 
@@ -213,7 +213,7 @@ const resetPassword = async (req, res, next) => {
         user.password = password;
         await user.save();
 
-        res.clearCookie("resetToken", { httpOnly: true, secure: config.NODE_ENV === "production", sameSite: "strict" });
+        res.clearCookie("resetToken", { httpOnly: true, secure: config.NODE_ENV === "production", sameSite: "none" });
 
         // Send confirmation email
         await transporter.sendMail({

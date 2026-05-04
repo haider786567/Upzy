@@ -26,7 +26,7 @@ const adminLogin = async (req, res, next) => {
         }
 
         const token = jwt.sign({ id: user._id }, config.JWT_SECRET, { expiresIn: "1h" });
-        res.cookie("token", token, { httpOnly: true, secure: config.NODE_ENV === "production", sameSite: "strict" });
+        res.cookie("token", token, { httpOnly: true, secure: config.NODE_ENV === "production", sameSite: "none" });
 
         return res.status(200).json({ message: "Login successful", success: true, user: { id: user._id, username: user.username, email: user.email } });
 
