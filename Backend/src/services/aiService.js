@@ -1,8 +1,7 @@
-import { ChatGoogleGenerativeAI } from "@langchain/google-genai";
+import { ChatGroq } from "@langchain/groq";
 import { ChatPromptTemplate } from "@langchain/core/prompts";
 import { StructuredOutputParser } from "@langchain/core/output_parsers";
 import { z } from "zod";
-import config from "../config/config.js";
 
 // 🔥 1. Define structured output
 const parser = StructuredOutputParser.fromZodSchema(
@@ -13,11 +12,11 @@ const parser = StructuredOutputParser.fromZodSchema(
   })
 );
 
-// 🔥 2. Create Gemini model
-const model = new ChatGoogleGenerativeAI({
-  model: "gemini-2.5-flash",
+// 🔥 2. Create Groq model (LLaMA 3)
+const model = new ChatGroq({
+  apiKey: process.env.GROQ_API_KEY,
+  model: "llama3-8b-8192",
   temperature: 0.2,
-  apiKey: config.GEMNI_API_KEY
 });
 
 // 🔥 3. Clean logs
@@ -30,7 +29,7 @@ const shapeLogs = (logs = []) =>
     time: l.createdAt
   }));
 
-// 🔥 4. Prompt template
+// 🔥 4. Prompt template (IMPORTANT: stricter for LLaMA)
 const prompt = ChatPromptTemplate.fromTemplate(`
 You are a backend monitoring expert.
 
@@ -48,9 +47,12 @@ Instructions:
 - Explain root cause in 1 sentence
 - Suggest one actionable fix
 
+CRITICAL:
+- Return ONLY valid JSON
+- No explanation, no markdown, no text outside JSON
+
 {format_instructions}
 `);
-
 
 // 🔥 5. Main function
 export const generateSummary = async ({
@@ -68,21 +70,15 @@ export const generateSummary = async ({
       format_instructions: parser.getFormatInstructions()
     });
 
-    const response = await model.invoke([
-      { role: "user", content: formattedPrompt }
-    ]);
-    
-    
+    const response = await model.invoke(formattedPrompt);
 
     // 🔒 parse structured output
     const result = await parser.parse(response.content);
-    
-    
 
     return result;
 
   } catch (err) {
-    console.error("Gemini LangChain Error:", err.message);
+    console.error("Groq LangChain Error:", err.message);
 
     return {
       summary: "Issue detected",
