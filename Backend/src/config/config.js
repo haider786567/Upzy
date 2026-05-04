@@ -34,6 +34,7 @@ const config = {
     GEMNI_API_KEY: process.env.GEMNI_API_KEY,
     REDIS_HOST: process.env.REDIS_HOST,
     REDIS_PORT: process.env.REDIS_PORT,
-    REDIS_PASSWORD: process.env.REDIS_PASSWORD
+    REDIS_PASSWORD: process.env.REDIS_PASSWORD,
+    CLIENT_URL: process.env.CLIENT_URL
 };
 export default config;

@@ -10,6 +10,7 @@ import errorHandler from './middlewares/errormiddleware.js';
 import analyticsRoutes from './routes/analyticsRoutes.js';
 import adminRoutes from './routes/adminRoutes.js';
 import { securityHeaders } from './utils/security.js';
+import config from './config/config.js';
 // import { globalLimiter } from './middlewares/ratelimiter.js';
 
 const app = express();
@@ -18,7 +19,7 @@ app.use(securityHeaders);
 
 app.use(morgan('dev'));
 // app.use(globalLimiter); // Apply global rate limiter to all routes
-app.use(cors({ origin: true, credentials: true }));
+app.use(cors({ origin: config.CLIENT_URL, credentials: true }));
 app.use(express.json());
 app.use(cookieParser());
 app.use('/api/monitor', monitorRoutes);
