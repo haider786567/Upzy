@@ -12,3 +12,4 @@ const transporter = nodemailer.createTransport({
     servername: "smtp.gmail.com"
   }
 });
+export default transporter;
