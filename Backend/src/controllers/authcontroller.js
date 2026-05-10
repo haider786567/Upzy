@@ -4,6 +4,18 @@ import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import transporter from "../config/emailConfig.js";
 
+// Cookie options factory — SameSite=None requires Secure=true (HTTPS).
+// In development (HTTP localhost), use SameSite=Lax so cookies work in all browsers.
+const getCookieOptions = (extraOptions = {}) => {
+    const isProduction = config.NODE_ENV === "production";
+    return {
+        httpOnly: true,
+        secure: isProduction,
+        sameSite: isProduction ? "none" : "lax",
+        ...extraOptions,
+    };
+};
+
 
 
 const registerUser = async (req, res, next) => {
@@ -22,9 +34,9 @@ const registerUser = async (req, res, next) => {
 
         const newUser = await User.create({ username, email, password });
         const token = jwt.sign({ id: newUser._id }, config.JWT_SECRET, { expiresIn: "1h" });
-        res.cookie("token", token, { httpOnly: true, secure: config.NODE_ENV === "production", sameSite: "none" });
+        res.cookie("token", token, getCookieOptions());
 
-        return res.status(201).json({ message: "User registered successfully", success: true, user: { id: newUser._id, username: newUser.username, email: newUser.email } });
+        return res.status(201).json({ message: "User registered successfully", success: true, user: { id: newUser._id, username: newUser.username, email: newUser.email, role: newUser.role } });
 
     } catch (error) {
         // Handle MongoDB duplicate key error
@@ -52,9 +64,9 @@ const loginUser = async (req, res, next) => {
         }
 
         const token = jwt.sign({ id: user._id }, config.JWT_SECRET, { expiresIn: "1h" });
-        res.cookie("token", token, { httpOnly: true, secure: config.NODE_ENV === "production", sameSite: "none" });
+        res.cookie("token", token, getCookieOptions());
 
-        return res.status(200).json({ message: "Login successful", success: true, user: { id: user._id, username: user.username, email: user.email } });
+        return res.status(200).json({ message: "Login successful", success: true, user: { id: user._id, username: user.username, email: user.email, role: user.role } });
 
     } catch (error) {
         console.error('Error logging in user:', error.message);
@@ -64,7 +76,7 @@ const loginUser = async (req, res, next) => {
 
 const logoutUser = (req, res, next) => {
     try {
-        res.clearCookie("token", { httpOnly: true, secure: config.NODE_ENV === "production", sameSite: "none" });
+        res.clearCookie("token", getCookieOptions());
         return res.status(200).json({ message: "Logout successful", success: true });
     } catch (error) {
         next(error);
@@ -107,12 +119,7 @@ const forgetPassword = async (req, res, next) => {
         });
 
         // Set email cookie so user doesn't need to re-enter email in step 2
-        res.cookie("resetEmail", email, {
-            httpOnly: true,
-            secure: config.NODE_ENV === "production",
-            sameSite: "none",
-            maxAge: 15 * 60 * 1000
-        });
+        res.cookie("resetEmail", email, getCookieOptions({ maxAge: 15 * 60 * 1000 }));
 
         return res.status(200).json({ message: "OTP sent to your email", success: true });
     } catch (error) {
@@ -169,15 +176,10 @@ const verifyOtp = async (req, res, next) => {
         user.resetOtpAttempts = 0;
         await user.save();
 
-        res.clearCookie("resetEmail", { httpOnly: true, secure: config.NODE_ENV === "production", sameSite: "none" });
+        res.clearCookie("resetEmail", getCookieOptions());
 
         const resetToken = jwt.sign({ id: user._id, purpose: "reset" }, config.JWT_SECRET, { expiresIn: "10m" });
-        res.cookie("resetToken", resetToken, {
-            httpOnly: true,
-            secure: config.NODE_ENV === "production",
-            sameSite: "none",
-            maxAge: 10 * 60 * 1000
-        });
+        res.cookie("resetToken", resetToken, getCookieOptions({ maxAge: 10 * 60 * 1000 }));
 
         return res.status(200).json({ message: "OTP verified successfully", success: true });
     } catch (error) {
@@ -189,7 +191,7 @@ const verifyOtp = async (req, res, next) => {
 const resetPassword = async (req, res, next) => {
     const { password } = req.body;
     try {
-        const resetToken = req.cookies.resetToken;
+        const { resetToken } = req.cookies || {};
         if (!resetToken) {
             return res.status(401).json({ message: "Unauthorized. Please verify OTP first.", success: false });
         }
@@ -213,7 +215,7 @@ const resetPassword = async (req, res, next) => {
         user.password = password;
         await user.save();
 
-        res.clearCookie("resetToken", { httpOnly: true, secure: config.NODE_ENV === "production", sameSite: "none" });
+        res.clearCookie("resetToken", getCookieOptions());
 
         // Send confirmation email
         await transporter.sendMail({

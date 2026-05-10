@@ -2,6 +2,8 @@ import express from 'express';
 import morgan from 'morgan';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
+import path from 'path';
+import { fileURLToPath } from 'url';
 import authRoutes from './routes/authRoutes.js';
 import monitorRoutes from './routes/monitorRoutes.js';
 import logRoutes from './routes/logRoutes.js';
@@ -14,10 +16,15 @@ import config from './config/config.js';
 // import { globalLimiter } from './middlewares/ratelimiter.js';
 
 const app = express();
+app.set('trust proxy', 1); // Trust first proxy for secure cookies behind proxies/load balancers
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 app.use(securityHeaders);
+app.use(express.static(path.join(__dirname, '../public')));
 
 app.use(morgan('dev'));
+
 // app.use(globalLimiter); // Apply global rate limiter to all routes
 app.use(cors({ origin: config.CLIENT_URL, credentials: true }));
 app.use(express.json());
@@ -32,6 +39,11 @@ app.use('/admin', adminRoutes);
 app.get('/', (req, res) => {
   res.send('Hello, World!');
 });
+
+app.get('*name' , (req, res) => {
+  res.sendFile(path.join(__dirname, '../public/index.html'));
+});
+
 app.use(errorHandler);
 
 

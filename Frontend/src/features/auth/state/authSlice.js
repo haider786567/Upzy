@@ -6,10 +6,9 @@ export const login = createAsyncThunk(
   async ({ email, password }, thunkAPI) => {
     try {
       const response = await authService.login(email, password);
-      // After successful login, probe if the user is an admin
-      const isAdmin = await authService.isAdmin();
+      // Role is now included in the response, no need for follow-up request
       const user = response.user || response;
-      return { ...user, role: isAdmin ? 'admin' : 'user' };
+      return user;
     } catch (error) {
       const message = error.response?.data?.error || error.response?.data?.message || error.message || error.toString();
       return thunkAPI.rejectWithValue(message);
@@ -21,7 +20,10 @@ export const register = createAsyncThunk(
   'auth/register',
   async ({ username, email, password }, thunkAPI) => {
     try {
-      return await authService.register(username, email, password);
+      const response = await authService.register(username, email, password);
+      // Role is now included in the response
+      const user = response.user || response;
+      return user;
     } catch (error) {
       const message = error.response?.data?.error || error.message || error.toString();
       return thunkAPI.rejectWithValue(message);
@@ -98,6 +100,11 @@ export const authSlice = createSlice({
     logout: (state) => {
       localStorage.removeItem('user');
       state.user = null;
+    },
+    // Used to hydrate store from cookie-based session (incognito / new browser)
+    setUser: (state, action) => {
+      state.user = action.payload;
+      state.isSuccess = true;
     },
   },
   extraReducers: (builder) => {
@@ -196,5 +203,5 @@ export const authSlice = createSlice({
   },
 });
 
-export const { reset, logout } = authSlice.actions;
+export const { reset, logout, setUser } = authSlice.actions;
 export default authSlice.reducer;
