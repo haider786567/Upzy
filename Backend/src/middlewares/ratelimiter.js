@@ -21,8 +21,8 @@ const loginKeyGenerator = (req) => {
 };
 
 export const loginLimiter = rateLimit({
-  windowMs: 10 * 60 * 1000, // 10 min
-  max: 5,
+  windowMs: 20 * 60 * 1000, // 20 min
+  max: 15,
   keyGenerator: loginKeyGenerator,
   message: {
     message: "Too many login attempts. Try again later."
@@ -36,7 +36,7 @@ export const loginLimiter = rateLimit({
  */
 export const registerLimiter = rateLimit({
   windowMs: 60 * 60 * 1000, // 1 hour
-  max: 10,
+  max: 20,
   keyGenerator,
   message: {
     message: "Too many registrations. Try again later."

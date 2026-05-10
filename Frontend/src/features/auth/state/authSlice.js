@@ -101,11 +101,6 @@ export const authSlice = createSlice({
       localStorage.removeItem('user');
       state.user = null;
     },
-    // Used to hydrate store from cookie-based session (incognito / new browser)
-    setUser: (state, action) => {
-      state.user = action.payload;
-      state.isSuccess = true;
-    },
   },
   extraReducers: (builder) => {
     builder
@@ -203,5 +198,5 @@ export const authSlice = createSlice({
   },
 });
 
-export const { reset, logout, setUser } = authSlice.actions;
+export const { reset, logout } = authSlice.actions;
 export default authSlice.reducer;
