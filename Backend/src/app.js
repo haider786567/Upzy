@@ -26,7 +26,21 @@ app.use(express.static(path.join(__dirname, '../public')));
 app.use(morgan('dev'));
 
 // app.use(globalLimiter); // Apply global rate limiter to all routes
-app.use(cors({ origin: config.CLIENT_URL, credentials: true }));
+const allowedOrigins = [
+  'http://localhost:5173',
+  'http://localhost:3000',
+  config.CLIENT_URL,
+].filter(Boolean);
+
+app.use(cors({
+  origin: (origin, callback) => {
+    // Allow requests with no origin (mobile apps, curl, Postman)
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.includes(origin)) return callback(null, true);
+    return callback(new Error(`CORS policy: origin ${origin} not allowed`), false);
+  },
+  credentials: true,
+}));
 app.use(express.json());
 app.use(cookieParser());
 app.use('/monitor', monitorRoutes);
@@ -40,7 +54,7 @@ app.get('/', (req, res) => {
   res.send('Hello, World!');
 });
 
-app.get('*name' , (req, res) => {
+app.get('*name', (req, res) => {
   res.sendFile(path.join(__dirname, '../public/index.html'));
 });
 

@@ -9,10 +9,15 @@ export const securityHeaders = (req, res, next) => {
     res.setHeader('Content-Security-Policy', "default-src 'self'; script-src 'self'; frame-ancestors 'none'; object-src 'none';");
 
     // 3. Cross-Origin Embedding Protection
-    // Prevents other malicious websites from embedding your backend resources or leaking data cross-origin.
-    res.setHeader('Cross-Origin-Embedder-Policy', 'require-corp');
-    res.setHeader('Cross-Origin-Resource-Policy', 'same-origin');
-    res.setHeader('Cross-Origin-Opener-Policy', 'same-origin');
+    // Allow the frontend (different origin) to call the backend API,
+    // while still blocking untrusted cross-origin embedding.
+    res.setHeader('Cross-Origin-Resource-Policy', 'cross-origin');
+    // 'unsafe-none' lets the cross-origin page open popups / redirects that
+    // are needed during OAuth and password-reset flows.
+    res.setHeader('Cross-Origin-Opener-Policy', 'same-origin-allow-popups');
+    // Removed Cross-Origin-Embedder-Policy — setting it to 'require-corp'
+    // breaks SharedArrayBuffer (not used here) AND causes CORS pre-flight
+    // failures with some browser/network combinations in Safari.
 
     // 4. Rogue Feature Access Protection
     // Denies the browser from accessing user hardware (camera, tracking, mic) even if a script tries to silently ask for it.

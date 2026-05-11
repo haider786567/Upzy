@@ -1,6 +1,24 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import authService from '../service/authService';
 
+// Helper: safely read from localStorage (fails gracefully in incognito)
+const safeGetUser = () => {
+  try {
+    const stored = localStorage.getItem('user');
+    return stored ? JSON.parse(stored) : null;
+  } catch {
+    return null;
+  }
+};
+
+const safeSaveUser = (user) => {
+  try { localStorage.setItem('user', JSON.stringify(user)); } catch { /* ignore */ }
+};
+
+const safeRemoveUser = () => {
+  try { localStorage.removeItem('user'); } catch { /* ignore */ }
+};
+
 export const login = createAsyncThunk(
   'auth/login',
   async ({ email, password }, thunkAPI) => {
@@ -80,7 +98,7 @@ export const logoutAsync = createAsyncThunk(
 );
 
 const initialState = {
-  user: JSON.parse(localStorage.getItem('user')) || null,
+  user: safeGetUser(),
   isError: false,
   isSuccess: false,
   isLoading: false,
@@ -98,8 +116,13 @@ export const authSlice = createSlice({
       state.message = '';
     },
     logout: (state) => {
-      localStorage.removeItem('user');
+      safeRemoveUser();
       state.user = null;
+    },
+    // Used by ProtectedRoute to hydrate Redux from a valid server cookie
+    setUser: (state, action) => {
+      state.user = action.payload;
+      safeSaveUser(action.payload);
     },
   },
   extraReducers: (builder) => {
@@ -125,12 +148,10 @@ export const authSlice = createSlice({
       .addCase(login.fulfilled, (state, action) => {
         state.isLoading = false;
         state.isSuccess = true;
-        state.user = action.payload.user || action.payload;
-        if (action.payload.user) {
-           localStorage.setItem('user', JSON.stringify(action.payload.user));
-        } else {
-           localStorage.setItem('user', JSON.stringify(action.payload));
-        }
+        // The thunk already resolves `response.user || response`,
+        // so action.payload IS the user object directly
+        state.user = action.payload;
+        safeSaveUser(action.payload);
       })
       .addCase(login.rejected, (state, action) => {
         state.isLoading = false;
@@ -183,7 +204,7 @@ export const authSlice = createSlice({
       .addCase(logoutAsync.fulfilled, (state) => {
         state.isLoading = false;
         state.isSuccess = true;
-        localStorage.removeItem('user');
+        safeRemoveUser();
         state.user = null;
         state.message = 'Logged out successfully';
       })
@@ -192,11 +213,11 @@ export const authSlice = createSlice({
         state.isError = true;
         state.message = action.payload;
         // Still clear user on logout error
-        localStorage.removeItem('user');
+        safeRemoveUser();
         state.user = null;
       });
   },
 });
 
-export const { reset, logout } = authSlice.actions;
+export const { reset, logout, setUser } = authSlice.actions;
 export default authSlice.reducer;
